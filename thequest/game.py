@@ -12,7 +12,6 @@ class TheQuest:
     def jugar(self):
         salir = False
         while not salir:
-
             self.escenas = [
                 Portada(self.pantalla),
                 Partida(self.pantalla),
@@ -20,8 +19,10 @@ class TheQuest:
             ]
 
             for escena in self.escenas:
-                termine = escena.bucle_principal()
-                if termine:
+                he_acabado = escena.bucle_principal()
+                if he_acabado:
+                    print('La escena me pide que acabe el juego')
                     break
+        print('He salido del bucle for de las escenas')
 
         pg.quit()
