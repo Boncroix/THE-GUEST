@@ -1,9 +1,12 @@
 import pygame as pg
 
+from .import FPS
+
 
 class Escena:
     def __init__(self, pantalla):
         self.pantalla = pantalla
+        self.reloj = pg.time.Clock()
 
     def bucle_principal(self):
         print('Metodo vacio bucle principal de escena')
@@ -35,6 +38,7 @@ class Partida(Escena):
         print('Estamos en la escena partida')
         salir = False
         while not salir:
+            self.reloj.tick(FPS)
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
                     salir = True
