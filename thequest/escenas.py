@@ -1,6 +1,10 @@
+import os
+
+
 import pygame as pg
 
-from .import FPS
+
+from .import ALTO, ANCHO, FPS
 
 
 class Escena:
@@ -16,17 +20,24 @@ class Escena:
 class Portada(Escena):
     def __init__(self, pantalla):
         super().__init__(pantalla)
+        ruta_image = os.path.join('resources', 'images', 'portada.jpg')
+        self.image = pg.image.load(ruta_image)
+        self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
 
     def bucle_principal(self):
         super().bucle_principal()
         print('Estamos en la escena portada')
         salir = False
         while not salir:
+            self.pintar_fondo()
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
                     salir = True
-            self.pantalla.fill((99, 0, 0))
             pg.display.flip()
+
+    def pintar_fondo(self):
+        self.pantalla.blit(self.image, (0, 0))
+        
 
 
 class Partida(Escena):

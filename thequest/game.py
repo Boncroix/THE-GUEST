@@ -8,6 +8,7 @@ class TheQuest:
     def __init__(self):
         pg.init()
         self.pantalla = pg.display.set_mode((ANCHO, ALTO))
+        pg.display.set_caption('The  Quest')
 
     def jugar(self):
         salir = False
@@ -23,6 +24,7 @@ class TheQuest:
                 if he_acabado:
                     print('La escena me pide que acabe el juego')
                     break
+            salir = True
         print('He salido del bucle for de las escenas')
 
         pg.quit()
