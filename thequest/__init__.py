@@ -5,13 +5,16 @@ FPS = 30
 
 
 # AJUSTES PANTALLA
-ALTO = 800
 ANCHO = 1200
+ALTO = 800
+CENTRO_Y = ALTO / 2
+CENTRO_X = ANCHO / 2
 
 
 # FUENTES
-TAM_FUENTE = 80
-TAM_1_FUENTE = 40
+TAM_FUENTE_PEQ = int((ANCHO * ALTO) / 50000)
+TAM_FUENTE_MED = int((ANCHO * ALTO) / 25000)
+TAM_FUENTE_GRA = int((ANCHO * ALTO) / 8000)
 RUTA_FUENTE = os.path.join('resources', 'fonts', 'CabinSketch-Bold.ttf')
 
 # COLORES
@@ -19,3 +22,10 @@ ROJO = (99, 0, 0)
 VERDE = (0, 99, 0)
 AZUL = (0, 0, 99)
 BLANCO = (255, 255, 255)
+
+
+# HISTORIA
+ruta_historia = os.path.join('data', 'historia.txt')
+with open(ruta_historia, 'r') as contenido:
+    historia = contenido.readlines()
+HISTORIA = historia
