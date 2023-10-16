@@ -2,13 +2,15 @@ import os
 
 import pygame as pg
 
-from .import ALTO, ANCHO, VELOCIDAD_NAVE
+from .import ALTO, ANCHO, AUMENTO_VELOCIDAD, VELOCIDAD_NAVE
 
 
 class Nave(pg.sprite.Sprite):
 
     def __init__(self):
         super().__init__()
+        self.velocidad_up = VELOCIDAD_NAVE
+        self.velocidad_dow = VELOCIDAD_NAVE
         self.imagenes = []
         for i in range(3):
             ruta_image = os.path.join(
@@ -28,11 +30,15 @@ class Nave(pg.sprite.Sprite):
 
         estado_teclas = pg.key.get_pressed()
         if estado_teclas[pg.K_a]:
-            self.rect.y -= VELOCIDAD_NAVE
+            self.velocidad_dow = VELOCIDAD_NAVE
+            self.rect.y -= self.velocidad_up
+            self.velocidad_up += AUMENTO_VELOCIDAD
             if self.rect.top < 0:
                 self.rect.top = 0
 
         if estado_teclas[pg.K_z]:
-            self.rect.y += VELOCIDAD_NAVE
+            self.velocidad_up = VELOCIDAD_NAVE
+            self.rect.y += self.velocidad_dow
+            self.velocidad_dow += AUMENTO_VELOCIDAD
             if self.rect.bottom > ALTO:
                 self.rect.bottom = ALTO

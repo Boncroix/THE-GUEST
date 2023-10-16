@@ -33,4 +33,5 @@ with open(ruta_historia, 'r') as contenido:
 INTERVALO_PARPADEO = 600
 
 # AJUSTES NAVE
-VELOCIDAD_NAVE = 20
+VELOCIDAD_NAVE = 10
+AUMENTO_VELOCIDAD = 1
