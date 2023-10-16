@@ -26,7 +26,7 @@ class Portada(Escena):
         self.tipo1 = pg.font.Font(RUTA_FUENTE, TAM_FUENTE_MED)
         self.tipo2 = pg.font.Font(RUTA_FUENTE, TAM_FUENTE_PEQ)
         ruta_image = os.path.join('resources', 'images', 'portada.jpg')
-        self.image = pg.image.load(ruta_image)
+        self.image = pg.image.load(ruta_image).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
         ruta_musica = os.path.join('resources', 'music', 'musica_espacial.mp3')
         pg.mixer.music.load(ruta_musica)
@@ -86,18 +86,31 @@ class Portada(Escena):
 class Partida(Escena):
     def __init__(self, pantalla):
         super().__init__(pantalla)
+        ruta_image = os.path.join('resources', 'images', 'partida.jpg')
+        self.image = pg.image.load(ruta_image).convert()
+        self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
 
     def bucle_principal(self):
         super().bucle_principal()
         print('Estamos en la escena partida')
         salir = False
+        self.pos_x = 0
         while not salir:
             self.reloj.tick(FPS)
+            self.pintar_fondo()
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
-                    salir = True
-            self.pantalla.fill((0, 99, 0))
+                    return True
             pg.display.flip()
+        return False
+
+    def pintar_fondo(self):
+        x_relativa = self.pos_x % ANCHO
+        self.pantalla.blit(self.image, (x_relativa - ANCHO, 0))
+        if x_relativa < ANCHO:
+            self.pantalla.blit(self.image, (x_relativa, 0))
+
+        self.pos_x -= 1
 
 
 class Records(Escena):
