@@ -8,6 +8,8 @@ from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_Y, FPS, HISTORIA, INTERVALO_PARP
               RUTA_FUENTE, ROJO, TAM_FUENTE_GRA, TAM_FUENTE_MED, TAM_FUENTE_PEQ,
               VERDE)
 
+from .entidades import Nave
+
 
 class Escena:
     def __init__(self, pantalla):
@@ -89,6 +91,7 @@ class Partida(Escena):
         ruta_image = os.path.join('resources', 'images', 'partida.jpg')
         self.image = pg.image.load(ruta_image).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
+        self.nave = Nave()
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -101,6 +104,9 @@ class Partida(Escena):
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
                     return True
+            self.pintar_fondo()
+            self.nave.update()
+            self.pantalla.blit(self.nave.image, self.nave.rect)
             pg.display.flip()
         return False
 
