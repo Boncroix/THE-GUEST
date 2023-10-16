@@ -13,7 +13,7 @@ CENTRO_X = ANCHO / 2
 
 # FUENTES
 TAM_FUENTE_PEQ = int((ANCHO * ALTO) / 50000)
-TAM_FUENTE_MED = int((ANCHO * ALTO) / 25000)
+TAM_FUENTE_MED = int((ANCHO * ALTO) / 35000)
 TAM_FUENTE_GRA = int((ANCHO * ALTO) / 8000)
 RUTA_FUENTE = os.path.join('resources', 'fonts', 'CabinSketch-Bold.ttf')
 
@@ -28,3 +28,6 @@ BLANCO = (255, 255, 255)
 ruta_historia = os.path.join('data', 'historia.txt')
 with open(ruta_historia, 'r') as contenido:
     HISTORIA = contenido.readlines()
+
+# INFORMACIÓN PORTADA
+INTERVALO_PARPADEO = 600

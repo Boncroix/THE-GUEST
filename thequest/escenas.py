@@ -4,8 +4,9 @@ import os
 import pygame as pg
 
 
-from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_Y, FPS, HISTORIA, RUTA_FUENTE, ROJO, TAM_FUENTE_GRA,
-              TAM_FUENTE_MED, TAM_FUENTE_PEQ, VERDE)
+from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_Y, FPS, HISTORIA, INTERVALO_PARPADEO,
+              RUTA_FUENTE, ROJO, TAM_FUENTE_GRA, TAM_FUENTE_MED, TAM_FUENTE_PEQ,
+              VERDE)
 
 
 class Escena:
@@ -30,6 +31,8 @@ class Portada(Escena):
         ruta_musica = os.path.join('resources', 'music', 'musica_espacial.mp3')
         pg.mixer.music.load(ruta_musica)
         pg.mixer.music.play(-1)
+        self.parpadeo_visible = True
+        self.ultimo_cambio = pg.time.get_ticks()
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -40,25 +43,38 @@ class Portada(Escena):
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
                     salir = True
+                if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE:
+                    salir = True
             pg.display.flip()
+        return False
 
     def pintar_portada(self):
+        # Pintar imagen de fondo
         self.pantalla.blit(self.image, (0, 0))
         # Pintar titulo
+        self.pintar_titulo()
+        self.pintar_informacion()
+        self.pintar_historia()
+
+    def pintar_titulo(self):
         texto = self.tipo.render('THE QUEST', True, ROJO)
         pos_x = (ANCHO - texto.get_width()) / 2
         pos_y = ALTO * 6/7
         self.pantalla.blit(texto, (pos_x, pos_y))
-        # Pintar información para comenzar ha jugar
+
+    def pintar_informacion(self):
         texto1 = self.tipo1.render(
             'Pulsa <ESPACIO> para comenzar el juego', True, BLANCO)
         pos_x = (ANCHO - texto1.get_width()) / 2
         pos_y = ALTO * 1/7
-        self.pantalla.blit(texto1, (pos_x, pos_y))
+        tiempo_actual = pg.time.get_ticks()
+        if tiempo_actual - self.ultimo_cambio >= INTERVALO_PARPADEO:
+            self.parpadeo_visible = not self.parpadeo_visible
+            self.ultimo_cambio = tiempo_actual
+        if self.parpadeo_visible:
+            self.pantalla.blit(texto1, (pos_x, pos_y))
 
-        # TODO Pintar historia como si se estubiese tecleando en el teclado
-
-        # Pintar historia
+    def pintar_historia(self):
         pos_y = CENTRO_Y - TAM_FUENTE_PEQ
         for linea in HISTORIA:
             texto2 = self.tipo2.render(linea[:-1], True, BLANCO)
