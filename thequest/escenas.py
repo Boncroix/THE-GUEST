@@ -30,7 +30,7 @@ class Portada(Escena):
         ruta_image = os.path.join('resources', 'images', 'portada.jpg')
         self.image = pg.image.load(ruta_image).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
-        ruta_musica = os.path.join('resources', 'music', 'musica_espacial.mp3')
+        ruta_musica = os.path.join('resources', 'music', 'pista_portada.mp3')
         pg.mixer.music.load(ruta_musica)
         pg.mixer.music.play(-1)
         self.parpadeo_visible = True
@@ -91,11 +91,14 @@ class Partida(Escena):
         ruta_image = os.path.join('resources', 'images', 'partida.jpg')
         self.image = pg.image.load(ruta_image).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
+        self.ruta_musica = os.path.join('resources', 'music', 'pista0.mp3')
         self.nave = Nave()
 
     def bucle_principal(self):
         super().bucle_principal()
         print('Estamos en la escena partida')
+        pg.mixer.music.load(self.ruta_musica)
+        pg.mixer.music.play(-1)
         salir = False
         self.pos_x = 0
         while not salir:
