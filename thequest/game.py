@@ -7,6 +7,7 @@ from .escenas import Partida, Portada, Records
 class TheQuest:
     def __init__(self):
         pg.init()
+        pg.mixer.init()
         self.pantalla = pg.display.set_mode((ANCHO, ALTO))
         pg.display.set_caption('The  Quest')
 
@@ -24,6 +25,7 @@ class TheQuest:
                 if he_acabado:
                     print('La escena me pide que acabe el juego')
                     break
+                pg.mixer.music.stop()
             salir = True
         print('He salido del bucle for de las escenas')
 

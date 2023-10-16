@@ -27,5 +27,4 @@ BLANCO = (255, 255, 255)
 # HISTORIA
 ruta_historia = os.path.join('data', 'historia.txt')
 with open(ruta_historia, 'r') as contenido:
-    historia = contenido.readlines()
-HISTORIA = historia
+    HISTORIA = contenido.readlines()

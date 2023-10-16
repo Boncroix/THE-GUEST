@@ -27,6 +27,9 @@ class Portada(Escena):
         ruta_image = os.path.join('resources', 'images', 'portada.jpg')
         self.image = pg.image.load(ruta_image)
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
+        ruta_musica = os.path.join('resources', 'music', 'musica_espacial.mp3')
+        pg.mixer.music.load(ruta_musica)
+        pg.mixer.music.play(-1)
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -41,18 +44,21 @@ class Portada(Escena):
 
     def pintar_portada(self):
         self.pantalla.blit(self.image, (0, 0))
-
+        # Pintar titulo
         texto = self.tipo.render('THE QUEST', True, ROJO)
         pos_x = (ANCHO - texto.get_width()) / 2
         pos_y = ALTO * 6/7
         self.pantalla.blit(texto, (pos_x, pos_y))
-
+        # Pintar información para comenzar ha jugar
         texto1 = self.tipo1.render(
             'Pulsa <ESPACIO> para comenzar el juego', True, BLANCO)
         pos_x = (ANCHO - texto1.get_width()) / 2
         pos_y = ALTO * 1/7
         self.pantalla.blit(texto1, (pos_x, pos_y))
 
+        # TODO Pintar historia como si se estubiese tecleando en el teclado
+
+        # Pintar historia
         pos_y = CENTRO_Y - TAM_FUENTE_PEQ
         for linea in HISTORIA:
             texto2 = self.tipo2.render(linea[:-1], True, BLANCO)
