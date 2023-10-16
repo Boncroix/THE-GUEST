@@ -42,7 +42,7 @@ class Portada(Escena):
             self.pintar_portada()
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
-                    salir = True
+                    return True
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE:
                     salir = True
             pg.display.flip()
