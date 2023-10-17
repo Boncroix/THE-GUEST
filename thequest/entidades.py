@@ -2,6 +2,7 @@ import os
 
 import pygame as pg
 
+from random import randint
 from .import ALTO, ANCHO, AUMENTO_VELOCIDAD, VELOCIDAD_NAVE
 
 
@@ -19,7 +20,6 @@ class Nave(pg.sprite.Sprite):
 
         self.contador = 0
         self.image = self.imagenes[self.contador]
-
         self.rect = self.image.get_rect(midleft=(0, ALTO / 2))
 
     def update(self):
@@ -42,3 +42,19 @@ class Nave(pg.sprite.Sprite):
             self.velocidad_dow += AUMENTO_VELOCIDAD
             if self.rect.bottom > ALTO:
                 self.rect.bottom = ALTO
+
+
+class Obstaculos(pg.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+
+        self.imagenes = []
+        for i in range(8):
+            ruta_image = os.path.join(
+                'resources', 'images', f'objeto{i}.png')
+            self.imagenes.append(pg.image.load(ruta_image))
+
+    def crear_obstaculo(self):
+        self.image = self.imagenes[randint(0, 7)]
+        self.rect = self.image.get_rect(
+            midright=(ANCHO + 700, randint(0, ALTO)))

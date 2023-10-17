@@ -6,7 +6,7 @@ import pygame as pg
 
 from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_Y, FPS, HISTORIA, INTERVALO_PARPADEO,
               RUTA_FUENTE, ROJO, TAM_FUENTE_GRA, TAM_FUENTE_MED, TAM_FUENTE_PEQ,
-              VERDE)
+              VELOCIDAD_FONDO_PARTIDA, VERDE)
 
 from .entidades import Nave
 
@@ -118,8 +118,7 @@ class Partida(Escena):
         self.pantalla.blit(self.image, (x_relativa - ANCHO, 0))
         if x_relativa < ANCHO:
             self.pantalla.blit(self.image, (x_relativa, 0))
-
-        self.pos_x -= 1
+        self.pos_x -= VELOCIDAD_FONDO_PARTIDA
 
 
 class Records(Escena):
