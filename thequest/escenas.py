@@ -44,11 +44,12 @@ class Portada(Escena):
             self.pintar_portada()
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
-                    return True
+                    salir = True
+                    return 'salir'
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE:
                     salir = True
+                    return 'partida'
             pg.display.flip()
-        return False
 
     def pintar_portada(self):
         # Pintar imagen de fondo
@@ -106,12 +107,12 @@ class Partida(Escena):
             self.pintar_fondo()
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
-                    return True
+                    salir = True
+                    return 'salir'
             self.pintar_fondo()
             self.nave.update()
             self.pantalla.blit(self.nave.image, self.nave.rect)
             pg.display.flip()
-        return False
 
     def pintar_fondo(self):
         x_relativa = self.pos_x % ANCHO
