@@ -5,7 +5,7 @@ import pygame as pg
 
 
 from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, FPS, HISTORIA, INFO, INSTRUCCIONES,
-              INTERVALO_PARPADEO_INFO, MARGEN, FUENTE_NASA, FUENTE_CONTRAST,
+              INTERVALO_PARPADEO_INFO, MARGEN_X, FUENTE_NASA, FUENTE_CONTRAST,
               ROJO, TAM_FUENTE_1, TAM_FUENTE_2, TAM_FUENTE_3, TAM_FUENTE_4,
               VELOCIDAD_FONDO_PARTIDA, VERDE)
 
@@ -32,7 +32,7 @@ from .entidades import Nave
                           ALTO * 11/20, 'centro', BLANCO, False)
         # MOSTRAR INSTRUCCIONES
         if estado_teclas[pg.K_i]:
-            self.pintar_texto(INSTRUCCIONES, self.tipo2, MARGEN,
+            self.pintar_texto(INSTRUCCIONES, self.tipo2, MARGEN_X,
                               ALTO * 7/20, '', BLANCO, True)
         # MOSTRAR RECORDS
         if estado_teclas[pg.K_r]:

@@ -5,7 +5,7 @@ import pygame as pg
 
 
 from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, FPS, HISTORIA, INFO, INSTRUCCIONES,
-              INTERVALO_PARPADEO_INFO, MARGEN, FUENTE_NASA, FUENTE_CONTRAST,
+              INTERVALO_PARPADEO_INFO, MARGEN_X, MUSICA_PARTIDA, MUSICA_PORTADA, FUENTE_NASA, FUENTE_CONTRAST,
               ROJO, TAM_FUENTE_1, TAM_FUENTE_2, TAM_FUENTE_3, TAM_FUENTE_4,
               VELOCIDAD_FONDO_PARTIDA, VERDE)
 
@@ -32,8 +32,7 @@ class Portada(Escena):
         ruta_image = os.path.join('resources', 'images', 'portada.jpg')
         self.image = pg.image.load(ruta_image).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
-        ruta_musica = os.path.join('resources', 'music', 'pista_portada.mp3')
-        pg.mixer.music.load(ruta_musica)
+        pg.mixer.music.load(MUSICA_PORTADA)
         pg.mixer.music.play(-1)
         self.parpadeo_visible = True
         self.ultimo_cambio = pg.time.get_ticks()
@@ -72,7 +71,7 @@ class Portada(Escena):
                           ALTO * 11/20, 'centro', BLANCO, False)
         # MOSTRAR INSTRUCCIONES
         if estado_teclas[pg.K_i]:
-            self.pintar_texto(INSTRUCCIONES, self.tipo2, MARGEN,
+            self.pintar_texto(INSTRUCCIONES, self.tipo2, MARGEN_X,
                               ALTO * 7/20, '', BLANCO, True)
         # MOSTRAR RECORDS
         if estado_teclas[pg.K_r]:
@@ -102,13 +101,12 @@ class Partida(Escena):
         ruta_image = os.path.join('resources', 'images', 'partida.jpg')
         self.image = pg.image.load(ruta_image).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
-        self.ruta_musica = os.path.join('resources', 'music', 'pista0.mp3')
         self.nave = Nave()
 
     def bucle_principal(self):
         super().bucle_principal()
         print('Estamos en la escena partida')
-        pg.mixer.music.load(self.ruta_musica)
+        pg.mixer.music.load(MUSICA_PARTIDA)
         pg.mixer.music.play(-1)
         salir = False
         self.pos_x = 0
