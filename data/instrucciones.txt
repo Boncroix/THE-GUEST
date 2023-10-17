@@ -1,7 +1,7 @@
 *Título del Juego: THE QUEST*
 
-*Objetivo:* Tu misión es guiar la nave espacial a través del espacio, 
-sorteando objetos y alcanzando 1000 puntos para avanzar al siguiente nivel. 
+*Objetivo:* Tu misión es guiar la nave espacial a través del espacio,
+sorteando objetos y alcanzando 1000 puntos para avanzar al siguiente nivel.
 Después del nivel 10, encontrarás el planeta ideal para la habitabilidad.
 
 *Controles:*
@@ -13,7 +13,7 @@ Después del nivel 10, encontrarás el planeta ideal para la habitabilidad.
 
 *Niveles:*
 - Comienzas en el nivel 1 y debes alcanzar 1000 puntos para avanzar al siguiente nivel.
-- Después del nivel 10, explorarás el espacio hasta encontrar el planeta idóneo para la 
+- Después del nivel 10, explorarás el espacio hasta encontrar el planeta idóneo para la
 habitabilidad.
 
 *Reglas:*

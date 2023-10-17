@@ -10,3 +10,6 @@ Proyector final bootcamp: Aprender a programar desde cero (Pygame The-Quest)
 
 ## Instrucciones
 - Para comenzar el juego pulsar la tecla espacio
+
+
+## 

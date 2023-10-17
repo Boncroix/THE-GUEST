@@ -55,19 +55,11 @@ class Portada(Escena):
             pg.display.flip()
 
     def pintar_portada(self):
-        # Pintar imagen de fondo
-        self.pantalla.blit(self.image, (0, 0))
-        self.pintar_titulo()
-        self.pintar_informacion()
-        self.pintar_historia()
-        self.visualizar_instrucciones()
-        self.visualizar_records()
-
-    def pintar_titulo(self):
-        self.pintar_texto(['THE QUEST',], self.tipo4, CENTRO_X,
-                          ALTO * 17/20, 'centro', VERDE, False)
-
-    def pintar_informacion(self):
+        estado_teclas = pg.key.get_pressed()
+        # MOSTRAR TITULO
+        self.pintar_texto(['THE QUEST ',], self.tipo4, CENTRO_X,
+                          ALTO * 17/20, 'centro', VERDE, True)
+        # MOSTRAR INFORMACIÓN
         tiempo_actual = pg.time.get_ticks()
         if tiempo_actual - self.ultimo_cambio >= INTERVALO_PARPADEO_INFO:
             self.parpadeo_visible = not self.parpadeo_visible
@@ -75,21 +67,15 @@ class Portada(Escena):
         if self.parpadeo_visible:
             self.pintar_texto(INFO, self.tipo3, CENTRO_X,
                               0, 'centro', BLANCO, False)
-
-    def pintar_historia(self):
+        # MOSTRAR HISTORIA
         self.pintar_texto(HISTORIA, self.tipo2, CENTRO_X,
                           ALTO * 11/20, 'centro', BLANCO, False)
-
-    def visualizar_instrucciones(self):
-        estado_teclas = pg.key.get_pressed()
+        # MOSTRAR INSTRUCCIONES
         if estado_teclas[pg.K_i]:
             self.pintar_texto(INSTRUCCIONES, self.tipo2, MARGEN,
                               ALTO * 7/20, '', BLANCO, True)
-
-    def visualizar_records(self):
-        estado_teclas = pg.key.get_pressed()
+        # MOSTRAR RECORDS
         if estado_teclas[pg.K_r]:
-            # Pintar imagen de fondo
             self.pantalla.blit(self.image, (0, 0))
 
     def pintar_texto(self, txt, tipo, pos_x, pos_y, alineacion, color, fondo):
@@ -99,6 +85,9 @@ class Portada(Escena):
             texto = tipo.render(linea[:-1], True, color)
             if alineacion == 'centro':
                 pos_x_centro = pos_x - (texto.get_width() / 2)
+                self.pantalla.blit(texto, (pos_x_centro, pos_y))
+            elif alineacion == 'derecha':
+                pos_x_centro = pos_x - texto.get_width()
                 self.pantalla.blit(texto, (pos_x_centro, pos_y))
             else:
                 self.pantalla.blit(texto, (pos_x, pos_y))
