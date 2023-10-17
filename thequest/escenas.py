@@ -57,7 +57,7 @@ class Portada(Escena):
     def pintar_portada(self):
         estado_teclas = pg.key.get_pressed()
         # MOSTRAR TITULO
-        self.pintar_texto(['THE QUEST ',], self.tipo4, CENTRO_X,
+        self.pintar_texto(['THE QUEST',], self.tipo4, CENTRO_X,
                           ALTO * 17/20, 'centro', VERDE, True)
         # MOSTRAR INFORMACIÓN
         tiempo_actual = pg.time.get_ticks()
@@ -82,7 +82,9 @@ class Portada(Escena):
         if fondo == True:
             self.pantalla.blit(self.image, (0, 0))
         for linea in txt:
-            texto = tipo.render(linea[:-1], True, color)
+            if '\n' in linea:
+                linea = linea[:-1]
+            texto = tipo.render(linea, True, color)
             if alineacion == 'centro':
                 pos_x_centro = pos_x - (texto.get_width() / 2)
                 self.pantalla.blit(texto, (pos_x_centro, pos_y))
