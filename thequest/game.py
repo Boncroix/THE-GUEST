@@ -25,23 +25,7 @@ class TheQuest:
                 break
             else:
                 escena_selec = self.escenas[escena_selec].bucle_principal()
+                print('La escena me pide que cambie de escena')
             pg.mixer.music.stop()
 
         pg.quit()
-
-        # while not salir:
-        #     self.escenas = [
-        #         Portada(self.pantalla),
-        #         Partida(self.pantalla),
-        #         Records(self.pantalla)
-        #     ]
-        #     for escena in self.escenas:
-        #         he_acabado = escena.bucle_principal()
-        #         if he_acabado:
-        #             print('La escena me pide que acabe el juego')
-        #             break
-        #         pg.mixer.music.stop()
-        #     salir = True
-        # print('He salido del bucle for de las escenas')
-
-        # pg.quit()
