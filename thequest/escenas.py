@@ -4,8 +4,9 @@ import os
 import pygame as pg
 
 
-from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_Y, FPS, HISTORIA, INTERVALO_PARPADEO,
-              RUTA_FUENTE, ROJO, TAM_FUENTE_GRA, TAM_FUENTE_MED, TAM_FUENTE_PEQ,
+from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_Y, FPS, HISTORIA, INFO, INSTRUCCIONES,
+              INTERVALO_PARPADEO_INFO, MARGEN, FUENTE_NASA, FUENTE_CONTRAST,
+              ROJO, TAM_FUENTE_1, TAM_FUENTE_2, TAM_FUENTE_3, TAM_FUENTE_4,
               VELOCIDAD_FONDO_PARTIDA, VERDE)
 
 from .entidades import Nave
@@ -24,9 +25,10 @@ class Escena:
 class Portada(Escena):
     def __init__(self, pantalla):
         super().__init__(pantalla)
-        self.tipo = pg.font.Font(RUTA_FUENTE, TAM_FUENTE_GRA)
-        self.tipo1 = pg.font.Font(RUTA_FUENTE, TAM_FUENTE_MED)
-        self.tipo2 = pg.font.Font(RUTA_FUENTE, TAM_FUENTE_PEQ)
+        self.tipo1 = pg.font.Font(FUENTE_NASA, TAM_FUENTE_1)
+        self.tipo2 = pg.font.Font(FUENTE_NASA, TAM_FUENTE_2)
+        self.tipo3 = pg.font.Font(FUENTE_NASA, TAM_FUENTE_3)
+        self.tipo4 = pg.font.Font(FUENTE_CONTRAST, TAM_FUENTE_4)
         ruta_image = os.path.join('resources', 'images', 'portada.jpg')
         self.image = pg.image.load(ruta_image).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
@@ -49,41 +51,62 @@ class Portada(Escena):
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE:
                     salir = True
                     return 'partida'
+
             pg.display.flip()
 
     def pintar_portada(self):
         # Pintar imagen de fondo
         self.pantalla.blit(self.image, (0, 0))
-        # Pintar titulo
         self.pintar_titulo()
         self.pintar_informacion()
         self.pintar_historia()
+        self.visualizar_instrucciones()
+        self.visualizar_records()
 
     def pintar_titulo(self):
-        texto = self.tipo.render('THE QUEST', True, ROJO)
+        texto = self.tipo4.render('THE QUEST', True, ROJO)
         pos_x = (ANCHO - texto.get_width()) / 2
         pos_y = ALTO * 6/7
         self.pantalla.blit(texto, (pos_x, pos_y))
 
     def pintar_informacion(self):
-        texto1 = self.tipo1.render(
-            'Pulsa <ESPACIO> para comenzar el juego', True, BLANCO)
-        pos_x = (ANCHO - texto1.get_width()) / 2
-        pos_y = ALTO * 1/7
+        pos_y = 0
         tiempo_actual = pg.time.get_ticks()
-        if tiempo_actual - self.ultimo_cambio >= INTERVALO_PARPADEO:
+        if tiempo_actual - self.ultimo_cambio >= INTERVALO_PARPADEO_INFO:
             self.parpadeo_visible = not self.parpadeo_visible
             self.ultimo_cambio = tiempo_actual
         if self.parpadeo_visible:
-            self.pantalla.blit(texto1, (pos_x, pos_y))
+            for linea in INFO:
+                texto = self.tipo3.render(linea[:-1], True, BLANCO)
+                pos_x = (ANCHO - texto.get_width()) / 2
+                self.pantalla.blit(texto, (pos_x, pos_y))
+                pos_y += texto.get_height()
 
     def pintar_historia(self):
-        pos_y = CENTRO_Y - TAM_FUENTE_PEQ
+        pos_y = CENTRO_Y
         for linea in HISTORIA:
-            texto2 = self.tipo2.render(linea[:-1], True, BLANCO)
-            pos_x = (ANCHO - texto2.get_width()) / 2
-            pos_y += texto2.get_height()
-            self.pantalla.blit(texto2, (pos_x, pos_y))
+            texto = self.tipo2.render(linea[:-1], True, BLANCO)
+            pos_x = (ANCHO - texto.get_width()) / 2
+            pos_y += texto.get_height()
+            self.pantalla.blit(texto, (pos_x, pos_y))
+
+    def visualizar_instrucciones(self):
+        pos_y = ALTO * 1/3
+        estado_teclas = pg.key.get_pressed()
+        if estado_teclas[pg.K_i]:
+            # Pintar imagen de fondo
+            self.pantalla.blit(self.image, (0, 0))
+            for linea in INSTRUCCIONES:
+                texto = self.tipo2.render(linea[:-1], True, BLANCO)
+                pos_x = MARGEN
+                pos_y += texto.get_height()
+                self.pantalla.blit(texto, (pos_x, pos_y))
+
+    def visualizar_records(self):
+        estado_teclas = pg.key.get_pressed()
+        if estado_teclas[pg.K_r]:
+            # Pintar imagen de fondo
+            self.pantalla.blit(self.image, (0, 0))
 
 
 class Partida(Escena):
