@@ -4,7 +4,7 @@ import os
 import pygame as pg
 
 
-from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_Y, FPS, HISTORIA, INFO, INSTRUCCIONES,
+from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, FPS, HISTORIA, INFO, INSTRUCCIONES,
               INTERVALO_PARPADEO_INFO, MARGEN, FUENTE_NASA, FUENTE_CONTRAST,
               ROJO, TAM_FUENTE_1, TAM_FUENTE_2, TAM_FUENTE_3, TAM_FUENTE_4,
               VELOCIDAD_FONDO_PARTIDA, VERDE)
@@ -64,49 +64,45 @@ class Portada(Escena):
         self.visualizar_records()
 
     def pintar_titulo(self):
-        texto = self.tipo4.render('THE QUEST', True, ROJO)
-        pos_x = (ANCHO - texto.get_width()) / 2
-        pos_y = ALTO * 6/7
-        self.pantalla.blit(texto, (pos_x, pos_y))
+        self.pintar_texto(['THE QUEST',], self.tipo4, CENTRO_X,
+                          ALTO * 17/20, 'centro', VERDE, False)
 
     def pintar_informacion(self):
-        pos_y = 0
         tiempo_actual = pg.time.get_ticks()
         if tiempo_actual - self.ultimo_cambio >= INTERVALO_PARPADEO_INFO:
             self.parpadeo_visible = not self.parpadeo_visible
             self.ultimo_cambio = tiempo_actual
         if self.parpadeo_visible:
-            for linea in INFO:
-                texto = self.tipo3.render(linea[:-1], True, BLANCO)
-                pos_x = (ANCHO - texto.get_width()) / 2
-                self.pantalla.blit(texto, (pos_x, pos_y))
-                pos_y += texto.get_height()
+            self.pintar_texto(INFO, self.tipo3, CENTRO_X,
+                              0, 'centro', BLANCO, False)
 
     def pintar_historia(self):
-        pos_y = CENTRO_Y
-        for linea in HISTORIA:
-            texto = self.tipo2.render(linea[:-1], True, BLANCO)
-            pos_x = (ANCHO - texto.get_width()) / 2
-            pos_y += texto.get_height()
-            self.pantalla.blit(texto, (pos_x, pos_y))
+        self.pintar_texto(HISTORIA, self.tipo2, CENTRO_X,
+                          ALTO * 11/20, 'centro', BLANCO, False)
 
     def visualizar_instrucciones(self):
-        pos_y = ALTO * 1/3
         estado_teclas = pg.key.get_pressed()
         if estado_teclas[pg.K_i]:
-            # Pintar imagen de fondo
-            self.pantalla.blit(self.image, (0, 0))
-            for linea in INSTRUCCIONES:
-                texto = self.tipo2.render(linea[:-1], True, BLANCO)
-                pos_x = MARGEN
-                pos_y += texto.get_height()
-                self.pantalla.blit(texto, (pos_x, pos_y))
+            self.pintar_texto(INSTRUCCIONES, self.tipo2, MARGEN,
+                              ALTO * 7/20, '', BLANCO, True)
 
     def visualizar_records(self):
         estado_teclas = pg.key.get_pressed()
         if estado_teclas[pg.K_r]:
             # Pintar imagen de fondo
             self.pantalla.blit(self.image, (0, 0))
+
+    def pintar_texto(self, txt, tipo, pos_x, pos_y, alineacion, color, fondo):
+        if fondo == True:
+            self.pantalla.blit(self.image, (0, 0))
+        for linea in txt:
+            texto = tipo.render(linea[:-1], True, color)
+            if alineacion == 'centro':
+                pos_x_centro = pos_x - (texto.get_width() / 2)
+                self.pantalla.blit(texto, (pos_x_centro, pos_y))
+            else:
+                self.pantalla.blit(texto, (pos_x, pos_y))
+            pos_y += texto.get_height()
 
 
 class Partida(Escena):

@@ -27,17 +27,18 @@ AZUL = (0, 0, 99)
 BLANCO = (255, 255, 255)
 
 
-# INFORMACIÓN
+# TEXTO INFORMACIÓN
 ruta_info = os.path.join('data', 'info.txt')
 with open(ruta_info, 'r') as contenido:
     INFO = contenido.readlines()
+    print(INFO)
 
-# HISTORIA
+# TEXTO HISTORIA
 ruta_historia = os.path.join('data', 'historia.txt')
 with open(ruta_historia, 'r') as contenido:
     HISTORIA = contenido.readlines()
 
-# INSTRUCCIONES
+# TEXTO INSTRUCCIONES
 ruta_instrucciones = os.path.join('data', 'instrucciones.txt')
 with open(ruta_instrucciones, 'r') as contenido:
     INSTRUCCIONES = contenido.readlines()
@@ -50,4 +51,4 @@ VELOCIDAD_FONDO_PARTIDA = 1
 
 # AJUSTES NAVE
 VELOCIDAD_NAVE = 10
-AUMENTO_VELOCIDAD = 1
+AUMENTO_VELOCIDAD_NAVE = 1

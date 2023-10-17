@@ -1,5 +1,5 @@
-Pulsa < ESPACIO > para comenzar el juego
+Pulsa < ESPACIO > para comenzar el juego,
 
-< i > para mostrar información
+< i > para mostrar información,
 
 < r > para mostrar records

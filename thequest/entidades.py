@@ -3,7 +3,7 @@ import os
 import pygame as pg
 
 from random import randint
-from .import ALTO, ANCHO, AUMENTO_VELOCIDAD, VELOCIDAD_NAVE
+from .import ALTO, ANCHO, AUMENTO_VELOCIDAD_NAVE, VELOCIDAD_NAVE
 
 
 class Nave(pg.sprite.Sprite):
@@ -32,14 +32,14 @@ class Nave(pg.sprite.Sprite):
         if estado_teclas[pg.K_a]:
             self.velocidad_dow = VELOCIDAD_NAVE
             self.rect.y -= self.velocidad_up
-            self.velocidad_up += AUMENTO_VELOCIDAD
+            self.velocidad_up += AUMENTO_VELOCIDAD_NAVE
             if self.rect.top < 0:
                 self.rect.top = 0
 
         if estado_teclas[pg.K_z]:
             self.velocidad_up = VELOCIDAD_NAVE
             self.rect.y += self.velocidad_dow
-            self.velocidad_dow += AUMENTO_VELOCIDAD
+            self.velocidad_dow += AUMENTO_VELOCIDAD_NAVE
             if self.rect.bottom > ALTO:
                 self.rect.bottom = ALTO
 
