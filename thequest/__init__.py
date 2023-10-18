@@ -15,7 +15,7 @@ MARGEN_Y = 100
 IMAGEN_PORTADA = os.path.join('resources', 'images', 'portada.jpg')
 IMAGEN_PARTIDA = os.path.join('resources', 'images', 'partida.jpg')
 
-# TAMAÑO FUENTES
+# TAMAÑO FUENTES ESCALADA SEGÚN LA PANTALLA
 TAM_FUENTE_1 = int((ANCHO * ALTO) / 80000)
 TAM_FUENTE_2 = int((ANCHO * ALTO) / 60000)
 TAM_FUENTE_3 = int((ANCHO * ALTO) / 40000)

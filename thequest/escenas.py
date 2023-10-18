@@ -9,7 +9,7 @@ from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, FPS, HISTORIA, IMAG
               FUENTE_CONTRAST, ROJO, TAM_FUENTE_1, TAM_FUENTE_2, TAM_FUENTE_3, TAM_FUENTE_4, VELOCIDAD_FONDO_PARTIDA,
               VERDE)
 
-from .entidades import Nave
+from .entidades import Nave, Obstaculo
 
 
 class Escena:
@@ -110,6 +110,8 @@ class Partida(Escena):
         self.image = pg.image.load(IMAGEN_PARTIDA).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
         self.nave = Nave()
+        self.obstaculos = pg.sprite.Group()
+        self.crear_obstaculos()
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -128,6 +130,8 @@ class Partida(Escena):
             self.pintar_fondo()
             self.nave.update()
             self.pantalla.blit(self.nave.image, self.nave.rect)
+            self.obstaculos.draw(self.pantalla)
+            self.update_obstaculos()
             pg.display.flip()
 
     def pintar_fondo(self):
@@ -136,6 +140,18 @@ class Partida(Escena):
         if x_relativa < ANCHO:
             self.pantalla.blit(self.image, (x_relativa, 0))
         self.pos_x -= VELOCIDAD_FONDO_PARTIDA
+
+    def crear_obstaculos(self):
+        for i in range(10):
+            obstaculo = Obstaculo()
+            self.obstaculos.add(obstaculo)
+
+    def update_obstaculos(self):
+        for obstaculo in self.obstaculos:
+            borrar = obstaculo.update(self.obstaculos)
+            print(len(self.obstaculos))
+        if len(self.obstaculos) < 5:
+            self.crear_obstaculos()
 
 
 class Records(Escena):
