@@ -6,7 +6,7 @@ import pygame as pg
 
 from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, FPS, HISTORIA, IMAGEN_PARTIDA, IMAGEN_PORTADA,
               INFO, INSTRUCCIONES, INTERVALO_PARPADEO_INFO, MARGEN_X, MUSICA_PARTIDA, MUSICA_PORTADA, FUENTE_NASA,
-              FUENTE_CONTRAST, ROJO, TAM_FUENTE_1, TAM_FUENTE_2, TAM_FUENTE_3, TAM_FUENTE_4, VELOCIDAD_FONDO_PARTIDA,
+              FUENTE_CONTRAST, ROJO, TAM_FUENTE_1, TAM_FUENTE_2, TAM_FUENTE_3, TAM_FUENTE_4, VEL_FONDO_PARTIDA,
               VERDE)
 
 from .entidades import Nave, Obstaculo
@@ -139,7 +139,7 @@ class Partida(Escena):
         self.pantalla.blit(self.image, (x_relativa - ANCHO, 0))
         if x_relativa < ANCHO:
             self.pantalla.blit(self.image, (x_relativa, 0))
-        self.pos_x -= VELOCIDAD_FONDO_PARTIDA
+        self.pos_x -= VEL_FONDO_PARTIDA
 
     def crear_obstaculos(self):
         for i in range(10):
@@ -148,9 +148,8 @@ class Partida(Escena):
 
     def update_obstaculos(self):
         for obstaculo in self.obstaculos:
-            borrar = obstaculo.update(self.obstaculos)
-            print(len(self.obstaculos))
-        if len(self.obstaculos) < 5:
+            obstaculo.update(self.obstaculos)
+        if len(self.obstaculos) < 8:
             self.crear_obstaculos()
 
 
