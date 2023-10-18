@@ -4,10 +4,10 @@ import os
 import pygame as pg
 
 
-from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, FPS, HISTORIA, INFO, INSTRUCCIONES,
-              INTERVALO_PARPADEO_INFO, MARGEN_X, MUSICA_PARTIDA, MUSICA_PORTADA, FUENTE_NASA, FUENTE_CONTRAST,
-              ROJO, TAM_FUENTE_1, TAM_FUENTE_2, TAM_FUENTE_3, TAM_FUENTE_4,
-              VELOCIDAD_FONDO_PARTIDA, VERDE)
+from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, FPS, HISTORIA, IMAGEN_PARTIDA, IMAGEN_PORTADA,
+              INFO, INSTRUCCIONES, INTERVALO_PARPADEO_INFO, MARGEN_X, MUSICA_PARTIDA, MUSICA_PORTADA, FUENTE_NASA,
+              FUENTE_CONTRAST, ROJO, TAM_FUENTE_1, TAM_FUENTE_2, TAM_FUENTE_3, TAM_FUENTE_4, VELOCIDAD_FONDO_PARTIDA,
+              VERDE)
 
 from .entidades import Nave
 
@@ -29,8 +29,7 @@ class Portada(Escena):
         self.tipo2 = pg.font.Font(FUENTE_NASA, TAM_FUENTE_2)
         self.tipo3 = pg.font.Font(FUENTE_NASA, TAM_FUENTE_3)
         self.tipo4 = pg.font.Font(FUENTE_CONTRAST, TAM_FUENTE_4)
-        ruta_image = os.path.join('resources', 'images', 'portada.jpg')
-        self.image = pg.image.load(ruta_image).convert()
+        self.image = pg.image.load(IMAGEN_PORTADA).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
         pg.mixer.music.load(MUSICA_PORTADA)
         pg.mixer.music.play(-1)
@@ -55,10 +54,17 @@ class Portada(Escena):
 
     def pintar_portada(self):
         estado_teclas = pg.key.get_pressed()
-        # MOSTRAR TITULO
+        self.pintar_titulo()
+        self.pintar_info()
+        self.pintar_historia()
+        self.mostrar_instrucciones(estado_teclas)
+        self.mostrar_records(estado_teclas)
+
+    def pintar_titulo(self):
         self.pintar_texto(['THE QUEST',], self.tipo4, CENTRO_X,
                           ALTO * 17/20, 'centro', VERDE, True)
-        # MOSTRAR INFORMACIÓN
+
+    def pintar_info(self):
         tiempo_actual = pg.time.get_ticks()
         if tiempo_actual - self.ultimo_cambio >= INTERVALO_PARPADEO_INFO:
             self.parpadeo_visible = not self.parpadeo_visible
@@ -66,14 +72,17 @@ class Portada(Escena):
         if self.parpadeo_visible:
             self.pintar_texto(INFO, self.tipo3, CENTRO_X,
                               0, 'centro', BLANCO, False)
-        # MOSTRAR HISTORIA
+
+    def pintar_historia(self):
         self.pintar_texto(HISTORIA, self.tipo2, CENTRO_X,
                           ALTO * 11/20, 'centro', BLANCO, False)
-        # MOSTRAR INSTRUCCIONES
+
+    def mostrar_instrucciones(self, estado_teclas):
         if estado_teclas[pg.K_i]:
             self.pintar_texto(INSTRUCCIONES, self.tipo2, MARGEN_X,
                               ALTO * 7/20, '', BLANCO, True)
-        # MOSTRAR RECORDS
+
+    def mostrar_records(self, estado_teclas):
         if estado_teclas[pg.K_r]:
             self.pantalla.blit(self.image, (0, 0))
 
@@ -98,8 +107,7 @@ class Portada(Escena):
 class Partida(Escena):
     def __init__(self, pantalla):
         super().__init__(pantalla)
-        ruta_image = os.path.join('resources', 'images', 'partida.jpg')
-        self.image = pg.image.load(ruta_image).convert()
+        self.image = pg.image.load(IMAGEN_PARTIDA).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
         self.nave = Nave()
 
