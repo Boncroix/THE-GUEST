@@ -2,6 +2,7 @@ import os
 
 # AJUSTES JUEGO
 FPS = 30
+DIFICULTAD_INI = 5
 
 # AJUSTES PANTALLA
 ANCHO = 1200
@@ -27,7 +28,7 @@ FUENTE_CONTRAST = os.path.join('resources', 'fonts', 'contrast.ttf')
 
 # RUTAS MÚSICA
 MUSICA_PORTADA = os.path.join('resources', 'music', 'pista_portada.mp3')
-MUSICA_PARTIDA = os.path.join('resources', 'music', 'pista_partida.mp3')
+MUSICA_PARTIDA = os.path.join('resources', 'music', 'prueba.mp3')
 
 # COLORES
 ROJO = (99, 0, 0)
@@ -60,8 +61,6 @@ VEL_FONDO_PARTIDA = 1
 # AJUSTES NAVE
 VEL_NAVE = 10
 AUMENTO_VEL_NAVE = 1
-HABILITAR_MOV_DER_IZQ = True
+HABILITAR_MOV_DER_IZQ = False
 
-# AJUSTES OBJETOS
-VEL_MIN_OBJETO = 5
-VEL_MAX_OBJETO = 10
+# AJUSTES OBSTACULOS

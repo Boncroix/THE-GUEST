@@ -4,7 +4,7 @@ import os
 import pygame as pg
 
 
-from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, FPS, HISTORIA, IMAGEN_PARTIDA, IMAGEN_PORTADA,
+from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, DIFICULTAD_INI, FPS, HISTORIA, IMAGEN_PARTIDA, IMAGEN_PORTADA,
               INFO, INSTRUCCIONES, INTERVALO_PARPADEO_INFO, MARGEN_X, MUSICA_PARTIDA, MUSICA_PORTADA, FUENTE_NASA,
               FUENTE_CONTRAST, ROJO, TAM_FUENTE_1, TAM_FUENTE_2, TAM_FUENTE_3, TAM_FUENTE_4, VEL_FONDO_PARTIDA,
               VERDE)
@@ -111,6 +111,8 @@ class Partida(Escena):
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
         self.nave = Nave()
         self.obstaculos = pg.sprite.Group()
+        self.dificultad = DIFICULTAD_INI
+        self.contador = 0
         self.crear_obstaculos()
 
     def bucle_principal(self):
@@ -142,14 +144,18 @@ class Partida(Escena):
         self.pos_x -= VEL_FONDO_PARTIDA
 
     def crear_obstaculos(self):
-        for i in range(10):
-            obstaculo = Obstaculo()
+        for i in range(self.dificultad):
+            obstaculo = Obstaculo(self.dificultad)
             self.obstaculos.add(obstaculo)
 
     def update_obstaculos(self):
         for obstaculo in self.obstaculos:
             obstaculo.update(self.obstaculos)
-        if len(self.obstaculos) < 8:
+        if len(self.obstaculos) < self.dificultad - 3:
+            self.contador += 1
+            if self.contador % 2 == 0:
+                self.dificultad += 1
+            print(self.dificultad)
             self.crear_obstaculos()
 
 
