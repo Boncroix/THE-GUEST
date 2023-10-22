@@ -4,8 +4,8 @@
 sorteando objetos en busca del planeta ideal para la habitabilidad.
 
 *Controles:*
-- Utiliza la tecla "A" para mover la nave hacia la arriba.
-- Utiliza la tecla "Z" para mover la nave hacia la abajo.
+- Utiliza la tecla de dirección "UP" para mover la nave hacia la arriba.
+- Utiliza la tecla de dirección "DOW" para mover la nave hacia la abajo.
 
 *Puntuación:*
 - Obtendrás puntos al evitar objetos. Cada objeto evitado suma 20 puntos.

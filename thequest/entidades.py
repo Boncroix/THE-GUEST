@@ -4,7 +4,9 @@ import pygame as pg
 
 from random import choice, randint
 
-from .import ALTO, ANCHO, AUMENTO_VEL_NAVE, HABILITAR_MOV_DER_IZQ, MARGEN_Y, VEL_NAVE
+from .import (ALTO, ANCHO, AUMENTO_VEL_NAVE, ESCALA_X_INDI_VIDAS, ESCALA_Y_INDI_VIDAS, HABILITAR_MOV_DER_IZQ,
+              MARGEN_IZQ, MARGEN_INF, MARGEN_SUP, VEL_NAVE
+              )
 
 
 class Nave(pg.sprite.Sprite):
@@ -32,15 +34,15 @@ class Nave(pg.sprite.Sprite):
             self.velocidad_dow = VEL_NAVE
             self.rect.y -= self.velocidad_up
             self.velocidad_up += AUMENTO_VEL_NAVE
-            if self.rect.top < MARGEN_Y:
-                self.rect.top = MARGEN_Y
+            if self.rect.top < MARGEN_SUP:
+                self.rect.top = MARGEN_SUP
 
         if estado_teclas[pg.K_DOWN]:
             self.velocidad_up = VEL_NAVE
             self.rect.y += self.velocidad_dow
             self.velocidad_dow += AUMENTO_VEL_NAVE
-            if self.rect.bottom > ALTO:
-                self.rect.bottom = ALTO
+            if self.rect.bottom > MARGEN_INF:
+                self.rect.bottom = MARGEN_INF
 
         if HABILITAR_MOV_DER_IZQ:
             if estado_teclas[pg.K_LEFT]:
@@ -75,17 +77,53 @@ class Obstaculo(pg.sprite.Sprite):
                 'resources', 'images', f'obstaculo{i}.png')
             self.imagenes.append(pg.image.load(ruta_image))
 
-        pos_x = ANCHO + randint(MARGEN_Y, ANCHO)
-        pos_y = randint(0, ALTO)
+        pos_x = ANCHO + randint(MARGEN_IZQ, ANCHO)
+        pos_y = randint(MARGEN_SUP, MARGEN_INF)
         self.image = choice(self.imagenes)
         self.rect = self.image.get_rect(center=(pos_x, pos_y))
 
-        if self.rect.top < MARGEN_Y:
-            self.rect.top = MARGEN_Y
-        if self.rect.bottom > ALTO:
-            self.rect.bottom = ALTO
+        if self.rect.top < MARGEN_SUP:
+            self.rect.top = MARGEN_SUP
+        if self.rect.bottom > MARGEN_INF:
+            self.rect.bottom = MARGEN_INF
 
     def update(self, obstaculos):
         self.rect.x -= self.velocidad
         if self.rect.right < 0:
             obstaculos.remove(self)
+
+
+class IndicadorVida(pg.sprite.Sprite):
+
+    def __init__(self):
+        super().__init__()
+        self.imagenes = []
+        for i in range(3):
+            ruta_image = os.path.join(
+                'resources', 'images', f'nave{i}.png')
+            self.image = pg.image.load(ruta_image)
+            self.image = pg.transform.scale(
+                self.image, (ESCALA_X_INDI_VIDAS, ESCALA_Y_INDI_VIDAS))
+            self.imagenes.append(self.image)
+
+        self.contador = 0
+        self.rect = self.image.get_rect()
+        self.image = self.imagenes[self.contador]
+
+    def update(self):
+        self.contador += 1
+        if self.contador > 2:
+            self.contador = 0
+        self.image = self.imagenes[self.contador]
+
+
+class ContadorVidas:
+    def __init__(self, vidas_iniciales):
+        self.vidas = vidas_iniciales
+
+    def perder_vida(self):
+        self.vidas -= 1
+        return self.vidas < 0
+
+    def pintar(self):
+        pass
