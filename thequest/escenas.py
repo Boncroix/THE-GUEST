@@ -168,8 +168,11 @@ class Partida(Escena):
             self.crear_obstaculos()
 
     def detectar_colision_nave(self):
-        self.colision = pg.sprite.spritecollide(
-            self.nave, self.obstaculos, True)
+        # FIXME corregir colisión entre sprites
+        for obstaculo in self.obstaculos:
+            self.colision = pg.sprite.collide_mask(self.nave, obstaculo)
+            if self.colision:
+                break
 
     def crear_vidas(self, vidas):
         separador = 5
