@@ -4,7 +4,7 @@ import pygame as pg
 
 from random import choice, randint
 
-from .import (ALTO, ANCHO, AUMENTO_VEL_NAVE, ESCALA_X_INDI_VIDAS, ESCALA_Y_INDI_VIDAS, HABILITAR_MOV_DER_IZQ,
+from .import (ALTO, ANCHO, AUMENTO_VEL_NAVE, CENTRO_Y, ESCALA_X_INDI_VIDAS, ESCALA_Y_INDI_VIDAS, HABILITAR_MOV_DER_IZQ,
               MARGEN_IZQ, MARGEN_INF, MARGEN_SUP, VEL_NAVE
               )
 
@@ -21,7 +21,7 @@ class Nave(pg.sprite.Sprite):
             self.imagenes.append(pg.image.load(ruta_image))
         self.contador = 0
         self.image = self.imagenes[self.contador]
-        self.rect = self.image.get_rect(midleft=(0, ALTO / 2))
+        self.rect = self.image.get_rect(midleft=(0, CENTRO_Y))
 
     def update(self):
         self.contador += 1
@@ -115,15 +115,3 @@ class IndicadorVida(pg.sprite.Sprite):
         if self.contador > 2:
             self.contador = 0
         self.image = self.imagenes[self.contador]
-
-
-class ContadorVidas:
-    def __init__(self, vidas_iniciales):
-        self.vidas = vidas_iniciales
-
-    def perder_vida(self):
-        self.vidas -= 1
-        return self.vidas < 0
-
-    def pintar(self):
-        pass

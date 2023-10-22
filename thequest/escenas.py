@@ -4,12 +4,12 @@ import os
 import pygame as pg
 
 
-from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, DIFICULTAD_INI, FPS, HISTORIA, IMAGEN_PARTIDA, IMAGEN_PORTADA,
+from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, FPS, HISTORIA, IMAGEN_PARTIDA, IMAGEN_PORTADA,
               INFO, INSTRUCCIONES, INTERVALO_PARPADEO_INFO, MARGEN_INF, MARGEN_IZQ, MUSICA_PARTIDA, MUSICA_PORTADA, FUENTE_NASA,
               FUENTE_CONTRAST, ROJO, TAM_FUENTE_1, TAM_FUENTE_2, TAM_FUENTE_3, TAM_FUENTE_4, VEL_FONDO_PARTIDA,
-              VERDE, VIDAS)
+              VERDE)
 
-from .entidades import ContadorVidas, IndicadorVida, Nave, Obstaculo
+from .entidades import IndicadorVida, Nave, Obstaculo
 
 
 class Escena:
@@ -105,18 +105,18 @@ class Portada(Escena):
 
 
 class Partida(Escena):
-    def __init__(self, pantalla):
+    def __init__(self, pantalla, dificultad, vidas):
         super().__init__(pantalla)
         self.image = pg.image.load(IMAGEN_PARTIDA).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
         self.nave = Nave()
         self.obstaculos = pg.sprite.Group()
-        self.dificultad = DIFICULTAD_INI
+        self.dificultad = dificultad
         self.contador = 0
         self.crear_obstaculos()
+        self.vidas = vidas
         self.indicador_vidas = pg.sprite.Group()
-        self.contador_vidas = ContadorVidas(VIDAS)
-        self.crear_vidas(VIDAS)
+        self.crear_vidas(self.vidas)
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -131,7 +131,7 @@ class Partida(Escena):
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
                     salir = True
-                    return 'salir'
+                    return 'salir', self.dificultad, self.vidas
             self.pintar_fondo()
             self.nave.update()
             self.pantalla.blit(self.nave.image, self.nave.rect)
@@ -140,6 +140,14 @@ class Partida(Escena):
             self.indicador_vidas.update()
             self.indicador_vidas.draw(self.pantalla)
             self.detectar_colision_nave()
+            if self.colision:
+                self.vidas -= 1
+                if len(self.indicador_vidas) > 0:
+                    self.restar_vida()
+                    return 'partida', self.dificultad, self.vidas
+                else:
+                    return 'records', self.dificultad, self.vidas
+
             pg.display.flip()
 
     def pintar_fondo(self):
@@ -164,21 +172,20 @@ class Partida(Escena):
             self.crear_obstaculos()
 
     def detectar_colision_nave(self):
-        colision = pg.sprite.spritecollide(self.nave, self.obstaculos, False)
-        if colision:
-            # TODO que pasa si hay colisión
-            pass
+        self.colision = pg.sprite.spritecollide(
+            self.nave, self.obstaculos, True)
 
     def crear_vidas(self, vidas):
-        borde = 30
         separador = 5
-
         for vida in range(vidas):
 
             indicador = IndicadorVida()
             indicador.rect.x = indicador.rect.width * vida + MARGEN_IZQ + separador * vida
             indicador.rect.top = MARGEN_INF
             self.indicador_vidas.add(indicador)
+
+    def restar_vida(self):
+        self.indicador_vidas.sprites()[-1].kill()
 
 
 class Records(Escena):
