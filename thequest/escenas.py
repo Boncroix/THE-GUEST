@@ -40,15 +40,12 @@ class Portada(Escena):
     def bucle_principal(self):
         super().bucle_principal()
         print('Estamos en la escena portada')
-        salir = False
-        while not salir:
+        while True:
             self.pintar_portada()
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
-                    salir = True
                     return 'salir'
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE:
-                    salir = True
                     return 'partida'
 
             pg.display.flip()
@@ -124,14 +121,12 @@ class Partida(Escena):
         print('Estamos en la escena partida')
         pg.mixer.music.load(MUSICA_PARTIDA)
         pg.mixer.music.play(-1)
-        salir = False
         self.pos_x = 0
-        while not salir:
+        while True:
             self.reloj.tick(FPS)
             self.pintar_fondo()
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
-                    salir = True
                     return 'salir', self.dificultad, self.vidas
             self.pintar_fondo()
             self.nave.update()
@@ -198,10 +193,9 @@ class Records(Escena):
         print('Estamos en la escena records')
         pg.mixer.music.load(MUSICA_RECORDS)
         pg.mixer.music.play(-1)
-        salir = False
-        while not salir:
+        while True:
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
-                    salir = True
+                    return 'salir'
             self.pantalla.fill((0, 0, 99))
             pg.display.flip()
