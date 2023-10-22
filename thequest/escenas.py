@@ -5,7 +5,8 @@ import pygame as pg
 
 
 from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, FPS, HISTORIA, IMAGEN_PARTIDA, IMAGEN_PORTADA,
-              INFO, INSTRUCCIONES, INTERVALO_PARPADEO_INFO, MARGEN_INF, MARGEN_IZQ, MUSICA_PARTIDA, MUSICA_PORTADA, FUENTE_NASA,
+              INFO, INSTRUCCIONES, INTERVALO_PARPADEO_INFO, MARGEN_INF, MARGEN_IZQ, MUSICA_PARTIDA, MUSICA_PORTADA,
+              MUSICA_RECORDS, FUENTE_NASA,
               FUENTE_CONTRAST, ROJO, TAM_FUENTE_1, TAM_FUENTE_2, TAM_FUENTE_3, TAM_FUENTE_4, VEL_FONDO_PARTIDA,
               VERDE)
 
@@ -195,6 +196,8 @@ class Records(Escena):
     def bucle_principal(self):
         super().bucle_principal()
         print('Estamos en la escena records')
+        pg.mixer.music.load(MUSICA_RECORDS)
+        pg.mixer.music.play(-1)
         salir = False
         while not salir:
             for evento in pg.event.get():

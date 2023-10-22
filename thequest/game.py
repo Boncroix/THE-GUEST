@@ -28,7 +28,7 @@ class TheQuest:
             elif escena_selec == 'partida':
                 escena_selec, self.dificultad, self.vidas = self.escenas[escena_selec].bucle_principal(
                 )
-                print('La escena me pide que cambie de escena')
+                print('La escena PARTIDA me pide que cambie de escena')
             else:
                 escena_selec = self.escenas[escena_selec].bucle_principal()
                 print('La escena me pide que cambie de escena')
