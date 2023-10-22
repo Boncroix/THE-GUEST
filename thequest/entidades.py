@@ -4,7 +4,6 @@ import pygame as pg
 
 from random import choice, randint
 
-from pygame.sprite import _Group
 from .import ALTO, ANCHO, AUMENTO_VEL_NAVE, HABILITAR_MOV_DER_IZQ, MARGEN_Y, VEL_NAVE
 
 
@@ -60,9 +59,8 @@ class Nave(pg.sprite.Sprite):
 
 
 class Disparo(pg.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        pass
+    # TODO Generar disparo de la nave
+    pass
 
 
 class Obstaculo(pg.sprite.Sprite):
@@ -77,7 +75,7 @@ class Obstaculo(pg.sprite.Sprite):
                 'resources', 'images', f'obstaculo{i}.png')
             self.imagenes.append(pg.image.load(ruta_image))
 
-        os_x = ANCHO + randint(MARGEN_Y, ANCHO)
+        pos_x = ANCHO + randint(MARGEN_Y, ANCHO)
         pos_y = randint(0, ALTO)
         self.image = choice(self.imagenes)
         self.rect = self.image.get_rect(center=(pos_x, pos_y))
