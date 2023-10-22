@@ -138,7 +138,7 @@ class Partida(Escena):
             self.detectar_colision_nave()
             if self.colision:
                 self.vidas -= 1
-                if len(self.indicador_vidas) > 0:
+                if len(self.indicador_vidas) > 1:
                     self.restar_vida()
                     return 'partida', self.dificultad, self.vidas
                 else:
