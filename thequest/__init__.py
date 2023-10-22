@@ -3,7 +3,7 @@ import os
 # AJUSTES JUEGO
 FPS = 30
 DIFICULTAD_INI = 5
-VIDAS = 5
+VIDAS = 2
 
 # AJUSTES PANTALLA
 ANCHO = 1200
@@ -31,6 +31,7 @@ FUENTE_CONTRAST = os.path.join('resources', 'fonts', 'contrast.ttf')
 # RUTAS MÚSICA
 MUSICA_PORTADA = os.path.join('resources', 'music', 'pista_portada.mp3')
 MUSICA_PARTIDA = os.path.join('resources', 'music', 'pista_partida.mp3')
+SONIDO_EXPLOSION = os.path.join('resources', 'music', 'explosion.mp3')
 MUSICA_RECORDS = os.path.join('resources', 'music', 'pista_records.mp3')
 
 # COLORES

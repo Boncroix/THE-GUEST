@@ -15,7 +15,7 @@ class Nave(pg.sprite.Sprite):
         super().__init__()
         self.velocidad_up = self.velocidad_dow = self.velocidad_right = self.velocidad_left = VEL_NAVE
         self.imagenes = []
-        for i in range(3):
+        for i in range(4):
             ruta_image = os.path.join(
                 'resources', 'images', f'nave{i}.png')
             self.imagenes.append(pg.image.load(ruta_image))
@@ -24,10 +24,10 @@ class Nave(pg.sprite.Sprite):
         self.rect = self.image.get_rect(midleft=(0, CENTRO_Y))
 
     def update(self):
-        self.contador += 1
-        if self.contador > 2:
+        if self.contador == len(self.imagenes) - 1:
             self.contador = 0
         self.image = self.imagenes[self.contador]
+        self.contador += 1
 
         estado_teclas = pg.key.get_pressed()
         if estado_teclas[pg.K_UP]:
@@ -58,6 +58,9 @@ class Nave(pg.sprite.Sprite):
                 self.velocidad_right += AUMENTO_VEL_NAVE
                 if self.rect.right > ANCHO:
                     self.rect.right = ANCHO
+
+    def explosion_nave(self):
+        self.image = self.imagenes[-1]
 
 
 class Disparo(pg.sprite.Sprite):

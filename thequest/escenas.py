@@ -6,9 +6,8 @@ import pygame as pg
 
 from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, FPS, HISTORIA, IMAGEN_PARTIDA, IMAGEN_PORTADA,
               INFO, INSTRUCCIONES, INTERVALO_PARPADEO_INFO, MARGEN_INF, MARGEN_IZQ, MUSICA_PARTIDA, MUSICA_PORTADA,
-              MUSICA_RECORDS, FUENTE_NASA,
-              FUENTE_CONTRAST, ROJO, TAM_FUENTE_1, TAM_FUENTE_2, TAM_FUENTE_3, TAM_FUENTE_4, VEL_FONDO_PARTIDA,
-              VERDE)
+              MUSICA_RECORDS, FUENTE_NASA, FUENTE_CONTRAST, ROJO, SONIDO_EXPLOSION, TAM_FUENTE_1, TAM_FUENTE_2,
+              TAM_FUENTE_3, TAM_FUENTE_4, VEL_FONDO_PARTIDA, VERDE)
 
 from .entidades import IndicadorVida, Nave, Obstaculo
 
@@ -107,6 +106,7 @@ class Partida(Escena):
         super().__init__(pantalla)
         self.image = pg.image.load(IMAGEN_PARTIDA).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
+        self.sonido_explosion = pg.mixer.Sound(SONIDO_EXPLOSION)
         self.nave = Nave()
         self.obstaculos = pg.sprite.Group()
         self.dificultad = dificultad
@@ -124,25 +124,34 @@ class Partida(Escena):
         self.pos_x = 0
         while True:
             self.reloj.tick(FPS)
-            self.pintar_fondo()
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
                     return 'salir', self.dificultad, self.vidas
             self.pintar_fondo()
-            self.nave.update()
             self.pantalla.blit(self.nave.image, self.nave.rect)
             self.obstaculos.draw(self.pantalla)
-            self.update_obstaculos()
             self.indicador_vidas.update()
             self.indicador_vidas.draw(self.pantalla)
             self.detectar_colision_nave()
+            # FIXME meter colisión dentro del metodo
             if self.colision:
-                self.vidas -= 1
-                if len(self.indicador_vidas) > 1:
-                    self.restar_vida()
-                    return 'partida', self.dificultad, self.vidas
-                else:
-                    return 'records', self.dificultad, self.vidas
+                tiempo_actual = pg.time.get_ticks()
+                self.nave.explosion_nave()
+                if tiempo_actual - tiempo_inicial < FPS * 2:
+                    self.sonido_explosion.play()
+                duracion_sonido = int(
+                    self.sonido_explosion.get_length() * 1000)
+                if tiempo_actual - tiempo_inicial >= duracion_sonido:
+                    if len(self.indicador_vidas) > 1:
+                        self.vidas -= 1
+                        self.restar_vida()
+                        return 'partida', self.dificultad, self.vidas
+                    else:
+                        return 'records', self.dificultad, self.vidas
+            else:
+                tiempo_inicial = pg.time.get_ticks()
+                self.nave.update()
+                self.update_obstaculos()
 
             pg.display.flip()
 
