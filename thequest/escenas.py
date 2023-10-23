@@ -4,7 +4,7 @@ import os
 import pygame as pg
 
 
-from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, FPS, HISTORIA, IMAGEN_PARTIDA, IMAGEN_PORTADA,
+from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, FPS, HISTORIA, IMAGEN_PARTIDA, IMAGEN_PORTADA, IMAGEN_RECORDS,
               INFO, INSTRUCCIONES, INTERVALO_PARPADEO_INFO, MARGEN_INF, MARGEN_IZQ, MUSICA_PARTIDA, MUSICA_PORTADA,
               MUSICA_RECORDS, FUENTE_NASA, FUENTE_CONTRAST, ROJO, SONIDO_EXPLOSION, TAM_FUENTE_1, TAM_FUENTE_2,
               TAM_FUENTE_3, TAM_FUENTE_4, VEL_FONDO_PARTIDA, VERDE)
@@ -199,6 +199,8 @@ class Partida(Escena):
 class Records(Escena):
     def __init__(self, pantalla):
         super().__init__(pantalla)
+        self.image = pg.image.load(IMAGEN_RECORDS).convert()
+        self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -209,5 +211,5 @@ class Records(Escena):
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
                     return 'salir'
-            self.pantalla.fill((0, 0, 99))
+            self.pantalla.blit(self.image, (0, 0))
             pg.display.flip()

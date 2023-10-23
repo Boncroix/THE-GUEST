@@ -17,6 +17,7 @@ MARGEN_INF = ALTO - 40
 # RUTA IMAGENES
 IMAGEN_PORTADA = os.path.join('resources', 'images', 'portada.jpg')
 IMAGEN_PARTIDA = os.path.join('resources', 'images', 'partida.jpg')
+IMAGEN_RECORDS = os.path.join('resources', 'images', 'records.jpg')
 
 # TAMAÑO FUENTES ESCALADA SEGÚN LA PANTALLA
 TAM_FUENTE_1 = int((ANCHO * ALTO) / 80000)
