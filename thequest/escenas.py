@@ -102,11 +102,12 @@ class Portada(Escena):
 
 
 class Partida(Escena):
-    def __init__(self, pantalla, dificultad, vidas, puntos):
+    def __init__(self, pantalla, dificultad, vidas, puntos, nivel):
         super().__init__(pantalla)
         self.dificultad = dificultad
         self.vidas = vidas
         self.puntos = puntos
+        self.nivel = nivel
         self.tipo3 = pg.font.Font(FUENTE_NASA, TAM_FUENTE_3)
         self.image = pg.image.load(IMAGEN_PARTIDA).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
@@ -129,18 +130,18 @@ class Partida(Escena):
             self.reloj.tick(FPS)
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
-                    return 'salir', self.dificultad, self.vidas, self.puntos
+                    return 'salir', self.dificultad, self.vidas, self.puntos, self.nivel
             self.pintar_fondo()
             self.pantalla.blit(self.nave.image, self.nave.rect)
             self.obstaculos.draw(self.pantalla)
             self.indicador_vidas.update()
             self.indicador_vidas.draw(self.pantalla)
-            self.pintar_marcador()
+            self.pintar_info()
             accion = self.detectar_colision_nave()
             if accion == 'partida':
-                return 'partida', self.dificultad, self.vidas, self.puntos
+                return 'partida', self.dificultad, self.vidas, self.puntos, self.nivel
             elif accion == 'records':
-                return 'records', self.dificultad, self.vidas, self.puntos
+                return 'records', self.dificultad, self.vidas, self.puntos, self.nivel
 
             pg.display.flip()
 
@@ -192,6 +193,7 @@ class Partida(Escena):
             self.tiempo_inicial = pg.time.get_ticks()
             self.nave.update()
             self.update_obstaculos()
+            self.cambiar_nivel()
             return 'continuar'
 
     def crear_vidas(self, vidas):
@@ -202,14 +204,19 @@ class Partida(Escena):
                                      ALTO - (ALTO - MARGEN_INF) / 2)
             self.indicador_vidas.add(indicador)
 
-    def pintar_marcador(self):
+    def pintar_info(self):
         texto = self.tipo3.render(str(self.puntos), True, BLANCO)
         pos_x = MARGEN_IZQ
         pos_y = (MARGEN_SUP - texto.get_height()) / 2
         self.pantalla.blit(texto, (pos_x, pos_y))
+        texto = self.tipo3.render('Nivel ' + str(self.nivel), True, BLANCO)
+        pos_x = ANCHO * 3/4
+        pos_y = (MARGEN_SUP - texto.get_height()) / 2
+        self.pantalla.blit(texto, (pos_x, pos_y))
 
     def cambiar_nivel(self):
-        pass
+        if self.puntos >= self.nivel * 1000:
+            self.nivel += 1
 
 
 class Records(Escena):
