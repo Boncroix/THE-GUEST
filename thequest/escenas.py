@@ -59,7 +59,7 @@ class Portada(Escena):
 
     def pintar_titulo(self):
         self.pintar_texto(['THE QUEST',], self.tipo4, CENTRO_X,
-                          ALTO * 17/20, 'centro', VERDE, True)
+                          ALTO * 16/20, 'centro', VERDE, True)
 
     def pintar_info(self):
         tiempo_actual = pg.time.get_ticks()
@@ -72,7 +72,7 @@ class Portada(Escena):
 
     def pintar_historia(self):
         self.pintar_texto(HISTORIA, self.tipo1, CENTRO_X,
-                          ALTO * 11/20, 'centro', BLANCO, False)
+                          ALTO * 10/20, 'centro', BLANCO, False)
 
     def mostrar_instrucciones(self, estado_teclas):
         if estado_teclas[pg.K_i]:
@@ -104,6 +104,7 @@ class Portada(Escena):
 class Partida(Escena):
     def __init__(self, pantalla, dificultad, vidas, puntos):
         super().__init__(pantalla)
+        self.dificultad = dificultad
         self.vidas = vidas
         self.puntos = puntos
         self.tipo3 = pg.font.Font(FUENTE_NASA, TAM_FUENTE_3)
@@ -112,18 +113,18 @@ class Partida(Escena):
         self.sonido_explosion = pg.mixer.Sound(SONIDO_EXPLOSION)
         self.nave = Nave()
         self.obstaculos = pg.sprite.Group()
-        self.dificultad = dificultad
         self.contador = 0
         self.crear_obstaculos()
         self.indicador_vidas = pg.sprite.Group()
         self.crear_vidas(self.vidas)
+        self.pos_x_fondo = 0
+        self.tiempo_inicial = 0
 
     def bucle_principal(self):
         super().bucle_principal()
         print('Estamos en la escena partida')
         pg.mixer.music.load(MUSICA_PARTIDA)
         pg.mixer.music.play(-1)
-        self.pos_x = 0
         while True:
             self.reloj.tick(FPS)
             for evento in pg.event.get():
@@ -132,42 +133,27 @@ class Partida(Escena):
             self.pintar_fondo()
             self.pantalla.blit(self.nave.image, self.nave.rect)
             self.obstaculos.draw(self.pantalla)
-            pg.draw.line(self.pantalla, BLANCO,
-                         (0, MARGEN_INF), (ANCHO, MARGEN_INF))
-            pg.draw.line(self.pantalla, BLANCO,
-                         (0, MARGEN_SUP), (ANCHO, MARGEN_SUP))
             self.indicador_vidas.update()
             self.indicador_vidas.draw(self.pantalla)
             self.pintar_marcador()
-            self.detectar_colision_nave()
-            # FIXME meter colisión dentro del metodo
-            if self.colision:
-                tiempo_actual = pg.time.get_ticks()
-                self.nave.explosion_nave()
-                if tiempo_actual - tiempo_inicial < FPS * 2:
-                    self.sonido_explosion.play()
-                duracion_sonido = int(
-                    self.sonido_explosion.get_length() * 1000)
-                if tiempo_actual - tiempo_inicial >= duracion_sonido:
-                    if len(self.indicador_vidas) > 1:
-                        self.vidas -= 1
-                        self.indicador_vidas.sprites()[-1].kill()
-                        return 'partida', self.dificultad, self.vidas, self.puntos
-                    else:
-                        return 'records', self.dificultad, self.vidas, self.puntos
-            else:
-                tiempo_inicial = pg.time.get_ticks()
-                self.nave.update()
-                self.update_obstaculos()
+            accion = self.detectar_colision_nave()
+            if accion == 'partida':
+                return 'partida', self.dificultad, self.vidas, self.puntos
+            elif accion == 'records':
+                return 'records', self.dificultad, self.vidas, self.puntos
 
             pg.display.flip()
 
     def pintar_fondo(self):
-        x_relativa = self.pos_x % ANCHO
+        x_relativa = self.pos_x_fondo % ANCHO
         self.pantalla.blit(self.image, (x_relativa - ANCHO, 0))
         if x_relativa < ANCHO:
             self.pantalla.blit(self.image, (x_relativa, 0))
-        self.pos_x -= VEL_FONDO_PARTIDA
+        self.pos_x_fondo -= VEL_FONDO_PARTIDA
+        pg.draw.line(self.pantalla, BLANCO,
+                     (0, MARGEN_INF), (ANCHO, MARGEN_INF))
+        pg.draw.line(self.pantalla, BLANCO,
+                     (0, MARGEN_SUP), (ANCHO, MARGEN_SUP))
 
     def crear_obstaculos(self):
         for i in range(self.dificultad):
@@ -188,11 +174,30 @@ class Partida(Escena):
             self.colision = pg.sprite.collide_mask(self.nave, obstaculo)
             if self.colision:
                 break
+        if self.colision:
+            tiempo_actual = pg.time.get_ticks()
+            self.nave.explosion_nave()
+            if tiempo_actual - self.tiempo_inicial < FPS * 2:
+                self.sonido_explosion.play()
+            duracion_sonido = int(
+                self.sonido_explosion.get_length() * 1000)
+            if tiempo_actual - self.tiempo_inicial >= duracion_sonido:
+                if len(self.indicador_vidas) > 1:
+                    self.vidas -= 1
+                    self.indicador_vidas.sprites()[-1].kill()
+                    return 'partida'
+                else:
+                    return 'records'
+        else:
+            self.tiempo_inicial = pg.time.get_ticks()
+            self.nave.update()
+            self.update_obstaculos()
+            return 'continuar'
 
     def crear_vidas(self, vidas):
-        separador = 20
         for vida in range(vidas):
             indicador = IndicadorVida()
+            separador = indicador.rect.width / 2
             indicador.rect.center = (indicador.rect.width * vida + MARGEN_IZQ + separador * vida + indicador.rect.width / 2,
                                      ALTO - (ALTO - MARGEN_INF) / 2)
             self.indicador_vidas.add(indicador)
@@ -202,6 +207,9 @@ class Partida(Escena):
         pos_x = MARGEN_IZQ
         pos_y = (MARGEN_SUP - texto.get_height()) / 2
         self.pantalla.blit(texto, (pos_x, pos_y))
+
+    def cambiar_nivel(self):
+        pass
 
 
 class Records(Escena):
