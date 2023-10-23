@@ -83,10 +83,10 @@ class Portada(Escena):
         if estado_teclas[pg.K_r]:
             self.pantalla.blit(self.image, (0, 0))
 
-    def pintar_texto(self, txt, tipo, pos_x, pos_y, alineacion, color, fondo):
+    def pintar_texto(self, mensaje, tipo, pos_x, pos_y, alineacion, color, fondo):
         if fondo == True:
             self.pantalla.blit(self.image, (0, 0))
-        for linea in txt:
+        for linea in mensaje:
             if '\n' in linea:
                 linea = linea[:-1]
             texto = tipo.render(linea, True, color)

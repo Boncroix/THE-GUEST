@@ -46,17 +46,17 @@ INTERVALO_PARPADEO_INFO = 600
 
 # CARGAR TEXTO INFORMACIÓN
 ruta_info = os.path.join('data', 'info.txt')
-with open(ruta_info, 'r') as contenido:
+with open(ruta_info, 'r', encoding='utf-8') as contenido:
     INFO = contenido.readlines()
 
 # CARGAR TEXTO HISTORIA
 ruta_historia = os.path.join('data', 'historia.txt')
-with open(ruta_historia, 'r') as contenido:
+with open(ruta_historia, 'r', encoding='utf-8') as contenido:
     HISTORIA = contenido.readlines()
 
 # CARGAR TEXTO INSTRUCCIONES
 ruta_instrucciones = os.path.join('data', 'instrucciones.txt')
-with open(ruta_instrucciones, 'r') as contenido:
+with open(ruta_instrucciones, 'r', encoding='utf-8') as contenido:
     INSTRUCCIONES = contenido.readlines()
 
 
