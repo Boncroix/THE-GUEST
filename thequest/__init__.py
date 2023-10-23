@@ -10,7 +10,7 @@ ANCHO = 1200
 ALTO = 800
 CENTRO_Y = ALTO / 2
 CENTRO_X = ANCHO / 2
-MARGEN_IZQ = 20
+MARGEN_IZQ = 60
 MARGEN_SUP = 60
 MARGEN_INF = ALTO - 60
 
@@ -20,9 +20,9 @@ IMAGEN_PARTIDA = os.path.join('resources', 'images', 'partida.jpg')
 IMAGEN_RECORDS = os.path.join('resources', 'images', 'records.jpg')
 
 # TAMAÑO FUENTES ESCALADA SEGÚN LA PANTALLA
-TAM_FUENTE_1 = int((ANCHO * ALTO) / 80000)
-TAM_FUENTE_2 = int((ANCHO * ALTO) / 60000)
-TAM_FUENTE_3 = int((ANCHO * ALTO) / 40000)
+TAM_FUENTE_1 = int((ANCHO * ALTO) / 60000)
+TAM_FUENTE_2 = int((ANCHO * ALTO) / 40000)
+TAM_FUENTE_3 = int((ANCHO * ALTO) / 20000)
 TAM_FUENTE_4 = int((ANCHO * ALTO) / 10000)
 
 # RUTAS FUENTES

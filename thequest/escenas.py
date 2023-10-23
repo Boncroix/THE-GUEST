@@ -5,7 +5,7 @@ import pygame as pg
 
 
 from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, FPS, HISTORIA, IMAGEN_PARTIDA, IMAGEN_PORTADA, IMAGEN_RECORDS,
-              INFO, INSTRUCCIONES, INTERVALO_PARPADEO_INFO, MARGEN_INF, MARGEN_IZQ, MUSICA_PARTIDA, MUSICA_PORTADA,
+              INFO, INSTRUCCIONES, INTERVALO_PARPADEO_INFO, MARGEN_INF, MARGEN_IZQ, MARGEN_SUP, MUSICA_PARTIDA, MUSICA_PORTADA,
               MUSICA_RECORDS, FUENTE_NASA, FUENTE_CONTRAST, ROJO, SONIDO_EXPLOSION, TAM_FUENTE_1, TAM_FUENTE_2,
               TAM_FUENTE_3, TAM_FUENTE_4, VEL_FONDO_PARTIDA, VERDE)
 
@@ -67,16 +67,16 @@ class Portada(Escena):
             self.parpadeo_visible = not self.parpadeo_visible
             self.ultimo_cambio = tiempo_actual
         if self.parpadeo_visible:
-            self.pintar_texto(INFO, self.tipo3, CENTRO_X,
+            self.pintar_texto(INFO, self.tipo2, CENTRO_X,
                               0, 'centro', BLANCO, False)
 
     def pintar_historia(self):
-        self.pintar_texto(HISTORIA, self.tipo2, CENTRO_X,
+        self.pintar_texto(HISTORIA, self.tipo1, CENTRO_X,
                           ALTO * 11/20, 'centro', BLANCO, False)
 
     def mostrar_instrucciones(self, estado_teclas):
         if estado_teclas[pg.K_i]:
-            self.pintar_texto(INSTRUCCIONES, self.tipo2, MARGEN_IZQ,
+            self.pintar_texto(INSTRUCCIONES, self.tipo1, MARGEN_IZQ,
                               ALTO * 7/20, '', BLANCO, True)
 
     def mostrar_records(self, estado_teclas):
@@ -102,8 +102,11 @@ class Portada(Escena):
 
 
 class Partida(Escena):
-    def __init__(self, pantalla, dificultad, vidas):
+    def __init__(self, pantalla, dificultad, vidas, puntos):
         super().__init__(pantalla)
+        self.vidas = vidas
+        self.puntos = puntos
+        self.tipo3 = pg.font.Font(FUENTE_NASA, TAM_FUENTE_3)
         self.image = pg.image.load(IMAGEN_PARTIDA).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
         self.sonido_explosion = pg.mixer.Sound(SONIDO_EXPLOSION)
@@ -112,7 +115,6 @@ class Partida(Escena):
         self.dificultad = dificultad
         self.contador = 0
         self.crear_obstaculos()
-        self.vidas = vidas
         self.indicador_vidas = pg.sprite.Group()
         self.crear_vidas(self.vidas)
 
@@ -126,13 +128,17 @@ class Partida(Escena):
             self.reloj.tick(FPS)
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
-                    return 'salir', self.dificultad, self.vidas
+                    return 'salir', self.dificultad, self.vidas, self.puntos
             self.pintar_fondo()
             self.pantalla.blit(self.nave.image, self.nave.rect)
             self.obstaculos.draw(self.pantalla)
-            pg.draw.line(self.pantalla, BLANCO,(0, MARGEN_INF), (ANCHO, MARGEN_INF))
+            pg.draw.line(self.pantalla, BLANCO,
+                         (0, MARGEN_INF), (ANCHO, MARGEN_INF))
+            pg.draw.line(self.pantalla, BLANCO,
+                         (0, MARGEN_SUP), (ANCHO, MARGEN_SUP))
             self.indicador_vidas.update()
             self.indicador_vidas.draw(self.pantalla)
+            self.pintar_marcador()
             self.detectar_colision_nave()
             # FIXME meter colisión dentro del metodo
             if self.colision:
@@ -145,10 +151,10 @@ class Partida(Escena):
                 if tiempo_actual - tiempo_inicial >= duracion_sonido:
                     if len(self.indicador_vidas) > 1:
                         self.vidas -= 1
-                        self.restar_vida()
-                        return 'partida', self.dificultad, self.vidas
+                        self.indicador_vidas.sprites()[-1].kill()
+                        return 'partida', self.dificultad, self.vidas, self.puntos
                     else:
-                        return 'records', self.dificultad, self.vidas
+                        return 'records', self.dificultad, self.vidas, self.puntos
             else:
                 tiempo_inicial = pg.time.get_ticks()
                 self.nave.update()
@@ -170,7 +176,7 @@ class Partida(Escena):
 
     def update_obstaculos(self):
         for obstaculo in self.obstaculos:
-            obstaculo.update(self.obstaculos)
+            self.puntos += obstaculo.update(self.obstaculos)
         if len(self.obstaculos) < self.dificultad - 3:
             self.contador += 1
             if self.contador % 2 == 0:
@@ -178,7 +184,6 @@ class Partida(Escena):
             self.crear_obstaculos()
 
     def detectar_colision_nave(self):
-        # FIXME corregir colisión entre sprites
         for obstaculo in self.obstaculos:
             self.colision = pg.sprite.collide_mask(self.nave, obstaculo)
             if self.colision:
@@ -187,16 +192,16 @@ class Partida(Escena):
     def crear_vidas(self, vidas):
         separador = 20
         for vida in range(vidas):
-
             indicador = IndicadorVida()
-            #indicador.rect.x = indicador.rect.width * vida + MARGEN_IZQ + separador * vida
-            #indicador.rect.y = MARGEN_INF 
-            indicador.rect.center = (indicador.rect.width * vida + MARGEN_IZQ + separador * vida + indicador.rect.width / 2 , 
+            indicador.rect.center = (indicador.rect.width * vida + MARGEN_IZQ + separador * vida + indicador.rect.width / 2,
                                      ALTO - (ALTO - MARGEN_INF) / 2)
             self.indicador_vidas.add(indicador)
 
-    def restar_vida(self):
-        self.indicador_vidas.sprites()[-1].kill()
+    def pintar_marcador(self):
+        texto = self.tipo3.render(str(self.puntos), True, BLANCO)
+        pos_x = MARGEN_IZQ
+        pos_y = (MARGEN_SUP - texto.get_height()) / 2
+        self.pantalla.blit(texto, (pos_x, pos_y))
 
 
 class Records(Escena):

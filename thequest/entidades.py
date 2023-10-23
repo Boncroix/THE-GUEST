@@ -94,6 +94,8 @@ class Obstaculo(pg.sprite.Sprite):
         self.rect.x -= self.velocidad
         if self.rect.right < 0:
             obstaculos.remove(self)
+            return 20
+        return 0
 
 
 class IndicadorVida(pg.sprite.Sprite):
