@@ -75,7 +75,7 @@ class Obstaculo(pg.sprite.Sprite):
         self.velocidad = randint(
             aumento_vel, aumento_vel * 2)
         self.imagenes = []
-        for i in range(5):
+        for i in range(6):
             ruta_image = os.path.join(
                 'resources', 'images', f'obstaculo{i}.png')
             self.imagenes.append(pg.image.load(ruta_image))
@@ -112,9 +112,9 @@ class IndicadorVida(pg.sprite.Sprite):
         self.contador = 0
         self.rect = self.image.get_rect()
         self.image = self.imagenes[self.contador]
-        
+
     def update(self):
         self.contador += 1
-        if self.contador > len(self.imagenes) -1:
+        if self.contador > len(self.imagenes) - 1:
             self.contador = 0
         self.image = self.imagenes[self.contador]
