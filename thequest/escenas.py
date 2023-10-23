@@ -184,12 +184,13 @@ class Partida(Escena):
                 break
 
     def crear_vidas(self, vidas):
-        separador = 5
+        separador = 20
         for vida in range(vidas):
 
             indicador = IndicadorVida()
-            indicador.rect.x = indicador.rect.width * vida + MARGEN_IZQ + separador * vida
-            indicador.rect.top = MARGEN_INF
+            #indicador.rect.x = indicador.rect.width * vida + MARGEN_IZQ + separador * vida
+            #indicador.rect.y = MARGEN_INF 
+            indicador.rect.center = indicador.rect.width * vida + MARGEN_IZQ + separador * vida + indicador.rect.width / 2 , ALTO - (ALTO - MARGEN_INF) / 2
             self.indicador_vidas.add(indicador)
 
     def restar_vida(self):

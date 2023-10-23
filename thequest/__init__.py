@@ -12,7 +12,7 @@ CENTRO_Y = ALTO / 2
 CENTRO_X = ANCHO / 2
 MARGEN_IZQ = 20
 MARGEN_SUP = 60
-MARGEN_INF = ALTO - 40
+MARGEN_INF = ALTO - 60
 
 # RUTA IMAGENES
 IMAGEN_PORTADA = os.path.join('resources', 'images', 'portada.jpg')
@@ -64,10 +64,10 @@ with open(ruta_instrucciones, 'r', encoding='utf-8') as contenido:
 VEL_FONDO_PARTIDA = 1
 
 # AJUSTES NAVE
-VEL_NAVE = 10
+VEL_NAVE = 5
 AUMENTO_VEL_NAVE = 1
 HABILITAR_MOV_DER_IZQ = False
 
 # INDICADOR DE VIDAS
-ESCALA_X_INDI_VIDAS = 60
-ESCALA_Y_INDI_VIDAS = 30
+ESCALA_X_INDI_VIDAS = 70
+ESCALA_Y_INDI_VIDAS = 50
