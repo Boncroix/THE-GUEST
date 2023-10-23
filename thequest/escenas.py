@@ -130,6 +130,7 @@ class Partida(Escena):
             self.pintar_fondo()
             self.pantalla.blit(self.nave.image, self.nave.rect)
             self.obstaculos.draw(self.pantalla)
+            pg.draw.line(self.pantalla, BLANCO,(0, MARGEN_INF), (ANCHO, MARGEN_INF))
             self.indicador_vidas.update()
             self.indicador_vidas.draw(self.pantalla)
             self.detectar_colision_nave()
@@ -190,7 +191,8 @@ class Partida(Escena):
             indicador = IndicadorVida()
             #indicador.rect.x = indicador.rect.width * vida + MARGEN_IZQ + separador * vida
             #indicador.rect.y = MARGEN_INF 
-            indicador.rect.center = indicador.rect.width * vida + MARGEN_IZQ + separador * vida + indicador.rect.width / 2 , ALTO - (ALTO - MARGEN_INF) / 2
+            indicador.rect.center = (indicador.rect.width * vida + MARGEN_IZQ + separador * vida + indicador.rect.width / 2 , 
+                                     ALTO - (ALTO - MARGEN_INF) / 2)
             self.indicador_vidas.add(indicador)
 
     def restar_vida(self):

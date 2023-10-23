@@ -112,7 +112,7 @@ class IndicadorVida(pg.sprite.Sprite):
         self.contador = 0
         self.rect = self.image.get_rect()
         self.image = self.imagenes[self.contador]
-
+        
     def update(self):
         self.contador += 1
         if self.contador > len(self.imagenes) -1:
