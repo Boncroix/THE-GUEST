@@ -109,6 +109,7 @@ class Partida(Escena):
         self.puntos = puntos
         self.nivel = nivel
         self.tipo3 = pg.font.Font(FUENTE_NASA, TAM_FUENTE_3)
+        self.tipo4 = pg.font.Font(FUENTE_CONTRAST, TAM_FUENTE_3)
         self.image = pg.image.load(IMAGEN_PARTIDA).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
         self.sonido_explosion = pg.mixer.Sound(SONIDO_EXPLOSION)
@@ -120,6 +121,7 @@ class Partida(Escena):
         self.crear_vidas(self.vidas)
         self.pos_x_fondo = 0
         self.tiempo_inicial = 0
+        self.cambio_nivel_activo = False
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -137,11 +139,14 @@ class Partida(Escena):
             self.indicador_vidas.update()
             self.indicador_vidas.draw(self.pantalla)
             self.pintar_info()
-            accion = self.detectar_colision_nave()
-            if accion == 'partida':
-                return 'partida', self.dificultad, self.vidas, self.puntos, self.nivel
-            elif accion == 'records':
-                return 'records', self.dificultad, self.vidas, self.puntos, self.nivel
+            if not self.cambio_nivel_activo:
+                accion = self.detectar_colision_nave()
+                if accion == 'partida':
+                    return 'partida', self.dificultad, self.vidas, self.puntos, self.nivel
+                elif accion == 'records':
+                    return 'records', self.dificultad, self.vidas, self.puntos, self.nivel
+            else: 
+                self.update_obstaculos()
 
             pg.display.flip()
 
@@ -163,8 +168,11 @@ class Partida(Escena):
 
     def update_obstaculos(self):
         for obstaculo in self.obstaculos:
-            self.puntos += obstaculo.update(self.obstaculos)
-        if len(self.obstaculos) < self.dificultad - 3:
+            if not self.cambio_nivel_activo:
+                self.puntos += obstaculo.update(self.obstaculos)
+            else:
+                obstaculo.update(self.obstaculos)
+        if len(self.obstaculos) < self.dificultad - 3 and not self.cambio_nivel_activo:
             self.contador += 1
             if self.contador % 2 == 0:
                 self.dificultad += 1
@@ -210,13 +218,22 @@ class Partida(Escena):
         pos_y = (MARGEN_SUP - texto.get_height()) / 2
         self.pantalla.blit(texto, (pos_x, pos_y))
         texto = self.tipo3.render('Nivel ' + str(self.nivel), True, BLANCO)
-        pos_x = ANCHO * 3/4
+        pos_x = ANCHO * 4/5
         pos_y = (MARGEN_SUP - texto.get_height()) / 2
+        self.pantalla.blit(texto, (pos_x, pos_y))
+        texto = self.tipo4.render('The Guest', True, BLANCO)
+        pos_x = CENTRO_X - texto.get_width() / 2
+        pos_y = (MARGEN_SUP - texto.get_height()) / 2
+        self.pantalla.blit(texto, (pos_x, pos_y))
+        texto = self.tipo3.render('High Score' + str(self.nivel), True, BLANCO)
+        pos_x = CENTRO_X
+        pos_y = ((ALTO - MARGEN_INF) - texto.get_height()) / 2 + MARGEN_INF
         self.pantalla.blit(texto, (pos_x, pos_y))
 
     def cambiar_nivel(self):
-        if self.puntos >= self.nivel * 1000:
+        if self.puntos == self.nivel * 1000:
             self.nivel += 1
+            self.cambio_nivel_activo = True
 
 
 class Records(Escena):
