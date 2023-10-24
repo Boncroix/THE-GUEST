@@ -10,7 +10,6 @@ from .import (ALTO, ANCHO, AUMENTO_VEL_NAVE, CENTRO_Y, ESCALA_X_INDI_VIDAS, ESCA
 
 
 class Nave(pg.sprite.Sprite):
-
     def __init__(self):
         super().__init__()
         self.velocidad_up = self.velocidad_dow = self.velocidad_right = self.velocidad_left = VEL_NAVE
@@ -30,34 +29,32 @@ class Nave(pg.sprite.Sprite):
         self.contador += 1
 
         estado_teclas = pg.key.get_pressed()
-        if estado_teclas[pg.K_UP]:
+        if estado_teclas[pg.K_UP] and not estado_teclas[pg.K_DOWN]:
             self.velocidad_dow = VEL_NAVE
             self.rect.y -= self.velocidad_up
             self.velocidad_up += AUMENTO_VEL_NAVE
             if self.rect.top < MARGEN_SUP:
                 self.rect.top = MARGEN_SUP
-
-        if estado_teclas[pg.K_DOWN]:
+        elif estado_teclas[pg.K_DOWN] and not estado_teclas[pg.K_UP]:
             self.velocidad_up = VEL_NAVE
             self.rect.y += self.velocidad_dow
             self.velocidad_dow += AUMENTO_VEL_NAVE
             if self.rect.bottom > MARGEN_INF:
                 self.rect.bottom = MARGEN_INF
-
-        if HABILITAR_MOV_DER_IZQ:
-            if estado_teclas[pg.K_LEFT]:
-                self.velocidad_right = VEL_NAVE
-                self.rect.x -= self.velocidad_left
-                self.velocidad_left += AUMENTO_VEL_NAVE
-                if self.rect.left < 0:
-                    self.rect.left = 0
-
-            if estado_teclas[pg.K_RIGHT]:
-                self.velocidad_left = VEL_NAVE
-                self.rect.x += self.velocidad_right
-                self.velocidad_right += AUMENTO_VEL_NAVE
-                if self.rect.right > ANCHO:
-                    self.rect.right = ANCHO
+        elif estado_teclas[pg.K_LEFT] and not estado_teclas[pg.K_RIGHT] and HABILITAR_MOV_DER_IZQ:
+            self.velocidad_right = VEL_NAVE
+            self.rect.x -= self.velocidad_left
+            self.velocidad_left += AUMENTO_VEL_NAVE
+            if self.rect.left < 0:
+                self.rect.left = 0
+        elif estado_teclas[pg.K_RIGHT] and not estado_teclas[pg.K_LEFT] and HABILITAR_MOV_DER_IZQ:
+            self.velocidad_left = VEL_NAVE
+            self.rect.x += self.velocidad_right
+            self.velocidad_right += AUMENTO_VEL_NAVE
+            if self.rect.right > ANCHO:
+                self.rect.right = ANCHO
+        else:
+            self.velocidad_up = self.velocidad_dow = self.velocidad_right = self.velocidad_left = VEL_NAVE
 
     def explosion_nave(self):
         self.image = self.imagenes[-1]
