@@ -4,7 +4,7 @@ import os
 import pygame as pg
 
 
-from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, FPS, IMAGEN_PARTIDA, IMAGEN_PORTADA, IMAGEN_RECORDS,
+from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, FPS,
               MARGEN_INF, MARGEN_IZQ, MARGEN_SUP, FUENTE_NASA, FUENTE_CONTRAST, TAM_FUENTE_1,
               TAM_FUENTE_2, TAM_FUENTE_3, TAM_FUENTE_4, VERDE)
 
@@ -15,10 +15,42 @@ class Escena:
     def __init__(self, pantalla):
         self.pantalla = pantalla
         self.reloj = pg.time.Clock()
+        self.sonido_activo = True
+        self.imagenes = []
+        for i in range(2):
+            ruta_image = os.path.join(
+                'resources', 'images', f'sonido{i}.png')
+            image = pg.image.load(ruta_image)
+            self.imagenes.append(image)
 
     def bucle_principal(self):
         print('Metodo vacio bucle principal de escena')
         pass
+
+    def pintar_texto(self, mensaje, tipo, pos_x, pos_y, alineacion, color, fondo):
+        if fondo == True:
+            self.pantalla.blit(self.image, (0, 0))
+        for linea in mensaje:
+            if '\n' in linea:
+                linea = linea[:-1]
+            texto = tipo.render(linea, True, color)
+            if alineacion == 'centro':
+                pos_x_centro = pos_x - (texto.get_width() / 2)
+                self.pantalla.blit(texto, (pos_x_centro, pos_y))
+            elif alineacion == 'derecha':
+                pos_x_centro = pos_x - texto.get_width()
+                self.pantalla.blit(texto, (pos_x_centro, pos_y))
+            else:
+                self.pantalla.blit(texto, (pos_x, pos_y))
+            pos_y += texto.get_height()
+
+    def pintar_img_sonido(self):
+        if self.sonido_activo:
+            self.pantalla.blit(
+                self.imagenes[0], (0, (MARGEN_SUP - self.imagenes[0].get_height()) / 2))
+        else:
+            self.pantalla.blit(
+                self.imagenes[1], (0, (MARGEN_SUP - self.imagenes[1].get_height()) / 2))
 
 
 class Portada(Escena):
@@ -46,11 +78,14 @@ class Portada(Escena):
         print('Estamos en la escena portada')
         while True:
             self.pintar_portada()
+            self.pintar_img_sonido()
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
                     return 'salir'
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE:
                     return 'partida'
+                if evento.type == pg.KEYDOWN and evento.key == pg.K_s:
+                    self.sonido_activo = not self.sonido_activo
 
             pg.display.flip()
 
@@ -97,23 +132,6 @@ class Portada(Escena):
         if estado_teclas[pg.K_r]:
             self.pantalla.blit(self.image, (0, 0))
 
-    def pintar_texto(self, mensaje, tipo, pos_x, pos_y, alineacion, color, fondo):
-        if fondo == True:
-            self.pantalla.blit(self.image, (0, 0))
-        for linea in mensaje:
-            if '\n' in linea:
-                linea = linea[:-1]
-            texto = tipo.render(linea, True, color)
-            if alineacion == 'centro':
-                pos_x_centro = pos_x - (texto.get_width() / 2)
-                self.pantalla.blit(texto, (pos_x_centro, pos_y))
-            elif alineacion == 'derecha':
-                pos_x_centro = pos_x - texto.get_width()
-                self.pantalla.blit(texto, (pos_x_centro, pos_y))
-            else:
-                self.pantalla.blit(texto, (pos_x, pos_y))
-            pos_y += texto.get_height()
-
 
 class Partida(Escena):
     VEL_FONDO_PARTIDA = 1
@@ -155,7 +173,10 @@ class Partida(Escena):
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
                     return 'salir', self.dificultad, self.vidas, self.puntos, self.nivel
+                if evento.type == pg.KEYDOWN and evento.key == pg.K_s:
+                    self.sonido_activo = not self.sonido_activo
             self.pintar_fondo()
+            self.pintar_img_sonido()
             self.pantalla.blit(self.nave.image, self.nave.rect)
             self.obstaculos.draw(self.pantalla)
             self.indicador_vidas.update()
@@ -277,5 +298,8 @@ class Records(Escena):
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
                     return 'salir'
+                if evento.type == pg.KEYDOWN and evento.key == pg.K_s:
+                    self.sonido_activo = not self.sonido_activo
             self.pantalla.blit(self.image, (0, 0))
+            self.pintar_img_sonido()
             pg.display.flip()

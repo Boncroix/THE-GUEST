@@ -1,5 +1,5 @@
+
 Pulsa < ESPACIO > para comenzar el juego,
-
 < i > para mostrar información,
-
 < r > para mostrar records
+< s > para desacivar sonido
