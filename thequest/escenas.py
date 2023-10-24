@@ -4,10 +4,9 @@ import os
 import pygame as pg
 
 
-from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, FPS, HISTORIA, IMAGEN_PARTIDA, IMAGEN_PORTADA, IMAGEN_RECORDS,
-              INFO, INSTRUCCIONES, INTERVALO_PARPADEO_INFO, MARGEN_INF, MARGEN_IZQ, MARGEN_SUP, MUSICA_PARTIDA, MUSICA_PORTADA,
-              MUSICA_RECORDS, FUENTE_NASA, FUENTE_CONTRAST, ROJO, SONIDO_EXPLOSION, TAM_FUENTE_1, TAM_FUENTE_2,
-              TAM_FUENTE_3, TAM_FUENTE_4, VEL_FONDO_PARTIDA, VERDE)
+from .import (ALTO, ANCHO, AZUL, BLANCO, CENTRO_X, CENTRO_Y, FPS, IMAGEN_PARTIDA, IMAGEN_PORTADA, IMAGEN_RECORDS,
+              MARGEN_INF, MARGEN_IZQ, MARGEN_SUP, FUENTE_NASA, FUENTE_CONTRAST, TAM_FUENTE_1,
+              TAM_FUENTE_2, TAM_FUENTE_3, TAM_FUENTE_4, VERDE)
 
 from .entidades import IndicadorVida, Nave, Obstaculo
 
@@ -23,15 +22,21 @@ class Escena:
 
 
 class Portada(Escena):
+    intervalo_parpadeo_info = 600
+
     def __init__(self, pantalla):
         super().__init__(pantalla)
         self.tipo1 = pg.font.Font(FUENTE_NASA, TAM_FUENTE_1)
         self.tipo2 = pg.font.Font(FUENTE_NASA, TAM_FUENTE_2)
         self.tipo3 = pg.font.Font(FUENTE_NASA, TAM_FUENTE_3)
         self.tipo4 = pg.font.Font(FUENTE_CONTRAST, TAM_FUENTE_4)
-        self.image = pg.image.load(IMAGEN_PORTADA).convert()
+        ruta_imagen_portada = os.path.join(
+            'resources', 'images', 'portada.jpg')
+        self.image = pg.image.load(ruta_imagen_portada).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
-        pg.mixer.music.load(MUSICA_PORTADA)
+        ruta_musica_portada = os.path.join(
+            'resources', 'music', 'pista_portada.mp3')
+        pg.mixer.music.load(ruta_musica_portada)
         pg.mixer.music.play(-1)
         self.parpadeo_visible = True
         self.ultimo_cambio = pg.time.get_ticks()
@@ -62,21 +67,30 @@ class Portada(Escena):
                           ALTO * 16/20, 'centro', VERDE, True)
 
     def pintar_info(self):
+        ruta_info = os.path.join('data', 'info.txt')
+        with open(ruta_info, 'r', encoding='utf-8') as contenido:
+            info = contenido.readlines()
         tiempo_actual = pg.time.get_ticks()
-        if tiempo_actual - self.ultimo_cambio >= INTERVALO_PARPADEO_INFO:
+        if tiempo_actual - self.ultimo_cambio >= self.intervalo_parpadeo_info:
             self.parpadeo_visible = not self.parpadeo_visible
             self.ultimo_cambio = tiempo_actual
         if self.parpadeo_visible:
-            self.pintar_texto(INFO, self.tipo2, CENTRO_X,
+            self.pintar_texto(info, self.tipo2, CENTRO_X,
                               0, 'centro', BLANCO, False)
 
     def pintar_historia(self):
-        self.pintar_texto(HISTORIA, self.tipo1, CENTRO_X,
+        ruta_historia = os.path.join('data', 'historia.txt')
+        with open(ruta_historia, 'r', encoding='utf-8') as contenido:
+            historia = contenido.readlines()
+        self.pintar_texto(historia, self.tipo1, CENTRO_X,
                           ALTO * 10/20, 'centro', BLANCO, False)
 
     def mostrar_instrucciones(self, estado_teclas):
+        ruta_instrucciones = os.path.join('data', 'instrucciones.txt')
+        with open(ruta_instrucciones, 'r', encoding='utf-8') as contenido:
+            instrucciones = contenido.readlines()
         if estado_teclas[pg.K_i]:
-            self.pintar_texto(INSTRUCCIONES, self.tipo1, MARGEN_IZQ,
+            self.pintar_texto(instrucciones, self.tipo1, MARGEN_IZQ,
                               ALTO * 7/20, '', BLANCO, True)
 
     def mostrar_records(self, estado_teclas):
@@ -102,17 +116,25 @@ class Portada(Escena):
 
 
 class Partida(Escena):
+    VEL_FONDO_PARTIDA = 1
+
     def __init__(self, pantalla, dificultad, vidas, puntos, nivel):
         super().__init__(pantalla)
         self.dificultad = dificultad
         self.vidas = vidas
         self.puntos = puntos
         self.nivel = nivel
+        self.ruta_musica_partida = os.path.join(
+            'resources', 'music', 'pista_partida.mp3')
+        ruta_sonido_explosion = os.path.join(
+            'resources', 'music', 'explosion.mp3')
+        self.sonido_explosion = pg.mixer.Sound(ruta_sonido_explosion)
         self.tipo3 = pg.font.Font(FUENTE_NASA, TAM_FUENTE_3)
         self.tipo4 = pg.font.Font(FUENTE_CONTRAST, TAM_FUENTE_3)
-        self.image = pg.image.load(IMAGEN_PARTIDA).convert()
+        ruta_imagen_partida = os.path.join(
+            'resources', 'images', 'partida.jpg')
+        self.image = pg.image.load(ruta_imagen_partida).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
-        self.sonido_explosion = pg.mixer.Sound(SONIDO_EXPLOSION)
         self.nave = Nave()
         self.obstaculos = pg.sprite.Group()
         self.contador = 0
@@ -126,7 +148,7 @@ class Partida(Escena):
     def bucle_principal(self):
         super().bucle_principal()
         print('Estamos en la escena partida')
-        pg.mixer.music.load(MUSICA_PARTIDA)
+        pg.mixer.music.load(self.ruta_musica_partida)
         pg.mixer.music.play(-1)
         while True:
             self.reloj.tick(FPS)
@@ -145,7 +167,7 @@ class Partida(Escena):
                     return 'partida', self.dificultad, self.vidas, self.puntos, self.nivel
                 elif accion == 'records':
                     return 'records', self.dificultad, self.vidas, self.puntos, self.nivel
-            else: 
+            else:
                 self.update_obstaculos()
 
             pg.display.flip()
@@ -155,7 +177,7 @@ class Partida(Escena):
         self.pantalla.blit(self.image, (x_relativa - ANCHO, 0))
         if x_relativa < ANCHO:
             self.pantalla.blit(self.image, (x_relativa, 0))
-        self.pos_x_fondo -= VEL_FONDO_PARTIDA
+        self.pos_x_fondo -= self.VEL_FONDO_PARTIDA
         pg.draw.line(self.pantalla, BLANCO,
                      (0, MARGEN_INF), (ANCHO, MARGEN_INF))
         pg.draw.line(self.pantalla, BLANCO,
@@ -239,13 +261,17 @@ class Partida(Escena):
 class Records(Escena):
     def __init__(self, pantalla):
         super().__init__(pantalla)
-        self.image = pg.image.load(IMAGEN_RECORDS).convert()
+        ruta_imagen_records = os.path.join(
+            'resources', 'images', 'records.jpg')
+        self.image = pg.image.load(ruta_imagen_records).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
+        self.ruta_musica_records = os.path.join(
+            'resources', 'music', 'pista_records.mp3')
 
     def bucle_principal(self):
         super().bucle_principal()
         print('Estamos en la escena records')
-        pg.mixer.music.load(MUSICA_RECORDS)
+        pg.mixer.music.load(self.ruta_musica_records)
         pg.mixer.music.play(-1)
         while True:
             for evento in pg.event.get():

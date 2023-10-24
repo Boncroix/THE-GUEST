@@ -4,15 +4,18 @@ import pygame as pg
 
 from random import choice, randint
 
-from .import (ALTO, ANCHO, AUMENTO_VEL_NAVE, CENTRO_Y, ESCALA_X_INDI_VIDAS, ESCALA_Y_INDI_VIDAS, HABILITAR_MOV_DER_IZQ,
-              MARGEN_IZQ, MARGEN_INF, MARGEN_SUP, VEL_NAVE
+from .import (ALTO, ANCHO, CENTRO_Y, HABILITAR_MOV_DER_IZQ,
+              MARGEN_IZQ, MARGEN_INF, MARGEN_SUP
               )
 
 
 class Nave(pg.sprite.Sprite):
+    AUMENTO_VEL_NAVE = 1
+    VEL_NAVE = 5
+
     def __init__(self):
         super().__init__()
-        self.velocidad_up = self.velocidad_dow = self.velocidad_right = self.velocidad_left = VEL_NAVE
+        self.velocidad_up = self.velocidad_dow = self.velocidad_right = self.velocidad_left = self.VEL_NAVE
         self.imagenes = []
         for i in range(4):
             ruta_image = os.path.join(
@@ -30,31 +33,31 @@ class Nave(pg.sprite.Sprite):
 
         estado_teclas = pg.key.get_pressed()
         if estado_teclas[pg.K_UP] and not estado_teclas[pg.K_DOWN]:
-            self.velocidad_dow = VEL_NAVE
+            self.velocidad_dow = self.VEL_NAVE
             self.rect.y -= self.velocidad_up
-            self.velocidad_up += AUMENTO_VEL_NAVE
+            self.velocidad_up += self.AUMENTO_VEL_NAVE
             if self.rect.top < MARGEN_SUP:
                 self.rect.top = MARGEN_SUP
         elif estado_teclas[pg.K_DOWN] and not estado_teclas[pg.K_UP]:
-            self.velocidad_up = VEL_NAVE
+            self.velocidad_up = self.VEL_NAVE
             self.rect.y += self.velocidad_dow
-            self.velocidad_dow += AUMENTO_VEL_NAVE
+            self.velocidad_dow += self.AUMENTO_VEL_NAVE
             if self.rect.bottom > MARGEN_INF:
                 self.rect.bottom = MARGEN_INF
         elif estado_teclas[pg.K_LEFT] and not estado_teclas[pg.K_RIGHT] and HABILITAR_MOV_DER_IZQ:
-            self.velocidad_right = VEL_NAVE
+            self.velocidad_right = self.VEL_NAVE
             self.rect.x -= self.velocidad_left
-            self.velocidad_left += AUMENTO_VEL_NAVE
+            self.velocidad_left += self.AUMENTO_VEL_NAVE
             if self.rect.left < 0:
                 self.rect.left = 0
         elif estado_teclas[pg.K_RIGHT] and not estado_teclas[pg.K_LEFT] and HABILITAR_MOV_DER_IZQ:
-            self.velocidad_left = VEL_NAVE
+            self.velocidad_left = self.VEL_NAVE
             self.rect.x += self.velocidad_right
-            self.velocidad_right += AUMENTO_VEL_NAVE
+            self.velocidad_right += self.AUMENTO_VEL_NAVE
             if self.rect.right > ANCHO:
                 self.rect.right = ANCHO
         else:
-            self.velocidad_up = self.velocidad_dow = self.velocidad_right = self.velocidad_left = VEL_NAVE
+            self.velocidad_up = self.velocidad_dow = self.velocidad_right = self.velocidad_left = self.VEL_NAVE
 
     def explosion_nave(self):
         self.image = self.imagenes[-1]
@@ -96,6 +99,8 @@ class Obstaculo(pg.sprite.Sprite):
 
 
 class IndicadorVida(pg.sprite.Sprite):
+    escala_x_ini_vidas = 70
+    escala_y_ini_vidas = 40
 
     def __init__(self):
         super().__init__()
@@ -105,7 +110,7 @@ class IndicadorVida(pg.sprite.Sprite):
                 'resources', 'images', f'nave{i}.png')
             self.image = pg.image.load(ruta_image)
             self.image = pg.transform.scale(
-                self.image, (ESCALA_X_INDI_VIDAS, ESCALA_Y_INDI_VIDAS))
+                self.image, (self.escala_x_ini_vidas, self.escala_y_ini_vidas))
             self.imagenes.append(self.image)
 
         self.contador = 0
