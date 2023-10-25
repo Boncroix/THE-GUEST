@@ -7,7 +7,7 @@ import pygame as pg
 from .import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, FPS, FUENTE, IMAGENES,
               MARGEN_INF, MARGEN_IZQ, MARGEN_SUP, MUSICA, TAM_FUENTE)
 
-from .entidades import IndicadorVida, Nave, Obstaculo
+from .entidades import IndicadorVida, Nave, Obstaculo, Planeta
 
 
 class Escena:
@@ -149,6 +149,7 @@ class Partida(Escena):
         self.image = pg.image.load(IMAGENES['partida']).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
         self.nave = Nave()
+        self.planeta = Planeta()
         self.obstaculos = pg.sprite.Group()
         self.contador = 0
         self.crear_obstaculos()
@@ -167,7 +168,7 @@ class Partida(Escena):
             self.reloj.tick(FPS)
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
-                    return 'salir', self.dificultad, self.vidas, self.puntos, self.nivel
+                    return 'salir', self.dificultad, self.vidas, self.puntos, self.nivel, self.sonido_activo
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_s:
                     self.sonido_activo = not self.sonido_activo
             self.pintar_fondo()
@@ -177,14 +178,18 @@ class Partida(Escena):
             self.indicador_vidas.update()
             self.indicador_vidas.draw(self.pantalla)
             self.pintar_info()
-            if not self.cambio_nivel_activo:
+            self.pantalla.blit(self.planeta.image, self.planeta.rect)
+            if self.cambio_nivel_activo:
+                self.update_obstaculos()
+                planeta_en_posicion = self.planeta.update()
+                if planeta_en_posicion:
+                    self.nave.aterrizar_nave()
+            else:
                 accion = self.detectar_colision_nave()
                 if accion == 'partida':
                     return 'partida', self.dificultad, self.vidas, self.puntos, self.nivel, self.sonido_activo
                 elif accion == 'records':
                     return 'records', self.dificultad, self.vidas, self.puntos, self.nivel, self.sonido_activo
-            else:
-                self.update_obstaculos()
 
             pg.display.flip()
 
@@ -271,7 +276,7 @@ class Partida(Escena):
         self.pantalla.blit(texto, (pos_x, pos_y))
 
     def cambiar_nivel(self):
-        if self.puntos == self.nivel * 1000:
+        if self.puntos == 60:
             self.nivel += 1
             self.cambio_nivel_activo = True
 

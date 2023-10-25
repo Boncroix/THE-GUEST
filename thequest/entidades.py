@@ -62,6 +62,10 @@ class Nave(pg.sprite.Sprite):
     def explosion_nave(self):
         self.image = self.imagenes[-1]
 
+    def aterrizar_nave(self):
+        print('hola')
+        pass
+
 
 class Disparo(pg.sprite.Sprite):
     # TODO Generar disparo de la nave
@@ -122,3 +126,20 @@ class IndicadorVida(pg.sprite.Sprite):
         if self.contador > len(self.imagenes) - 1:
             self.contador = 0
         self.image = self.imagenes[self.contador]
+
+
+class Planeta(pg.sprite.Sprite):
+    vel_planeta = 1
+
+    def __init__(self):
+        super().__init__()
+        self.velocidad = 1
+        ruta_image = os.path.join('resources', 'images', 'planeta.png')
+        self.image = pg.image.load(ruta_image)
+        self.rect = self.image.get_rect(midleft=(ANCHO, CENTRO_Y))
+
+    def update(self):
+        self.rect.left -= self.velocidad
+        if self.rect.left <= ANCHO * 3/4:
+            self.rect.left = ANCHO * 3/4
+            return True
