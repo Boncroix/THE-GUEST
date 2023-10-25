@@ -18,7 +18,6 @@ class Escena:
         ruta_sonido_explosion = os.path.join(
             'resources', 'music', 'explosion.mp3')
         self.efecto_sonido = pg.mixer.Sound(ruta_sonido_explosion)
-        self.sonido_activo = True
         self.imagenes = []
         for i in range(2):
             ruta_image = os.path.join(
@@ -47,7 +46,7 @@ class Escena:
                 self.pantalla.blit(texto, (pos_x, pos_y))
             pos_y += texto.get_height()
 
-    def pintar_img_sonido(self):
+    def comprobar_sonido(self):
         if self.sonido_activo:
             self.pantalla.blit(
                 self.imagenes[0], (0, (MARGEN_SUP - self.imagenes[0].get_height()) / 2))
@@ -63,8 +62,9 @@ class Escena:
 class Portada(Escena):
     intervalo_parpadeo_info = 600
 
-    def __init__(self, pantalla):
+    def __init__(self, pantalla, sonido_activo):
         super().__init__(pantalla)
+        self.sonido_activo = sonido_activo
         self.tipo1 = pg.font.Font(FUENTE_NASA, TAM_FUENTE_1)
         self.tipo2 = pg.font.Font(FUENTE_NASA, TAM_FUENTE_2)
         self.tipo3 = pg.font.Font(FUENTE_NASA, TAM_FUENTE_3)
@@ -86,12 +86,12 @@ class Portada(Escena):
         self.musica = pg.mixer.music.play(-1)
         while True:
             self.pintar_portada()
-            self.pintar_img_sonido()
+            self.comprobar_sonido()
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
-                    return 'salir'
+                    return 'salir', self.sonido_activo
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE:
-                    return 'partida'
+                    return 'partida', self.sonido_activo
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_s:
                     self.sonido_activo = not self.sonido_activo
 
@@ -144,12 +144,13 @@ class Portada(Escena):
 class Partida(Escena):
     VEL_FONDO_PARTIDA = 1
 
-    def __init__(self, pantalla, dificultad, vidas, puntos, nivel):
+    def __init__(self, pantalla, dificultad, vidas, puntos, nivel, sonido_activo):
         super().__init__(pantalla)
         self.dificultad = dificultad
         self.vidas = vidas
         self.puntos = puntos
         self.nivel = nivel
+        self.sonido_activo = sonido_activo
         self.ruta_musica_partida = os.path.join(
             'resources', 'music', 'pista_partida.mp3')
         self.tipo3 = pg.font.Font(FUENTE_NASA, TAM_FUENTE_3)
@@ -181,7 +182,7 @@ class Partida(Escena):
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_s:
                     self.sonido_activo = not self.sonido_activo
             self.pintar_fondo()
-            self.pintar_img_sonido()
+            self.comprobar_sonido()
             self.pantalla.blit(self.nave.image, self.nave.rect)
             self.obstaculos.draw(self.pantalla)
             self.indicador_vidas.update()
@@ -190,9 +191,9 @@ class Partida(Escena):
             if not self.cambio_nivel_activo:
                 accion = self.detectar_colision_nave()
                 if accion == 'partida':
-                    return 'partida', self.dificultad, self.vidas, self.puntos, self.nivel
+                    return 'partida', self.dificultad, self.vidas, self.puntos, self.nivel, self.sonido_activo
                 elif accion == 'records':
-                    return 'records', self.dificultad, self.vidas, self.puntos, self.nivel
+                    return 'records', self.dificultad, self.vidas, self.puntos, self.nivel, self.sonido_activo
             else:
                 self.update_obstaculos()
 
@@ -285,8 +286,9 @@ class Partida(Escena):
 
 
 class Records(Escena):
-    def __init__(self, pantalla):
+    def __init__(self, pantalla, sonido_activo):
         super().__init__(pantalla)
+        self.sonido_activo = sonido_activo
         ruta_imagen_records = os.path.join(
             'resources', 'images', 'records.jpg')
         self.image = pg.image.load(ruta_imagen_records).convert()
@@ -306,5 +308,5 @@ class Records(Escena):
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_s:
                     self.sonido_activo = not self.sonido_activo
             self.pantalla.blit(self.image, (0, 0))
-            self.pintar_img_sonido()
+            self.comprobar_sonido()
             pg.display.flip()

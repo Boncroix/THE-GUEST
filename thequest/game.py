@@ -14,25 +14,27 @@ class TheQuest:
         self.vidas = VIDAS
         self.puntos = 0
         self.nivel = 1
+        self.sonido_activo = False
 
     def jugar(self):
         escena_selec = 'portada'
         while True:
             self.escenas = {
-                'portada': Portada(self.pantalla),
-                'partida': Partida(self.pantalla, self.dificultad, self.vidas, self.puntos, self.nivel),
-                'records': Records(self.pantalla)
+                'portada': Portada(self.pantalla, self.sonido_activo),
+                'partida': Partida(self.pantalla, self.dificultad, self.vidas, self.puntos, self.nivel, self.sonido_activo),
+                'records': Records(self.pantalla, self.sonido_activo)
             }
 
             if escena_selec == 'salir':
                 print('La escena me pide que acabe el juego')
                 break
             elif escena_selec == 'partida':
-                escena_selec, self.dificultad, self.vidas, self.puntos, self.nivel = self.escenas[escena_selec].bucle_principal(
+                escena_selec, self.dificultad, self.vidas, self.puntos, self.nivel, self.sonido_activo = self.escenas[escena_selec].bucle_principal(
                 )
                 print('La escena PARTIDA me pide que cambie de escena')
             else:
-                escena_selec = self.escenas[escena_selec].bucle_principal()
+                escena_selec, self.sonido_activo = self.escenas[escena_selec].bucle_principal(
+                )
                 print('La escena me pide que cambie de escena')
 
             pg.mixer.music.stop()
