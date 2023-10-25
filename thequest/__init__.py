@@ -7,12 +7,6 @@ VIDAS = 3
 HABILITAR_MOV_DER_IZQ = False
 
 # AJUSTES PANTALLA
-POSICIO = {
-    'ancho': 1200,
-    'alto': 800,
-    'margen': 60
-}
-
 ANCHO = 1200
 ALTO = 800
 CENTRO_Y = ALTO / 2
@@ -36,7 +30,15 @@ FUENTE = {
     'nasa': ruta1,
     'contraste': ruta2
 }
-
+# RUTAS IMAGENES
+ruta1 = str(os.path.join('resources', 'images', 'portada.jpg'))
+ruta2 = str(os.path.join('resources', 'images', 'partida.jpg'))
+ruta3 = str(os.path.join('resources', 'images', 'records.jpg'))
+IMAGENES = {
+    'portada': ruta1,
+    'partida': ruta2,
+    'records': ruta3
+}
 
 # RUTAS MUSICA
 ruta1 = str(os.path.join(

@@ -4,7 +4,7 @@ import os
 import pygame as pg
 
 
-from .import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, FPS, FUENTE,
+from .import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, FPS, FUENTE, IMAGENES,
               MARGEN_INF, MARGEN_IZQ, MARGEN_SUP, MUSICA, TAM_FUENTE)
 
 from .entidades import IndicadorVida, Nave, Obstaculo
@@ -69,9 +69,7 @@ class Portada(Escena):
     def __init__(self, pantalla, sonido_activo):
         super().__init__(pantalla)
         self.sonido_activo = sonido_activo
-        ruta_imagen_portada = os.path.join(
-            'resources', 'images', 'portada.jpg')
-        self.image = pg.image.load(ruta_imagen_portada).convert()
+        self.image = pg.image.load(IMAGENES['portada']).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
         self.parpadeo_visible = True
         self.ultimo_cambio = pg.time.get_ticks()
@@ -148,9 +146,7 @@ class Partida(Escena):
         self.puntos = puntos
         self.nivel = nivel
         self.sonido_activo = sonido_activo
-        ruta_imagen_partida = os.path.join(
-            'resources', 'images', 'partida.jpg')
-        self.image = pg.image.load(ruta_imagen_partida).convert()
+        self.image = pg.image.load(IMAGENES['partida']).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
         self.nave = Nave()
         self.obstaculos = pg.sprite.Group()
@@ -284,9 +280,7 @@ class Records(Escena):
     def __init__(self, pantalla, sonido_activo):
         super().__init__(pantalla)
         self.sonido_activo = sonido_activo
-        ruta_imagen_records = os.path.join(
-            'resources', 'images', 'records.jpg')
-        self.image = pg.image.load(ruta_imagen_records).convert()
+        self.image = pg.image.load(IMAGENES['records']).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
 
     def bucle_principal(self):
