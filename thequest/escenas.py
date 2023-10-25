@@ -15,6 +15,9 @@ class Escena:
     def __init__(self, pantalla):
         self.pantalla = pantalla
         self.reloj = pg.time.Clock()
+        ruta_sonido_explosion = os.path.join(
+            'resources', 'music', 'explosion.mp3')
+        self.efecto_sonido = pg.mixer.Sound(ruta_sonido_explosion)
         self.sonido_activo = True
         self.imagenes = []
         for i in range(2):
@@ -48,9 +51,13 @@ class Escena:
         if self.sonido_activo:
             self.pantalla.blit(
                 self.imagenes[0], (0, (MARGEN_SUP - self.imagenes[0].get_height()) / 2))
+            self.musica = pg.mixer_music.set_volume(1.0)
+            pg.mixer.Sound.set_volume(self.efecto_sonido, 1.0)
         else:
             self.pantalla.blit(
                 self.imagenes[1], (0, (MARGEN_SUP - self.imagenes[1].get_height()) / 2))
+            self.musica = pg.mixer_music.set_volume(0.0)
+            pg.mixer.Sound.set_volume(self.efecto_sonido, 0.0)
 
 
 class Portada(Escena):
@@ -66,16 +73,17 @@ class Portada(Escena):
             'resources', 'images', 'portada.jpg')
         self.image = pg.image.load(ruta_imagen_portada).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
-        ruta_musica_portada = os.path.join(
+        self.ruta_musica_portada = os.path.join(
             'resources', 'music', 'pista_portada.mp3')
-        pg.mixer.music.load(ruta_musica_portada)
-        pg.mixer.music.play(-1)
+
         self.parpadeo_visible = True
         self.ultimo_cambio = pg.time.get_ticks()
 
     def bucle_principal(self):
         super().bucle_principal()
         print('Estamos en la escena portada')
+        self.musica = pg.mixer.music.load(self.ruta_musica_portada)
+        self.musica = pg.mixer.music.play(-1)
         while True:
             self.pintar_portada()
             self.pintar_img_sonido()
@@ -144,9 +152,6 @@ class Partida(Escena):
         self.nivel = nivel
         self.ruta_musica_partida = os.path.join(
             'resources', 'music', 'pista_partida.mp3')
-        ruta_sonido_explosion = os.path.join(
-            'resources', 'music', 'explosion.mp3')
-        self.sonido_explosion = pg.mixer.Sound(ruta_sonido_explosion)
         self.tipo3 = pg.font.Font(FUENTE_NASA, TAM_FUENTE_3)
         self.tipo4 = pg.font.Font(FUENTE_CONTRAST, TAM_FUENTE_3)
         ruta_imagen_partida = os.path.join(
@@ -166,8 +171,8 @@ class Partida(Escena):
     def bucle_principal(self):
         super().bucle_principal()
         print('Estamos en la escena partida')
-        pg.mixer.music.load(self.ruta_musica_partida)
-        pg.mixer.music.play(-1)
+        self.musica = pg.mixer.music.load(self.ruta_musica_partida)
+        self.musica = pg.mixer.music.play(-1)
         while True:
             self.reloj.tick(FPS)
             for evento in pg.event.get():
@@ -230,9 +235,9 @@ class Partida(Escena):
             tiempo_actual = pg.time.get_ticks()
             self.nave.explosion_nave()
             if tiempo_actual - self.tiempo_inicial < FPS * 2:
-                self.sonido_explosion.play()
+                self.efecto_sonido.play()
             duracion_sonido = int(
-                self.sonido_explosion.get_length() * 1000)
+                self.efecto_sonido.get_length() * 1000)
             if tiempo_actual - self.tiempo_inicial >= duracion_sonido:
                 if len(self.indicador_vidas) > 1:
                     self.vidas -= 1
@@ -292,8 +297,8 @@ class Records(Escena):
     def bucle_principal(self):
         super().bucle_principal()
         print('Estamos en la escena records')
-        pg.mixer.music.load(self.ruta_musica_records)
-        pg.mixer.music.play(-1)
+        self.musica = pg.mixer.music.load(self.ruta_musica_records)
+        self.musica = pg.mixer.music.play(-1)
         while True:
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
