@@ -4,7 +4,7 @@ import os
 FPS = 30
 DIFICULTAD_INI = 5
 VIDAS = 3
-HABILITAR_MOV_DER_IZQ = False
+HABILITAR_MOV_DER_IZQ = True
 
 # AJUSTES PANTALLA
 ANCHO = 1200
@@ -26,7 +26,7 @@ TAM_FUENTE = {
 # RUTAS FUENTES
 ruta1 = str(os.path.join('resources', 'fonts', 'nasa.otf'))
 ruta2 = str(os.path.join('resources', 'fonts', 'contrast.ttf'))
-FUENTE = {
+FUENTES = {
     'nasa': ruta1,
     'contraste': ruta2
 }

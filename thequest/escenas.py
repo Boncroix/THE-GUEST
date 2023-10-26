@@ -4,7 +4,7 @@ import os
 import pygame as pg
 
 
-from .import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, FPS, FUENTE, IMAGENES,
+from .import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, FPS, FUENTES, IMAGENES,
               MARGEN_INF, MARGEN_IZQ, MARGEN_SUP, MUSICA, TAM_FUENTE)
 
 from .entidades import IndicadorVida, Nave, Obstaculo, Planeta
@@ -14,11 +14,11 @@ class Escena:
     def __init__(self, pantalla):
         self.pantalla = pantalla
         self.reloj = pg.time.Clock()
-        self.tipo1 = pg.font.Font(FUENTE['nasa'], TAM_FUENTE['1'])
-        self.tipo2 = pg.font.Font(FUENTE['nasa'], TAM_FUENTE['2'])
-        self.tipo3 = pg.font.Font(FUENTE['nasa'], TAM_FUENTE['3'])
-        self.tipo4 = pg.font.Font(FUENTE['contraste'], TAM_FUENTE['3'])
-        self.tipo5 = pg.font.Font(FUENTE['contraste'], TAM_FUENTE['4'])
+        self.tipo1 = pg.font.Font(FUENTES['nasa'], TAM_FUENTE['1'])
+        self.tipo2 = pg.font.Font(FUENTES['nasa'], TAM_FUENTE['2'])
+        self.tipo3 = pg.font.Font(FUENTES['nasa'], TAM_FUENTE['3'])
+        self.tipo4 = pg.font.Font(FUENTES['contraste'], TAM_FUENTE['3'])
+        self.tipo5 = pg.font.Font(FUENTES['contraste'], TAM_FUENTE['4'])
         ruta_sonido_explosion = os.path.join(
             'resources', 'music', 'explosion.mp3')
         self.efecto_sonido = pg.mixer.Sound(ruta_sonido_explosion)
@@ -181,9 +181,8 @@ class Partida(Escena):
             self.pantalla.blit(self.planeta.image, self.planeta.rect)
             if self.cambio_nivel_activo:
                 self.update_obstaculos()
-                planeta_en_posicion = self.planeta.update()
-                if planeta_en_posicion:
-                    self.nave.aterrizar_nave()
+                planeta_posicionado = self.planeta.update()
+                self.nave.aterrizar_nave(planeta_posicionado)
             else:
                 accion = self.detectar_colision_nave()
                 if accion == 'partida':

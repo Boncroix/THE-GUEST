@@ -22,8 +22,10 @@ class Nave(pg.sprite.Sprite):
                 'resources', 'images', f'nave{i}.png')
             self.imagenes.append(pg.image.load(ruta_image))
         self.contador = 0
-        self.image = self.imagenes[self.contador]
-        self.rect = self.image.get_rect(midleft=(0, CENTRO_Y))
+        self.image = self.image_original = self.imagenes[self.contador]
+        self.rect = self.rect_original = self.image.get_rect(
+            midleft=(0, CENTRO_Y))
+        self.angulo_rotacion = 0
 
     def update(self):
         if self.contador == len(self.imagenes) - 1:
@@ -62,9 +64,18 @@ class Nave(pg.sprite.Sprite):
     def explosion_nave(self):
         self.image = self.imagenes[-1]
 
-    def aterrizar_nave(self):
-        print('hola')
-        pass
+    def aterrizar_nave(self, planeta_posicionado):
+        if self.contador == len(self.imagenes) - 1:
+            self.contador = 0
+        self.image_original = self.image = self.imagenes[self.contador]
+        self.image = pg.transform.rotate(self.image, self.angulo_rotacion)
+        self.contador += 1
+
+        if self.angulo_rotacion < 180 and planeta_posicionado:
+            self.image = pg.transform.rotate(
+                self.image_original, self.angulo_rotacion)
+            self.rect = self.image.get_rect(center=self.rect.center)
+            self.angulo_rotacion += 1
 
 
 class Disparo(pg.sprite.Sprite):
@@ -73,6 +84,7 @@ class Disparo(pg.sprite.Sprite):
 
 
 class Obstaculo(pg.sprite.Sprite):
+    puntos_por_obstaculo = 20
 
     def __init__(self, aumento_vel):
         super().__init__()
@@ -98,7 +110,7 @@ class Obstaculo(pg.sprite.Sprite):
         self.rect.x -= self.velocidad
         if self.rect.right < 0:
             obstaculos.remove(self)
-            return 20
+            return self.puntos_por_obstaculo
         return 0
 
 
@@ -143,3 +155,4 @@ class Planeta(pg.sprite.Sprite):
         if self.rect.left <= ANCHO * 3/4:
             self.rect.left = ANCHO * 3/4
             return True
+        return False
