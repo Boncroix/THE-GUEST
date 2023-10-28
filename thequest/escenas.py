@@ -53,12 +53,12 @@ class Escena:
     def comprobar_sonido(self):
         if self.sonido_activo:
             self.pantalla.blit(
-                self.imagenes[0], (0, (MARGEN_SUP - self.imagenes[0].get_height()) / 2))
+                self.imagenes[0], (0, 0))
             self.musica = pg.mixer_music.set_volume(1.0)
             pg.mixer.Sound.set_volume(self.efecto_sonido, 1.0)
         else:
             self.pantalla.blit(
-                self.imagenes[1], (0, (MARGEN_SUP - self.imagenes[1].get_height()) / 2))
+                self.imagenes[1], (0, 0))
             self.musica = pg.mixer_music.set_volume(0.0)
             pg.mixer.Sound.set_volume(self.efecto_sonido, 0.0)
 
@@ -255,24 +255,14 @@ class Partida(Escena):
             self.indicador_vidas.add(indicador)
 
     def pintar_info(self):
-        texto = self.tipo3.render(str(self.puntos), True, COLORES['blanco'])
-        pos_x = MARGEN_IZQ
-        pos_y = (MARGEN_SUP - texto.get_height()) / 2
-        self.pantalla.blit(texto, (pos_x, pos_y))
-        texto = self.tipo3.render(
-            'Nivel ' + str(self.nivel), True, COLORES['blanco'])
-        pos_x = ANCHO * 4/5
-        pos_y = (MARGEN_SUP - texto.get_height()) / 2
-        self.pantalla.blit(texto, (pos_x, pos_y))
-        texto = self.tipo4.render('The Guest', True, COLORES['blanco'])
-        pos_x = CENTRO_X - texto.get_width() / 2
-        pos_y = (MARGEN_SUP - texto.get_height()) / 2
-        self.pantalla.blit(texto, (pos_x, pos_y))
-        texto = self.tipo3.render(
-            'High Score' + str(self.nivel), True, COLORES['blanco'])
-        pos_x = CENTRO_X
-        pos_y = ((ALTO - MARGEN_INF) - texto.get_height()) / 2 + MARGEN_INF
-        self.pantalla.blit(texto, (pos_x, pos_y))
+        self.pintar_texto([str(self.puntos),], self.tipo3, MARGEN_IZQ,
+                          0, '', COLORES['blanco'], False)
+        self.pintar_texto(['Nivel ' + str(self.nivel),], self.tipo3, ANCHO * 4/5,
+                          0, '', COLORES['blanco'], False)
+        self.pintar_texto(['The Guest',], self.tipo4, CENTRO_X,
+                          0, 'centro', COLORES['blanco'], False)
+        self.pintar_texto(['High Score' + str(self.nivel),], self.tipo3, CENTRO_X,
+                          MARGEN_INF, '', COLORES['blanco'], False)
 
     def cambiar_nivel(self):
         if self.puntos == 60:
