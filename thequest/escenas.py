@@ -181,8 +181,8 @@ class Partida(Escena):
             self.pantalla.blit(self.planeta.image, self.planeta.rect)
             if self.cambio_nivel_activo:
                 self.update_obstaculos()
-                planeta_posicionado = self.planeta.update()
-                self.nave.aterrizar_nave(planeta_posicionado)
+                self.planeta.update()
+                self.nave.aterrizar_nave(self.planeta)
             else:
                 accion = self.detectar_colision_nave()
                 if accion == 'partida':
