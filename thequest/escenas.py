@@ -5,7 +5,7 @@ import pygame as pg
 
 
 from .import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, FPS, FUENTES, IMAGENES,
-              MARGEN_INF, MARGEN_IZQ, MARGEN_SUP, MUSICA, TAM_FUENTE, TIEMPO_NIVEL)
+              MARGEN_INF, MARGEN_IZQ, MARGEN_SUP, TAM_FUENTE, TIEMPO_NIVEL)
 
 from .entidades import IndicadorVida, Nave, Obstaculo, Planeta
 
@@ -29,7 +29,6 @@ class Escena:
             image = pg.image.load(ruta_image)
             self.imagenes.append(image)
         self.parpadeo_visible = True
-        self.ultimo_cambio = pg.time.get_ticks()
 
     def bucle_principal(self):
         print('Metodo vacio bucle principal de escena')
@@ -84,8 +83,6 @@ class Portada(Escena):
     def bucle_principal(self):
         super().bucle_principal()
         print('Estamos en la escena portada')
-        self.musica = pg.mixer.music.load(MUSICA['portada'])
-        self.musica = pg.mixer.music.play(-1)
         while True:
             self.pintar_portada()
             self.comprobar_sonido()
@@ -169,8 +166,6 @@ class Partida(Escena):
     def bucle_principal(self):
         super().bucle_principal()
         print('Estamos en la escena partida')
-        self.musica = pg.mixer.music.load(MUSICA['partida'])
-        self.musica = pg.mixer.music.play(-1)
         while True:
             self.reloj.tick(FPS)
             for evento in pg.event.get():
@@ -290,8 +285,6 @@ class Records(Escena):
     def bucle_principal(self):
         super().bucle_principal()
         print('Estamos en la escena records')
-        self.musica = pg.mixer.music.load(MUSICA['records'])
-        self.musica = pg.mixer.music.play(-1)
         while True:
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
