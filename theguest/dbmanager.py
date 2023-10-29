@@ -6,12 +6,13 @@ import sqlite3
 class DBManager:
     filename = 'records.db'
     file_dir = os.path.dirname(os.path.realpath(__file__))
-    max_records = 10
+    max_records = 5
 
     def __init__(self):
         self.data_path = os.path.join(os.path.dirname(self.file_dir), 'data')
         self.file_path = os.path.join(self.data_path, self.filename)
         self.check_records_file()
+        self.game_records = []
 
     def check_records_file(self):
         if not os.path.isdir(self.data_path):
@@ -23,7 +24,6 @@ class DBManager:
         sql = 'CREATE TABLE "records" ( "id" INTEGER NOT NULL, "nombre" TEXT NOT NULL, "puntos" NUMERIC NOT NULL, PRIMARY KEY("id" AUTOINCREMENT) )'
         conexion, cursor = self.conectar()
         cursor.execute(sql)
-        self.game_records = []
         for cont in range(self.max_records):
             self.game_records.append(['-----', 0])
         for nombre, puntos in self.game_records:
