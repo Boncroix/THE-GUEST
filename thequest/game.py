@@ -41,6 +41,7 @@ class TheQuest:
                 self.escena_selec, self.sonido_activo = self.escenas[self.escena_selec].bucle_principal(
                 )
             elif self.escena_selec == 'salir':
+                pg.mixer.music.stop()
                 break
 
         pg.quit()

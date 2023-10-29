@@ -143,7 +143,7 @@ class Partida(Escena):
 
     def __init__(self, pantalla, dificultad, vidas, puntos, nivel, sonido_activo):
         super().__init__(pantalla)
-        self.dificultad = dificultad
+        self.dificultad = self.dificultad_inicial = dificultad
         self.vidas = vidas
         self.puntos = puntos
         self.nivel = nivel
@@ -193,7 +193,7 @@ class Partida(Escena):
             else:
                 accion = self.detectar_colision_nave()
                 if accion == 'partida':
-                    return 'partida', self.dificultad, self.vidas, self.puntos, self.nivel, self.sonido_activo
+                    return 'partida', self.dificultad_inicial, self.vidas, self.puntos, self.nivel, self.sonido_activo
                 elif accion == 'records':
                     return 'records', self.dificultad, self.vidas, self.puntos, self.nivel, self.sonido_activo
 
@@ -204,7 +204,7 @@ class Partida(Escena):
         self.pantalla.blit(self.image, (x_relativa - ANCHO, 0))
         if x_relativa < ANCHO:
             self.pantalla.blit(self.image, (x_relativa, 0))
-        self.pos_x_fondo -= self.VEL_FONDO_PARTIDA
+        self.pos_x_fondo -= self.nivel
         pg.draw.line(self.pantalla, COLORES['blanco'],
                      (0, MARGEN_INF), (ANCHO, MARGEN_INF))
         pg.draw.line(self.pantalla, COLORES['blanco'],
@@ -261,14 +261,19 @@ class Partida(Escena):
             self.indicador_vidas.add(indicador)
 
     def pintar_info(self):
+        # Pintar Puntos
         self.pintar_texto([str(self.puntos),], self.tipo3, MARGEN_IZQ,
                           0, '', COLORES['blanco'], False)
+        # Pintar Nivel
         self.pintar_texto(['Nivel ' + str(self.nivel),], self.tipo3, ANCHO * 4/5,
                           0, '', COLORES['blanco'], False)
+        # Pintar Titulo
         self.pintar_texto(['The Guest',], self.tipo4, CENTRO_X,
                           0, 'centro', COLORES['blanco'], False)
+        # Pintar mejor jugador
         self.pintar_texto(['High Score' + str(self.nivel),], self.tipo3, CENTRO_X,
                           MARGEN_INF, '', COLORES['blanco'], False)
+        # Pintar instrucciones para continuar
         self.temporizador(self.tiempo_inicial, self.tiempo_parpadeo)
         if self.parpadeo_visible and self.cambio_nivel_activo:
             self.pintar_texto(['Nivel completado pulsar <ESPACIO> para continuar',], self.tipo2, CENTRO_X,
@@ -288,7 +293,7 @@ class Records(Escena):
         while True:
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
-                    return 'salir'
+                    return 'salir', self.sonido_activo
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_s:
                     self.sonido_activo = not self.sonido_activo
             self.pantalla.blit(self.image, (0, 0))
