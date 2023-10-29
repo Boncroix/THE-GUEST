@@ -4,6 +4,8 @@ import pygame as pg
 
 from theguest import (ALTO, ANCHO, IMAGENES)
 
+from theguest.dbmanager import DBManager
+
 from .sc_escena import Escena
 
 
@@ -13,6 +15,7 @@ class Records(Escena):
         self.sonido_activo = sonido_activo
         self.image = pg.image.load(IMAGENES['records']).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
+        self.db = DBManager()
 
     def bucle_principal(self):
         super().bucle_principal()
