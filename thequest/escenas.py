@@ -5,7 +5,7 @@ import pygame as pg
 
 
 from .import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, FPS, FUENTES, IMAGENES,
-              MARGEN_INF, MARGEN_IZQ, MARGEN_SUP, MUSICA, TAM_FUENTE)
+              MARGEN_INF, MARGEN_IZQ, MARGEN_SUP, MUSICA, TAM_FUENTE, TIEMPO_NIVEL)
 
 from .entidades import IndicadorVida, Nave, Obstaculo, Planeta
 
@@ -158,6 +158,8 @@ class Partida(Escena):
         self.pos_x_fondo = 0
         self.tiempo_inicial = 0
         self.cambio_nivel_activo = False
+        self.tiempo_nivel = pg.USEREVENT
+        pg.time.set_timer(self.tiempo_nivel, TIEMPO_NIVEL)
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -172,7 +174,10 @@ class Partida(Escena):
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_s:
                     self.sonido_activo = not self.sonido_activo
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE and self.cambio_nivel_activo:
+                    self.nivel += 1
                     return 'partida', self.dificultad, self.vidas, self.puntos, self.nivel, self.sonido_activo
+                if evento.type == pg.USEREVENT and not self.colision:
+                    self.cambio_nivel_activo = True
             self.pintar_fondo()
             self.comprobar_sonido()
             self.pantalla.blit(self.nave.image, self.nave.rect)
@@ -245,7 +250,6 @@ class Partida(Escena):
             self.tiempo_inicial = pg.time.get_ticks()
             self.nave.update()
             self.update_obstaculos()
-            self.cambiar_nivel()
             return 'continuar'
 
     def crear_vidas(self, vidas):
@@ -265,11 +269,6 @@ class Partida(Escena):
                           0, 'centro', COLORES['blanco'], False)
         self.pintar_texto(['High Score' + str(self.nivel),], self.tipo3, CENTRO_X,
                           MARGEN_INF, '', COLORES['blanco'], False)
-
-    def cambiar_nivel(self):
-        if self.puntos == 60:
-            self.nivel += 1
-            self.cambio_nivel_activo = True
 
 
 class Records(Escena):
