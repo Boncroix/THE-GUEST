@@ -18,6 +18,8 @@ class Records(Escena):
         self.db = DBManager()
         self.puntos = puntos
         self.indicador = '-'
+        self.indicador_activo = pg.USEREVENT
+        pg.time.set_timer(self.indicador_activo, 300)
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -32,6 +34,11 @@ class Records(Escena):
                     return 'salir', self.sonido_activo, self.puntos
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_TAB:
                     self.sonido_activo = not self.sonido_activo
+                if evento.type == pg.USEREVENT:
+                    if self.indicador == '-':
+                        self.indicador = '  '
+                    else:
+                        self.indicador = '-'
                 if evento.type == pg.KEYDOWN and insertar_record:
                     if evento.key == pg.K_BACKSPACE:
                         self.entrada_texto = self.entrada_texto[:-1]
@@ -51,11 +58,6 @@ class Records(Escena):
         return self.puntos > 20
 
     def pintar_mi_puntuacion(self):
-        if self.indicador == '-':
-            self.indicador = '  '
-        else:
-            self.indicador = '-'
-
         mensajes = ['RECORD, INSERTA TU NOMBRE', str(self.entrada_texto) + self.indicador, str(
             self.puntos), 'Pulsa enter para insertar record']
         self.pintar_texto(mensajes, self.tipo2, CENTRO_X,
