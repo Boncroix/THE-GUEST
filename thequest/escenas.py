@@ -28,6 +28,8 @@ class Escena:
                 'resources', 'images', f'sonido{i}.png')
             image = pg.image.load(ruta_image)
             self.imagenes.append(image)
+        self.parpadeo_visible = True
+        self.ultimo_cambio = pg.time.get_ticks()
 
     def bucle_principal(self):
         print('Metodo vacio bucle principal de escena')
@@ -62,17 +64,22 @@ class Escena:
             self.musica = pg.mixer_music.set_volume(0.0)
             pg.mixer.Sound.set_volume(self.efecto_sonido, 0.0)
 
+    def temporizador(self, tiempo_inicial, tiempo_parpadeo):
+        tiempo_actual = pg.time.get_ticks()
+        if tiempo_actual - tiempo_inicial >= tiempo_parpadeo:
+            self.parpadeo_visible = not self.parpadeo_visible
+            self.tiempo_inicial = tiempo_actual
+
 
 class Portada(Escena):
-    intervalo_parpadeo_info = 600
+    tiempo_parpadeo = 600
 
     def __init__(self, pantalla, sonido_activo):
         super().__init__(pantalla)
         self.sonido_activo = sonido_activo
         self.image = pg.image.load(IMAGENES['portada']).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
-        self.parpadeo_visible = True
-        self.ultimo_cambio = pg.time.get_ticks()
+        self.tiempo_inicial = pg.time.get_ticks()
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -108,10 +115,7 @@ class Portada(Escena):
         ruta_info = os.path.join('data', 'info.txt')
         with open(ruta_info, 'r', encoding='utf-8') as contenido:
             info = contenido.readlines()
-        tiempo_actual = pg.time.get_ticks()
-        if tiempo_actual - self.ultimo_cambio >= self.intervalo_parpadeo_info:
-            self.parpadeo_visible = not self.parpadeo_visible
-            self.ultimo_cambio = tiempo_actual
+        self.temporizador(self.tiempo_inicial, self.tiempo_parpadeo)
         if self.parpadeo_visible:
             self.pintar_texto(info, self.tipo2, CENTRO_X,
                               0, 'centro', COLORES['blanco'], False)
@@ -138,6 +142,7 @@ class Portada(Escena):
 
 class Partida(Escena):
     VEL_FONDO_PARTIDA = 1
+    tiempo_parpadeo = 600
 
     def __init__(self, pantalla, dificultad, vidas, puntos, nivel, sonido_activo):
         super().__init__(pantalla)
@@ -156,7 +161,7 @@ class Partida(Escena):
         self.indicador_vidas = pg.sprite.Group()
         self.crear_vidas(self.vidas)
         self.pos_x_fondo = 0
-        self.tiempo_inicial = 0
+        self.tiempo_inicial = pg.time.get_ticks()
         self.cambio_nivel_activo = False
         self.tiempo_nivel = pg.USEREVENT
         pg.time.set_timer(self.tiempo_nivel, TIEMPO_NIVEL)
@@ -235,11 +240,11 @@ class Partida(Escena):
         if self.colision:
             tiempo_actual = pg.time.get_ticks()
             self.nave.explosion_nave()
-            if tiempo_actual - self.tiempo_inicial < FPS * 2:
+            if tiempo_actual - self.tiempo_inicial1 < FPS * 2:
                 self.efecto_sonido.play()
             duracion_sonido = int(
                 self.efecto_sonido.get_length() * 1000)
-            if tiempo_actual - self.tiempo_inicial >= duracion_sonido:
+            if tiempo_actual - self.tiempo_inicial1 >= duracion_sonido:
                 if len(self.indicador_vidas) > 1:
                     self.vidas -= 1
                     self.indicador_vidas.sprites()[-1].kill()
@@ -247,7 +252,7 @@ class Partida(Escena):
                 else:
                     return 'records'
         else:
-            self.tiempo_inicial = pg.time.get_ticks()
+            self.tiempo_inicial1 = pg.time.get_ticks()
             self.nave.update()
             self.update_obstaculos()
             return 'continuar'
@@ -269,6 +274,10 @@ class Partida(Escena):
                           0, 'centro', COLORES['blanco'], False)
         self.pintar_texto(['High Score' + str(self.nivel),], self.tipo3, CENTRO_X,
                           MARGEN_INF, '', COLORES['blanco'], False)
+        self.temporizador(self.tiempo_inicial, self.tiempo_parpadeo)
+        if self.parpadeo_visible and self.cambio_nivel_activo:
+            self.pintar_texto(['Nivel completado pulsar <ESPACIO> para continuar',], self.tipo2, CENTRO_X,
+                              MARGEN_SUP, 'centro', COLORES['blanco'], False)
 
 
 class Records(Escena):
