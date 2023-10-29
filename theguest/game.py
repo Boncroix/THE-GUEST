@@ -4,7 +4,7 @@ from . import ALTO, ANCHO, DIFICULTAD_INI, MUSICA, VIDAS
 from .escenas import Partida, Portada, Records
 
 
-class TheQuest:
+class TheGuest:
     def __init__(self):
         pg.init()
         pg.mixer.init()
