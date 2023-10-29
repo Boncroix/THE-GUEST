@@ -10,12 +10,13 @@ from .sc_escena import Escena
 
 
 class Records(Escena):
-    def __init__(self, pantalla, sonido_activo):
+    def __init__(self, pantalla, sonido_activo, puntos):
         super().__init__(pantalla)
         self.sonido_activo = sonido_activo
         self.image = pg.image.load(IMAGENES['records']).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
         self.db = DBManager()
+        self.puntos = puntos
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -23,8 +24,8 @@ class Records(Escena):
         while True:
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
-                    return 'salir', self.sonido_activo
-                if evento.type == pg.KEYDOWN and evento.key == pg.K_s:
+                    return 'salir', self.sonido_activo, self.puntos
+                if evento.type == pg.KEYDOWN and evento.key == pg.K_TAB:
                     self.sonido_activo = not self.sonido_activo
             self.pantalla.blit(self.image, (0, 0))
             self.comprobar_sonido()

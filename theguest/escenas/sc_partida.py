@@ -42,7 +42,7 @@ class Partida(Escena):
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
                     return 'salir', self.dificultad, self.vidas, self.puntos, self.nivel, self.sonido_activo
-                if evento.type == pg.KEYDOWN and evento.key == pg.K_s:
+                if evento.type == pg.KEYDOWN and evento.key == pg.K_TAB:
                     self.sonido_activo = not self.sonido_activo
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE and self.cambio_nivel_activo:
                     self.nivel += 1

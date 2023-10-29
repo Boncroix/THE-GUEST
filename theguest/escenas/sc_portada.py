@@ -28,7 +28,7 @@ class Portada(Escena):
                     return 'salir', self.sonido_activo
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE:
                     return 'partida', self.sonido_activo
-                if evento.type == pg.KEYDOWN and evento.key == pg.K_s:
+                if evento.type == pg.KEYDOWN and evento.key == pg.K_TAB:
                     self.sonido_activo = not self.sonido_activo
 
             pg.display.flip()
