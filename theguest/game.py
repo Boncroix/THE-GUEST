@@ -1,7 +1,10 @@
 import pygame as pg
 
+from theguest.escenas.sc_portada import Portada
+from theguest.escenas.sc_records import Records
+from theguest.escenas.sc_partida import Partida
+
 from . import ALTO, ANCHO, DIFICULTAD_INI, MUSICA, VIDAS
-from .escenas import Partida, Portada, Records
 
 
 class TheGuest:
