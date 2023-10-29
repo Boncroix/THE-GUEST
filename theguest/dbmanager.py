@@ -4,40 +4,51 @@ import sqlite3
 
 
 class DBManager:
-    '''
-    Clase para interactuar con la base de datos SQLite
-    '''
     filename = 'records.db'
     file_dir = os.path.dirname(os.path.realpath(__file__))
     max_records = 10
 
     def __init__(self):
-
-        self.data_path = os.path.join(
-            os.path.dirname(self.file_dir),
-            'data'
-        )
-        self.file_path = os.path.join(
-            self.data_path, self.filename
-        )
+        self.data_path = os.path.join(os.path.dirname(self.file_dir), 'data')
+        self.file_path = os.path.join(self.data_path, self.filename)
         self.check_records_file()
 
     def check_records_file(self):
         if not os.path.isdir(self.data_path):
             os.makedirs(self.data_path)
-            print('No había directorio para datos, pero lo he creado!!!')
         if not os.path.exists(self.file_path):
             self.reset()
 
     def reset(self):
-        self.game_records = []
-        for i in range(self.max_records):
-            self.game_records.append(['-----', 0])
         sql = 'CREATE TABLE "records" ( "id" INTEGER NOT NULL, "nombre" TEXT NOT NULL, "puntos" NUMERIC NOT NULL, PRIMARY KEY("id" AUTOINCREMENT) )'
         conexion, cursor = self.conectar()
         cursor.execute(sql)
+        self.game_records = []
+        for cont in range(self.max_records):
+            self.game_records.append(['-----', 0])
+        for nombre, puntos in self.game_records:
+            sql = 'INSERT INTO records (nombre,puntos) VALUES (?,?)'
+            parametros = nombre, puntos
+            self.consultaConParametros(sql, parametros)
 
     def conectar(self):
         conexion = sqlite3.connect(self.file_path)
         cursor = conexion.cursor()
         return conexion, cursor
+
+    def desconectar(self, conexion):
+        conexion.close()
+
+    def consultaConParametros(self, consulta, params):
+        conexion, cursor = self.conectar()
+
+        resultado = False
+        try:
+            cursor.execute(consulta, params)
+            conexion.commit()
+            resultado = True
+        except Exception as ex:
+            print(ex)
+            conexion.rollback()
+
+        self.desconectar(conexion)
