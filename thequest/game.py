@@ -44,7 +44,3 @@ class TheQuest:
                 break
 
         pg.quit()
-
-    def seleccionar_musica(self):
-        if self.escena_selec == 'partida':
-            pass
