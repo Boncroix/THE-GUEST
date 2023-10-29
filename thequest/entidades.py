@@ -14,6 +14,7 @@ class Nave(pg.sprite.Sprite):
     aumento_vel_nave = 1
     vel_nave = 5
     angulo_destino = 180
+    vel_aterrizaje = 2
 
     def __init__(self):
         super().__init__()
@@ -24,8 +25,8 @@ class Nave(pg.sprite.Sprite):
                 'resources', 'images', f'nave{i}.png')
             self.imagenes.append(pg.image.load(ruta_image))
         self.contador = 0
-        self.image = self.image_original = self.imagenes[self.contador]
-        self.rect = self.rect_original = self.image.get_rect(
+        self.image = self.imagenes[self.contador]
+        self.rect = self.image.get_rect(
             midleft=(0, CENTRO_Y))
         self.angulo_rotacion = 0
 
@@ -74,19 +75,18 @@ class Nave(pg.sprite.Sprite):
         self.contador += 1
 
         # FIXME Preguntar por la velocidadd de la nave aterrizando si tiene que ser constante
-        if planeta.planeta_posicionado:
-            if self.rect.right < planeta.rect.left + self.rect.width * 2/20:
-                self.rect.x += 1
-            if self.rect.centery > CENTRO_Y:
-                self.rect.y -= 1
-            if self.rect.centery < CENTRO_Y:
-                self.rect.y += 1
+        if self.rect.right < planeta.rect.left + self.rect.width * 2/20:
+            self.rect.x += self.vel_aterrizaje
+        if self.rect.centery > CENTRO_Y:
+            self.rect.y -= self.vel_aterrizaje
+        if self.rect.centery < CENTRO_Y:
+            self.rect.y += self.vel_aterrizaje
 
-            if self.angulo_rotacion < self.angulo_destino:
-                self.image = pg.transform.rotate(
-                    self.image_original, self.angulo_rotacion)
-                self.rect = self.image.get_rect(center=self.rect.center)
-                self.angulo_rotacion += 1
+        if self.angulo_rotacion < self.angulo_destino:
+            self.image = pg.transform.rotate(
+                self.image_original, self.angulo_rotacion)
+            self.rect = self.image.get_rect(center=self.rect.center)
+            self.angulo_rotacion += 1
 
 
 class Disparo(pg.sprite.Sprite):
@@ -152,7 +152,7 @@ class IndicadorVida(pg.sprite.Sprite):
 
 
 class Planeta(pg.sprite.Sprite):
-    vel_planeta = 5
+    vel_planeta = 2
 
     def __init__(self):
         super().__init__()

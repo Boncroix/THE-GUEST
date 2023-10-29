@@ -171,6 +171,8 @@ class Partida(Escena):
                     return 'salir', self.dificultad, self.vidas, self.puntos, self.nivel, self.sonido_activo
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_s:
                     self.sonido_activo = not self.sonido_activo
+                if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE and self.cambio_nivel_activo:
+                    return 'partida', self.dificultad, self.vidas, self.puntos, self.nivel, self.sonido_activo
             self.pintar_fondo()
             self.comprobar_sonido()
             self.pantalla.blit(self.nave.image, self.nave.rect)
