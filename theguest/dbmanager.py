@@ -6,7 +6,7 @@ import sqlite3
 class DBManager:
     filename = 'records.db'
     file_dir = os.path.dirname(os.path.realpath(__file__))
-    max_records = 5
+    max_records = 10
 
     def __init__(self):
         self.data_path = os.path.join(os.path.dirname(self.file_dir), 'data')

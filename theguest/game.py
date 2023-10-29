@@ -13,16 +13,16 @@ class TheGuest:
         pg.mixer.init()
         self.pantalla = pg.display.set_mode((ANCHO, ALTO))
         pg.display.set_caption('The  Quest')
-        self.dificultad = DIFICULTAD_INI
-        self.vidas = VIDAS
-        self.puntos = 0
-        self.nivel = 1
         self.sonido_activo = False
 
     def jugar(self):
         self.escena_selec = 'portada'
         while True:
             if self.escena_selec == 'portada':
+                self.dificultad = DIFICULTAD_INI
+                self.vidas = VIDAS
+                self.puntos = 0
+                self.nivel = 1
                 self.musica = pg.mixer.music.load(MUSICA['portada'])
                 self.musica = pg.mixer.music.play(-1)
                 self.escena = Portada(self.pantalla, self.sonido_activo)

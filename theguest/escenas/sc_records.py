@@ -49,6 +49,13 @@ class Records(Escena):
                         self.entrada_texto += evento.unicode
             if insertar_record:
                 self.pintar_mi_puntuacion()
+            else:
+                salir, jugar_otra = self.finalizar_partida()
+                if jugar_otra:
+                    return 'portada', self.sonido_activo, self.puntos
+                if salir:
+                    return 'salir', self.sonido_activo, self.puntos
+
             self.pintar_puntuaciones()
             pg.display.flip()
 
@@ -63,8 +70,21 @@ class Records(Escena):
             self.puntos), 'Pulsa enter para insertar record']
         self.pintar_texto(mensajes, self.tipo2, CENTRO_X,
                           MARGEN_SUP, 'centro', COLORES['blanco'], False)
-        
+
     def pintar_puntuaciones(self):
         puntuaciones = self.db.game_records
         self.pintar_texto(puntuaciones, self.tipo2, CENTRO_X,
                           ALTO * 5/20, 'centro', COLORES['blanco'], False)
+
+    def finalizar_partida(self):
+        mensajes = ('¿Jugamos Otra? S/N', self.indicador)
+        self.pintar_texto(mensajes, self.tipo2, CENTRO_X,
+                          MARGEN_SUP, 'centro', COLORES['blanco'], False)
+
+        estado_teclas = pg.key.get_pressed()
+        if estado_teclas[pg.K_s]:
+            self.puntos = 0
+            return True, True
+        if estado_teclas[pg.K_n]:
+            return True, False
+        return False, False
