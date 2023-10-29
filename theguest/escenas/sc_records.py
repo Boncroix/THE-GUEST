@@ -49,6 +49,7 @@ class Records(Escena):
                         self.entrada_texto += evento.unicode
             if insertar_record:
                 self.pintar_mi_puntuacion()
+            self.pintar_puntuaciones()
             pg.display.flip()
 
     def pintar_fondo(self):
@@ -62,3 +63,8 @@ class Records(Escena):
             self.puntos), 'Pulsa enter para insertar record']
         self.pintar_texto(mensajes, self.tipo2, CENTRO_X,
                           MARGEN_SUP, 'centro', COLORES['blanco'], False)
+        
+    def pintar_puntuaciones(self):
+        puntuaciones = self.db.game_records
+        self.pintar_texto(puntuaciones, self.tipo2, CENTRO_X,
+                          ALTO * 5/20, 'centro', COLORES['blanco'], False)

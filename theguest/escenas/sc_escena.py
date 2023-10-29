@@ -32,19 +32,35 @@ class Escena:
     def pintar_texto(self, mensaje, tipo, pos_x, pos_y, alineacion, color, fondo):
         if fondo == True:
             self.pantalla.blit(self.image, (0, 0))
-        for linea in mensaje:
-            if '\n' in linea:
-                linea = linea[:-1]
-            texto = tipo.render(linea, True, color)
-            if alineacion == 'centro':
-                pos_x_centro = pos_x - (texto.get_width() / 2)
-                self.pantalla.blit(texto, (pos_x_centro, pos_y))
-            elif alineacion == 'derecha':
-                pos_x_centro = pos_x - texto.get_width()
-                self.pantalla.blit(texto, (pos_x_centro, pos_y))
-            else:
-                self.pantalla.blit(texto, (pos_x, pos_y))
-            pos_y += texto.get_height()
+        if self.es_lista_de_listas(mensaje):
+            for lista in mensaje:
+                for linea in lista:
+                    if '\n' in linea:
+                        linea = linea[:-1]
+                    texto = tipo.render(linea, True, color)
+                    if alineacion == 'centro':
+                        pos_x_centro = pos_x - (texto.get_width() / 2)
+                        self.pantalla.blit(texto, (pos_x_centro, pos_y))
+                    elif alineacion == 'derecha':
+                        pos_x_centro = pos_x - texto.get_width()
+                        self.pantalla.blit(texto, (pos_x_centro, pos_y))
+                    else:
+                        self.pantalla.blit(texto, (pos_x, pos_y))
+                    pos_y += texto.get_height()
+        else:
+            for linea in mensaje:
+                if '\n' in linea:
+                    linea = linea[:-1]
+                texto = tipo.render(linea, True, color)
+                if alineacion == 'centro':
+                    pos_x_centro = pos_x - (texto.get_width() / 2)
+                    self.pantalla.blit(texto, (pos_x_centro, pos_y))
+                elif alineacion == 'derecha':
+                    pos_x_centro = pos_x - texto.get_width()
+                    self.pantalla.blit(texto, (pos_x_centro, pos_y))
+                else:
+                    self.pantalla.blit(texto, (pos_x, pos_y))
+                pos_y += texto.get_height()
 
     def comprobar_sonido(self):
         if self.sonido_activo:
@@ -63,3 +79,11 @@ class Escena:
         if tiempo_actual - tiempo_inicial >= tiempo_parpadeo:
             self.parpadeo_visible = not self.parpadeo_visible
             self.tiempo_inicial = tiempo_actual
+
+    def es_lista_de_listas(self, mensaje):
+        if isinstance(mensaje, list):
+            for i in mensaje:
+                if not isinstance(i, list):
+                    return False
+            return True
+        return False
