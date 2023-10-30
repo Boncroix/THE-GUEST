@@ -29,6 +29,8 @@ class Records(Escena):
         while True:
             self.pintar_fondo()
             self.comprobar_sonido()
+            self.consultar_records()
+            self.pintar_records()
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
                     return 'salir', self.sonido_activo, self.puntos
@@ -56,7 +58,6 @@ class Records(Escena):
                 if salir:
                     return 'salir', self.sonido_activo, self.puntos
 
-            self.pintar_puntuaciones()
             pg.display.flip()
 
     def pintar_fondo(self):
@@ -71,9 +72,8 @@ class Records(Escena):
         self.pintar_texto(mensajes, self.tipo2, CENTRO_X,
                           MARGEN_SUP, 'centro', COLORES['blanco'], False)
 
-    def pintar_puntuaciones(self):
-        puntuaciones = self.db.game_records
-        self.pintar_texto(puntuaciones, self.tipo2, CENTRO_X,
+    def pintar_records(self):
+        self.pintar_texto(self.records, self.tipo2, CENTRO_X,
                           ALTO * 5/20, 'centro', COLORES['blanco'], False)
 
     def finalizar_partida(self):
@@ -88,3 +88,7 @@ class Records(Escena):
         if estado_teclas[pg.K_n]:
             return True, False
         return False, False
+    
+    def consultar_records(self):
+        sql = 'SELECT nombre, puntos FROM records'
+        self.records = self.db.consultaSQL(sql)

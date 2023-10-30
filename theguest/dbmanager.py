@@ -6,7 +6,7 @@ import sqlite3
 class DBManager:
     filename = 'records.db'
     file_dir = os.path.dirname(os.path.realpath(__file__))
-    max_records = 10
+    max_records = 5
 
     def __init__(self):
         self.data_path = os.path.join(os.path.dirname(self.file_dir), 'data')
@@ -20,17 +20,17 @@ class DBManager:
             self.game_records = self.reset()
 
     def reset(self):
-        sql = 'CREATE TABLE "records" ( "id" INTEGER NOT NULL, "nombre" TEXT NOT NULL, "puntos" NUMERIC NOT NULL, PRIMARY KEY("id" AUTOINCREMENT) )'
+        sql = 'CREATE TABLE "records" ( "id" INTEGER NOT NULL, "nombre" TEXT NOT NULL, "puntos" TEXT NOT NULL, PRIMARY KEY("id" AUTOINCREMENT) )'
         conexion, cursor = self.conectar()
         cursor.execute(sql)
         lista_records = []
         for cont in range(self.max_records):
-            lista_records.append(['-----', str(0)])
+            lista_records.append(('-----', 0))
+            print(lista_records)
         for nombre, puntos in lista_records:
             sql = 'INSERT INTO records (nombre,puntos) VALUES (?,?)'
             parametros = nombre, puntos
             self.consultaConParametros(sql, parametros)
-        return lista_records
 
     def conectar(self):
         conexion = sqlite3.connect(self.file_path)
@@ -40,14 +40,19 @@ class DBManager:
     def desconectar(self, conexion):
         conexion.close()
 
+    def consultaSQL(self, consulta):
+        conexion, cursor = self.conectar()
+        cursor.execute(consulta)
+        datos = cursor.fetchall()
+
+        self.desconectar(conexion)
+        return datos
+
     def consultaConParametros(self, consulta, params):
         conexion, cursor = self.conectar()
-
-        resultado = False
         try:
             cursor.execute(consulta, params)
             conexion.commit()
-            resultado = True
         except Exception as ex:
             print(ex)
             conexion.rollback()

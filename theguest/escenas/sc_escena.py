@@ -32,7 +32,7 @@ class Escena:
     def pintar_texto(self, mensaje, tipo, pos_x, pos_y, alineacion, color, fondo):
         if fondo == True:
             self.pantalla.blit(self.image, (0, 0))
-        if self.es_lista_de_listas(mensaje):
+        if self.es_lista_de_tuplas(mensaje):
             for lista in mensaje:
                 for linea in lista:
                     if '\n' in linea:
@@ -80,10 +80,10 @@ class Escena:
             self.parpadeo_visible = not self.parpadeo_visible
             self.tiempo_inicial = tiempo_actual
 
-    def es_lista_de_listas(self, mensaje):
+    def es_lista_de_tuplas(self, mensaje):
         if isinstance(mensaje, list):
             for i in mensaje:
-                if not isinstance(i, list):
+                if not isinstance(i, tuple):
                     return False
             return True
         return False
