@@ -2,7 +2,7 @@ import os
 
 import pygame as pg
 
-from theguest import (ALTO, ANCHO, CENTRO_X, COLORES, IMAGENES, MARGEN_SUP)
+from theguest import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, IMAGENES, MARGEN_SUP)
 
 from theguest.dbmanager import DBManager
 
@@ -66,25 +66,25 @@ class Records(Escena):
         self.pantalla.blit(self.image, (0, 0))
 
     def comprobar_puntuacion(self):
-        return self.puntos > 20
+        return self.puntos == 0
 
     def pintar_mi_puntuacion(self):
-        mensajes = ['RECORD, INSERTA TU NOMBRE', str(self.entrada_texto) + self.indicador, str(
-            self.puntos), 'Pulsa enter para insertar record']
-        self.pintar_texto(mensajes, self.tipo2, CENTRO_X,
+        mensajes = ['INSERTA TU NOMBRE', str(self.entrada_texto) + self.indicador, str(
+            self.puntos), 'Intro para insertar record']
+        self.pintar_texto(mensajes, self.tipo3, CENTRO_X,
                           MARGEN_SUP, 'centro', COLORES['blanco'], False)
 
     def pintar_records(self):
         self.pintar_texto(self.nombres, self.tipo3, ANCHO * 1/3,
-                          ALTO * 5/20, 'centro', COLORES['blanco'], False)
+                          CENTRO_Y, 'centro', COLORES['blanco'], False)
         self.pintar_texto(self.separadores, self.tipo3, CENTRO_X,
-                          ALTO * 5/20, 'centro', COLORES['blanco'], False)
+                          CENTRO_Y, 'centro', COLORES['blanco'], False)
         self.pintar_texto(self.puntuaciones, self.tipo3, ANCHO * 2/3,
-                          ALTO * 5/20, 'centro', COLORES['blanco'], False)
+                          CENTRO_Y, 'centro', COLORES['blanco'], False)
 
     def finalizar_partida(self):
         mensajes = ('¿Jugamos Otra? S/N', self.indicador)
-        self.pintar_texto(mensajes, self.tipo2, CENTRO_X,
+        self.pintar_texto(mensajes, self.tipo3, CENTRO_X,
                           MARGEN_SUP, 'centro', COLORES['blanco'], False)
 
         estado_teclas = pg.key.get_pressed()
