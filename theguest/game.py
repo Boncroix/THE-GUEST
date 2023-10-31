@@ -14,9 +14,10 @@ class TheGuest:
         self.pantalla = pg.display.set_mode((ANCHO, ALTO))
         pg.display.set_caption('The  Quest')
         self.sonido_activo = False
+        self.puntos = 0
 
     def jugar(self):
-        self.escena_selec = 'portada'
+        self.escena_selec = 'records'
         while True:
             if self.escena_selec == 'portada':
                 self.dificultad = DIFICULTAD_INI

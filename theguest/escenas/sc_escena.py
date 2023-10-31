@@ -33,8 +33,8 @@ class Escena:
         if fondo == True:
             self.pantalla.blit(self.image, (0, 0))
         if self.es_lista_de_tuplas(mensaje):
-            for lista in mensaje:
-                for linea in lista:
+            for tupla in mensaje:
+                for linea in tupla:
                     if '\n' in linea:
                         linea = linea[:-1]
                     texto = tipo.render(linea, True, color)
@@ -46,7 +46,7 @@ class Escena:
                         self.pantalla.blit(texto, (pos_x_centro, pos_y))
                     else:
                         self.pantalla.blit(texto, (pos_x, pos_y))
-                    pos_y += texto.get_height()
+                    pos_y += texto.get_height() 
         else:
             for linea in mensaje:
                 if '\n' in linea:

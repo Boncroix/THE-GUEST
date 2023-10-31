@@ -20,6 +20,9 @@ class Records(Escena):
         self.indicador = '-'
         self.indicador_activo = pg.USEREVENT
         pg.time.set_timer(self.indicador_activo, 300)
+        self.consultar_records()
+        self.separadores = []
+        self.crear_lista_separadores()
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -29,7 +32,6 @@ class Records(Escena):
         while True:
             self.pintar_fondo()
             self.comprobar_sonido()
-            self.consultar_records()
             self.pintar_records()
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
@@ -73,7 +75,11 @@ class Records(Escena):
                           MARGEN_SUP, 'centro', COLORES['blanco'], False)
 
     def pintar_records(self):
-        self.pintar_texto(self.records, self.tipo2, CENTRO_X,
+        self.pintar_texto(self.nombres, self.tipo3, ANCHO * 1/3,
+                          ALTO * 5/20, 'centro', COLORES['blanco'], False)
+        self.pintar_texto(self.separadores, self.tipo3, CENTRO_X,
+                          ALTO * 5/20, 'centro', COLORES['blanco'], False)
+        self.pintar_texto(self.puntuaciones, self.tipo3, ANCHO * 2/3,
                           ALTO * 5/20, 'centro', COLORES['blanco'], False)
 
     def finalizar_partida(self):
@@ -90,5 +96,12 @@ class Records(Escena):
         return False, False
     
     def consultar_records(self):
-        sql = 'SELECT nombre, puntos FROM records'
-        self.records = self.db.consultaSQL(sql)
+        sql = 'SELECT nombre FROM records ORDER BY puntos DESC'
+        self.nombres = self.db.consultaSQL(sql)
+        sql = 'SELECT puntos FROM records ORDER BY puntos DESC'
+        self.puntuaciones = self.db.consultaSQL(sql)
+
+    def crear_lista_separadores(self):
+        for i in self.nombres:
+            self.separadores.append('------')
+        
