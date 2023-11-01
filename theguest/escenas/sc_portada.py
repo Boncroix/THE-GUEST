@@ -9,7 +9,7 @@ from .sc_escena import Escena
 
 class Portada(Escena):
     tiempo_parpadeo = 600
-    tiempo_cambio_escena = 7000
+    tiempo_cambio_escena = 8000
 
     def __init__(self, pantalla, sonido_activo):
         super().__init__(pantalla)
@@ -24,8 +24,6 @@ class Portada(Escena):
         super().bucle_principal()
         print('Estamos en la escena portada')
         while True:
-            self.pintar_portada()
-            self.comprobar_sonido()
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
                     return 'salir', self.sonido_activo
@@ -35,7 +33,8 @@ class Portada(Escena):
                     self.sonido_activo = not self.sonido_activo
                 if evento.type == pg.USEREVENT:
                     return 'records', self.sonido_activo
-
+            self.pintar_portada()
+            self.comprobar_sonido()
             pg.display.flip()
 
     def pintar_portada(self):
@@ -44,7 +43,6 @@ class Portada(Escena):
         self.pintar_info()
         self.pintar_historia()
         self.mostrar_instrucciones(estado_teclas)
-        self.mostrar_records(estado_teclas)
 
     def pintar_titulo(self):
         self.pintar_texto(['THE GUEST',], self.tipo5, CENTRO_X,
@@ -74,7 +72,3 @@ class Portada(Escena):
         if estado_teclas[pg.K_i]:
             self.pintar_texto(instrucciones, self.tipo1, MARGEN_IZQ,
                               ALTO * 7/20, '', COLORES['blanco'], True)
-
-    def mostrar_records(self, estado_teclas):
-        if estado_teclas[pg.K_r]:
-            self.pantalla.blit(self.image, (0, 0))
