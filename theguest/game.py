@@ -14,7 +14,7 @@ class TheGuest:
         self.pantalla = pg.display.set_mode((ANCHO, ALTO))
         pg.display.set_caption('The  Quest')
         self.sonido_activo = False
-        self.puntos = 0
+        self.puntos = 6000
 
     def jugar(self):
         self.escena_selec = 'records'

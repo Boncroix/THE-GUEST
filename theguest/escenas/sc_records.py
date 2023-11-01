@@ -2,7 +2,8 @@ import os
 
 import pygame as pg
 
-from theguest import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, IMAGENES, MARGEN_SUP)
+from theguest import (ALTO, ANCHO, CENTRO_X, CENTRO_Y,
+                      COLORES, IMAGENES, MARGEN_SUP)
 
 from theguest.dbmanager import DBManager
 
@@ -47,7 +48,7 @@ class Records(Escena):
                     if evento.key == pg.K_BACKSPACE:
                         self.entrada_texto = self.entrada_texto[:-1]
                     elif evento.key == pg.K_RETURN:
-
+                        self.insertar_record(self.entrada_texto, self.puntos)
                         insertar_record = False
                     elif len(self.entrada_texto) < 9:
                         self.entrada_texto += evento.unicode
@@ -66,7 +67,7 @@ class Records(Escena):
         self.pantalla.blit(self.image, (0, 0))
 
     def comprobar_puntuacion(self):
-        return self.puntos == 0
+        return self.puntos > self.puntuaciones[-1]
 
     def pintar_mi_puntuacion(self):
         mensajes = ['INSERTA TU NOMBRE', str(self.entrada_texto) + self.indicador, str(
@@ -94,14 +95,21 @@ class Records(Escena):
         if estado_teclas[pg.K_n]:
             return True, False
         return False, False
-    
+
     def consultar_records(self):
-        sql = 'SELECT nombre FROM records ORDER BY puntos DESC'
-        self.nombres = self.db.consultaSQL(sql)
-        sql = 'SELECT puntos FROM records ORDER BY puntos DESC'
-        self.puntuaciones = self.db.consultaSQL(sql)
+        sql = 'SELECT nombre, puntos FROM records ORDER BY puntos DESC, id ASC'
+        self.records = self.db.consultaSQL(sql)
+        self.puntuaciones = []
+        self.nombres = []
+        for nombre, puntos in self.records:
+            self.nombres.append(nombre)
+            self.puntuaciones.append(puntos)
 
     def crear_lista_separadores(self):
         for i in self.nombres:
-            self.separadores.append('------')
-        
+            self.separadores.append('---')
+
+    def insertar_record(self, nombre, puntos):
+        sql = 'INSERT INTO records (nombre,puntos) VALUES (?,?)'
+        self.db.insertar(sql, (nombre, puntos))
+        self.consultar_records()

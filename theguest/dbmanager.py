@@ -20,7 +20,7 @@ class DBManager:
             self.game_records = self.reset()
 
     def reset(self):
-        sql = 'CREATE TABLE "records" ( "id" INTEGER NOT NULL, "nombre" TEXT NOT NULL, "puntos" TEXT NOT NULL, PRIMARY KEY("id" AUTOINCREMENT) )'
+        sql = 'CREATE TABLE "records" ( "id" INTEGER NOT NULL, "nombre" TEXT NOT NULL, "puntos" INTEGER NOT NULL, PRIMARY KEY("id") )'
         conexion, cursor = self.conectar()
         cursor.execute(sql)
         lista_records = []
@@ -30,7 +30,7 @@ class DBManager:
         for nombre, puntos in lista_records:
             sql = 'INSERT INTO records (nombre,puntos) VALUES (?,?)'
             parametros = nombre, puntos
-            self.consultaConParametros(sql, parametros)
+            self.insertar(sql, parametros)
 
     def conectar(self):
         conexion = sqlite3.connect(self.file_path)
@@ -42,13 +42,18 @@ class DBManager:
 
     def consultaSQL(self, consulta):
         conexion, cursor = self.conectar()
-        cursor.execute(consulta)
-        datos = cursor.fetchall()
+        try:
+            cursor.execute(consulta)
+            datos = cursor.fetchall()
+            conexion.commit()
+        except Exception as ex:
+            print(ex)
+            conexion.rollback()
 
         self.desconectar(conexion)
         return datos
 
-    def consultaConParametros(self, consulta, params):
+    def insertar(self, consulta, params):
         conexion, cursor = self.conectar()
         try:
             cursor.execute(consulta, params)
