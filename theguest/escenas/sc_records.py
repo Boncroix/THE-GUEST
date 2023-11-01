@@ -11,12 +11,19 @@ from .sc_escena import Escena
 
 
 class Records(Escena):
+    filename = 'records.db'
+    file_dir = os.path.dirname(os.path.realpath(__file__))
+    max_records = 5
+
     def __init__(self, pantalla, sonido_activo, puntos):
         super().__init__(pantalla)
+        self.data_path = os.path.join(os.path.dirname(self.file_dir), 'data')
+        self.file_path = os.path.join(self.data_path, self.filename)
+        self.db = DBManager(self.file_path)
+        self.check_records_file()
         self.sonido_activo = sonido_activo
         self.image = pg.image.load(IMAGENES['records']).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
-        self.db = DBManager()
         self.puntos = puntos
         self.indicador = '-'
         self.indicador_activo = pg.USEREVENT
@@ -62,6 +69,12 @@ class Records(Escena):
                     return 'salir', self.sonido_activo, self.puntos
 
             pg.display.flip()
+
+    def check_records_file(self):
+        if not os.path.isdir(self.data_path):
+            os.makedirs(self.data_path)
+        if not os.path.exists(self.file_path):
+            self.db.reset()
 
     def pintar_fondo(self):
         self.pantalla.blit(self.image, (0, 0))

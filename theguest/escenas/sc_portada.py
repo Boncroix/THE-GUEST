@@ -46,7 +46,7 @@ class Portada(Escena):
                           ALTO * 16/20, 'centro', COLORES['verde'], True)
 
     def pintar_info(self):
-        ruta_info = os.path.join('data', 'info.txt')
+        ruta_info = os.path.join('resources', 'textos', 'info.txt')
         with open(ruta_info, 'r', encoding='utf-8') as contenido:
             info = contenido.readlines()
         self.temporizador(self.tiempo_inicial, self.tiempo_parpadeo)
@@ -55,14 +55,15 @@ class Portada(Escena):
                               0, 'centro', COLORES['blanco'], False)
 
     def pintar_historia(self):
-        ruta_historia = os.path.join('data', 'historia.txt')
+        ruta_historia = os.path.join('resources', 'textos', 'historia.txt')
         with open(ruta_historia, 'r', encoding='utf-8') as contenido:
             historia = contenido.readlines()
         self.pintar_texto(historia, self.tipo1, CENTRO_X,
                           ALTO * 10/20, 'centro', COLORES['blanco'], False)
 
     def mostrar_instrucciones(self, estado_teclas):
-        ruta_instrucciones = os.path.join('data', 'instrucciones.txt')
+        ruta_instrucciones = os.path.join(
+            'resources', 'textos', 'instrucciones.txt')
         with open(ruta_instrucciones, 'r', encoding='utf-8') as contenido:
             instrucciones = contenido.readlines()
         if estado_teclas[pg.K_i]:
