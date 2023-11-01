@@ -3,9 +3,10 @@ import os
 import pygame as pg
 
 from theguest import (ALTO, ANCHO, CENTRO_X, CENTRO_Y,
-                      COLORES, IMAGENES, MARGEN_SUP)
+                      COLORES, DIFICULTAD_INI, FPS, IMAGENES, MARGEN_SUP)
 
 from theguest.dbmanager import DBManager
+from theguest.entidades import Obstaculo
 
 from .sc_escena import Escena
 
@@ -13,7 +14,10 @@ from .sc_escena import Escena
 class Records(Escena):
     filename = 'records.db'
     file_dir = os.path.dirname(os.path.realpath(__file__))
-    max_records = 5
+    max_records = 6
+    pos_y_records = ALTO
+    vel_visu_indicador = 300
+    tiempo_cambio_escena = 7000
 
     def __init__(self, pantalla, sonido_activo, puntos):
         super().__init__(pantalla)
@@ -27,10 +31,13 @@ class Records(Escena):
         self.puntos = puntos
         self.indicador = '-'
         self.indicador_activo = pg.USEREVENT
-        pg.time.set_timer(self.indicador_activo, 300)
+        pg.time.set_timer(self.indicador_activo, self.vel_visu_indicador)
         self.consultar_records()
         self.separadores = []
         self.crear_lista_separadores()
+        self.temp_cambio_escena = False
+        self.obstaculos = pg.sprite.Group()
+        self.crear_obstaculos()
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -38,9 +45,12 @@ class Records(Escena):
         self.entrada_texto = ''
         insertar_record = self.comprobar_puntuacion()
         while True:
+            self.reloj.tick(FPS)
             self.pintar_fondo()
             self.comprobar_sonido()
             self.pintar_records()
+            self.update_obstaculos()
+            self.obstaculos.draw(self.pantalla)
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
                     return 'salir', self.sonido_activo, self.puntos
@@ -51,10 +61,13 @@ class Records(Escena):
                         self.indicador = '  '
                     else:
                         self.indicador = '-'
+                if evento.type == pg.USEREVENT + 1 and not insertar_record:
+                    return 'portada', self.sonido_activo, self.puntos
                 if evento.type == pg.KEYDOWN and insertar_record:
                     if evento.key == pg.K_BACKSPACE:
                         self.entrada_texto = self.entrada_texto[:-1]
                     elif evento.key == pg.K_RETURN:
+                        self.crear_obstaculos()
                         self.insertar_borrar_record(
                             self.entrada_texto, self.puntos)
                         insertar_record = False
@@ -63,12 +76,7 @@ class Records(Escena):
             if insertar_record:
                 self.pintar_mi_puntuacion()
             else:
-                salir, jugar_otra = self.finalizar_partida()
-                if jugar_otra:
-                    return 'portada', self.sonido_activo, self.puntos
-                if salir:
-                    return 'salir', self.sonido_activo, self.puntos
-
+                self.finalizar_partida()
             pg.display.flip()
 
     def check_records_file(self):
@@ -100,25 +108,26 @@ class Records(Escena):
                           MARGEN_SUP, 'centro', COLORES['blanco'], False)
 
     def pintar_records(self):
+
         self.pintar_texto(self.nombres, self.tipo3, ANCHO * 1/3,
-                          CENTRO_Y, 'centro', COLORES['blanco'], False)
+                          self.pos_y_records, 'centro', COLORES['blanco'], False)
         self.pintar_texto(self.separadores, self.tipo3, CENTRO_X,
-                          CENTRO_Y, 'centro', COLORES['blanco'], False)
+                          self.pos_y_records, 'centro', COLORES['blanco'], False)
         self.pintar_texto(self.puntuaciones, self.tipo3, ANCHO * 2/3,
-                          CENTRO_Y, 'centro', COLORES['blanco'], False)
+                          self.pos_y_records, 'centro', COLORES['blanco'], False)
+
+        if self.pos_y_records > CENTRO_Y:
+            self.pos_y_records -= 3
+        else:
+            self.pos_y_records == CENTRO_Y
 
     def finalizar_partida(self):
-        mensajes = ('¿Jugamos Otra? S/N', self.indicador)
-        self.pintar_texto(mensajes, self.tipo3, CENTRO_X,
+        self.pintar_texto(['THE GUEST'], self.tipo5, CENTRO_X,
                           MARGEN_SUP, 'centro', COLORES['blanco'], False)
-
-        estado_teclas = pg.key.get_pressed()
-        if estado_teclas[pg.K_s]:
-            self.puntos = 0
-            return True, True
-        if estado_teclas[pg.K_n]:
-            return True, False
-        return False, False
+        if not self.temp_cambio_escena:
+            activo = pg.USEREVENT + 1
+            pg.time.set_timer(activo, self.tiempo_cambio_escena)
+            self.temp_cambio_escena = True
 
     def consultar_records(self):
         sql = 'SELECT id, nombre, puntos FROM records ORDER BY puntos DESC, id ASC'
@@ -141,3 +150,12 @@ class Records(Escena):
         self.db.consultaConParametros(sql, (nombre, puntos))
         self.db.borrar(self.id[-1])
         self.consultar_records()
+
+    def crear_obstaculos(self):
+        for i in range(DIFICULTAD_INI):
+            obstaculo = Obstaculo(DIFICULTAD_INI)
+            self.obstaculos.add(obstaculo)
+
+    def update_obstaculos(self):
+        for obstaculo in self.obstaculos:
+            obstaculo.update(self.obstaculos)

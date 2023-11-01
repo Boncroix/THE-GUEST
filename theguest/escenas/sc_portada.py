@@ -9,6 +9,7 @@ from .sc_escena import Escena
 
 class Portada(Escena):
     tiempo_parpadeo = 600
+    tiempo_cambio_escena = 7000
 
     def __init__(self, pantalla, sonido_activo):
         super().__init__(pantalla)
@@ -16,6 +17,8 @@ class Portada(Escena):
         self.image = pg.image.load(IMAGENES['portada']).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
         self.tiempo_inicial = pg.time.get_ticks()
+        self.temp_cambio_escena = pg.USEREVENT
+        pg.time.set_timer(self.temp_cambio_escena, self.tiempo_cambio_escena)
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -30,6 +33,8 @@ class Portada(Escena):
                     return 'partida', self.sonido_activo
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_TAB:
                     self.sonido_activo = not self.sonido_activo
+                if evento.type == pg.USEREVENT:
+                    return 'records', self.sonido_activo
 
             pg.display.flip()
 
@@ -42,8 +47,8 @@ class Portada(Escena):
         self.mostrar_records(estado_teclas)
 
     def pintar_titulo(self):
-        self.pintar_texto(['THE QUEST',], self.tipo5, CENTRO_X,
-                          ALTO * 16/20, 'centro', COLORES['verde'], True)
+        self.pintar_texto(['THE GUEST',], self.tipo5, CENTRO_X,
+                          ALTO * 16/20, 'centro', COLORES['blanco'], True)
 
     def pintar_info(self):
         ruta_info = os.path.join('resources', 'textos', 'info.txt')

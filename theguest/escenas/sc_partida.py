@@ -9,7 +9,7 @@ from theguest.entidades import IndicadorVida, Nave, Obstaculo, Planeta
 
 
 class Partida(Escena):
-    VEL_FONDO_PARTIDA = 1
+    vel_fondo_partida = 1
     tiempo_parpadeo = 600
 
     def __init__(self, pantalla, dificultad, vidas, puntos, nivel, sonido_activo):

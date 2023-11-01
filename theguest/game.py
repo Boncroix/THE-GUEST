@@ -15,30 +15,34 @@ class TheGuest:
         pg.display.set_caption('The  Quest')
         self.sonido_activo = False
         self.puntos = 6000
+        self.musica = pg.mixer.music.load(MUSICA['records'])
+        self.musica = pg.mixer.music.play(-1)
 
     def jugar(self):
-        self.escena_selec = 'records'
+        self.escena_selec = 'portada'
         while True:
             if self.escena_selec == 'portada':
                 self.dificultad = DIFICULTAD_INI
                 self.vidas = VIDAS
                 self.puntos = 0
                 self.nivel = 1
-                self.musica = pg.mixer.music.load(MUSICA['portada'])
-                self.musica = pg.mixer.music.play(-1)
                 self.escena = Portada(self.pantalla, self.sonido_activo)
                 self.escena_selec, self.sonido_activo = self.escena.bucle_principal(
                 )
-                self.musica = pg.mixer.music.load(MUSICA['partida'])
-                self.musica = pg.mixer.music.play(-1)
+                if self.escena_selec == 'partida':
+                    self.musica = pg.mixer.music.load(MUSICA['partida'])
+                    self.musica = pg.mixer.music.play(-1)
+
             elif self.escena_selec == 'partida':
                 self.escena = Partida(self.pantalla, self.dificultad,
                                       self.vidas, self.puntos, self.nivel, self.sonido_activo)
                 self.escena_selec, self.dificultad, self.vidas, self.puntos, self.nivel, self.sonido_activo = self.escena.bucle_principal(
                 )
+                if self.escena_selec == 'records':
+                    self.musica = pg.mixer.music.load(MUSICA['records'])
+                    self.musica = pg.mixer.music.play(-1)
+
             elif self.escena_selec == 'records':
-                self.musica = pg.mixer.music.load(MUSICA['records'])
-                self.musica = pg.mixer.music.play(-1)
                 self.escena = Records(
                     self.pantalla, self.sonido_activo, self.puntos)
                 self.escena_selec, self.sonido_activo, self.puntos = self.escena.bucle_principal(
