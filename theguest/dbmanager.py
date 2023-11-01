@@ -38,3 +38,14 @@ class DBManager:
             conexion.rollback()
 
         self.desconectar(conexion)
+
+    def borrar(self, id):
+        consulta = 'DELETE FROM records WHERE id=?'
+        conexion, cursor = self.conectar()
+        try:
+            cursor.execute(consulta, (id,))
+            conexion.commit()
+        except:
+            conexion.rollback()
+
+        self.desconectar(conexion)

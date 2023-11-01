@@ -17,7 +17,6 @@ class Records(Escena):
 
     def __init__(self, pantalla, sonido_activo, puntos):
         super().__init__(pantalla)
-        self.records = []
         self.data_path = os.path.join(os.path.dirname(self.file_dir), 'data')
         self.file_path = os.path.join(self.data_path, self.filename)
         self.db = DBManager(self.file_path)
@@ -56,7 +55,8 @@ class Records(Escena):
                     if evento.key == pg.K_BACKSPACE:
                         self.entrada_texto = self.entrada_texto[:-1]
                     elif evento.key == pg.K_RETURN:
-                        self.insertar_record(self.entrada_texto, self.puntos)
+                        self.insertar_borrar_record(
+                            self.entrada_texto, self.puntos)
                         insertar_record = False
                     elif len(self.entrada_texto) < 9:
                         self.entrada_texto += evento.unicode
@@ -121,11 +121,14 @@ class Records(Escena):
         return False, False
 
     def consultar_records(self):
-        sql = 'SELECT nombre, puntos FROM records ORDER BY puntos DESC, id ASC'
+        sql = 'SELECT id, nombre, puntos FROM records ORDER BY puntos DESC, id ASC'
         self.records = self.db.consultaSQL(sql)
-        self.puntuaciones = []
+        self.id = []
         self.nombres = []
-        for nombre, puntos in self.records:
+        self.puntuaciones = []
+
+        for id, nombre, puntos in self.records:
+            self.id.append(id)
             self.nombres.append(nombre)
             self.puntuaciones.append(puntos)
 
@@ -133,7 +136,8 @@ class Records(Escena):
         for i in self.nombres:
             self.separadores.append('---')
 
-    def insertar_record(self, nombre, puntos):
+    def insertar_borrar_record(self, nombre, puntos):
         sql = 'INSERT INTO records (nombre,puntos) VALUES (?,?)'
         self.db.consultaConParametros(sql, (nombre, puntos))
+        self.db.borrar(self.id[-1])
         self.consultar_records()
