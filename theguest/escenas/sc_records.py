@@ -17,6 +17,7 @@ class Records(Escena):
 
     def __init__(self, pantalla, sonido_activo, puntos):
         super().__init__(pantalla)
+        self.records = []
         self.data_path = os.path.join(os.path.dirname(self.file_dir), 'data')
         self.file_path = os.path.join(self.data_path, self.filename)
         self.db = DBManager(self.file_path)
@@ -74,7 +75,17 @@ class Records(Escena):
         if not os.path.isdir(self.data_path):
             os.makedirs(self.data_path)
         if not os.path.exists(self.file_path):
-            self.db.reset()
+            self.crear_db()
+
+    def crear_db(self):
+        sql = 'CREATE TABLE "records" ( "id" INTEGER NOT NULL, "nombre" TEXT NOT NULL, "puntos" INTEGER NOT NULL, PRIMARY KEY("id") )'
+        self.records = self.db.consultaSQL(sql)
+        for cont in range(self.max_records):
+            self.records.append(('-----', 0))
+        for nombre, puntos in self.records:
+            sql = 'INSERT INTO records (nombre,puntos) VALUES (?,?)'
+            parametros = nombre, puntos
+            self.db.consultaConParametros(sql, parametros)
 
     def pintar_fondo(self):
         self.pantalla.blit(self.image, (0, 0))
@@ -124,5 +135,5 @@ class Records(Escena):
 
     def insertar_record(self, nombre, puntos):
         sql = 'INSERT INTO records (nombre,puntos) VALUES (?,?)'
-        self.db.insertar(sql, (nombre, puntos))
+        self.db.consultaConParametros(sql, (nombre, puntos))
         self.consultar_records()
