@@ -35,6 +35,7 @@ class Partida(Escena):
         pg.time.set_timer(self.tiempo_nivel, TIEMPO_NIVEL)
         self.db = DBManager()
         self.consultar_max_records()
+        self.dificultad += 1
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -95,13 +96,7 @@ class Partida(Escena):
                 self.puntos += obstaculo.update(self.obstaculos)
             else:
                 obstaculo.update(self.obstaculos)
-        self.aumentar_dificultad()
-
-    def aumentar_dificultad(self):
-        if len(self.obstaculos) < self.dificultad - 3 and not self.cambio_nivel_activo:
-            self.contador += 1
-            if self.contador % 3 == 0:
-                self.dificultad += 1
+        if len(self.obstaculos) < self.dificultad and not self.cambio_nivel_activo:
             self.crear_obstaculos()
 
     def detectar_colision_nave(self):
