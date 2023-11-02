@@ -12,19 +12,14 @@ from .sc_escena import Escena
 
 
 class Records(Escena):
-    filename = 'records.db'
-    file_dir = os.path.dirname(os.path.realpath(__file__))
-    max_records = 6
     pos_y_records = ALTO
     vel_visu_indicador = 300
     tiempo_cambio_escena = 7000
 
     def __init__(self, pantalla, sonido_activo, puntos):
         super().__init__(pantalla)
-        self.data_path = os.path.join(os.path.dirname(self.file_dir), 'data')
-        self.file_path = os.path.join(self.data_path, self.filename)
-        self.db = DBManager(self.file_path)
-        self.check_records_file()
+
+        self.db = DBManager()
         self.sonido_activo = sonido_activo
         self.image = pg.image.load(IMAGENES['records']).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
@@ -78,22 +73,6 @@ class Records(Escena):
             else:
                 self.finalizar_partida()
             pg.display.flip()
-
-    def check_records_file(self):
-        if not os.path.isdir(self.data_path):
-            os.makedirs(self.data_path)
-        if not os.path.exists(self.file_path):
-            self.crear_db()
-
-    def crear_db(self):
-        sql = 'CREATE TABLE "records" ( "id" INTEGER NOT NULL, "nombre" TEXT NOT NULL, "puntos" INTEGER NOT NULL, PRIMARY KEY("id") )'
-        self.records = self.db.consultaSQL(sql)
-        for cont in range(self.max_records):
-            self.records.append(('-----', 0))
-        for nombre, puntos in self.records:
-            sql = 'INSERT INTO records (nombre,puntos) VALUES (?,?)'
-            parametros = nombre, puntos
-            self.db.consultaConParametros(sql, parametros)
 
     def pintar_fondo(self):
         self.pantalla.blit(self.image, (0, 0))

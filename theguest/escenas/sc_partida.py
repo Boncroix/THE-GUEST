@@ -3,6 +3,7 @@ import pygame as pg
 from theguest import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, FPS, FUENTES, IMAGENES,
                       MARGEN_INF, MARGEN_IZQ, MARGEN_SUP, TAM_FUENTE, TIEMPO_NIVEL)
 
+from theguest.dbmanager import DBManager
 from theguest.entidades import IndicadorVida, Nave, Obstaculo, Planeta
 
 from .sc_escena import Escena
@@ -33,6 +34,8 @@ class Partida(Escena):
         self.cambio_nivel_activo = False
         self.tiempo_nivel = pg.USEREVENT
         pg.time.set_timer(self.tiempo_nivel, TIEMPO_NIVEL)
+        self.db = DBManager()
+        self.consultar_max_records()
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -55,6 +58,7 @@ class Partida(Escena):
             self.obstaculos.draw(self.pantalla)
             self.indicador_vidas.update()
             self.indicador_vidas.draw(self.pantalla)
+            self.consultar_max_records()
             self.pintar_info()
             self.pantalla.blit(self.planeta.image, self.planeta.rect)
             if self.cambio_nivel_activo:
@@ -109,11 +113,11 @@ class Partida(Escena):
         if self.colision:
             tiempo_actual = pg.time.get_ticks()
             self.nave.explosion_nave()
-            if tiempo_actual - self.tiempo_inicial1 < FPS * 2:
+            if tiempo_actual - self.tiempo_ini_colision < FPS * 2:
                 self.efecto_sonido.play()
             duracion_sonido = int(
                 self.efecto_sonido.get_length() * 1000)
-            if tiempo_actual - self.tiempo_inicial1 >= duracion_sonido:
+            if tiempo_actual - self.tiempo_ini_colision >= duracion_sonido:
                 if len(self.indicador_vidas) > 1:
                     self.vidas -= 1
                     self.indicador_vidas.sprites()[-1].kill()
@@ -121,7 +125,7 @@ class Partida(Escena):
                 else:
                     return 'records'
         else:
-            self.tiempo_inicial1 = pg.time.get_ticks()
+            self.tiempo_ini_colision = pg.time.get_ticks()
             self.nave.update()
             self.update_obstaculos()
             return 'continuar'
@@ -145,10 +149,17 @@ class Partida(Escena):
         self.pintar_texto(['The Guest',], self.tipo4, CENTRO_X,
                           0, 'centro', COLORES['blanco'], False)
         # Pintar mejor jugador
-        self.pintar_texto(['High Score' + str(self.nivel),], self.tipo3, CENTRO_X,
+        self.pintar_texto(['High Score   ' + str(self.max_records),], self.tipo3, CENTRO_X,
                           MARGEN_INF, '', COLORES['blanco'], False)
         # Pintar instrucciones para continuar
         self.temporizador(self.tiempo_inicial, self.tiempo_parpadeo)
         if self.parpadeo_visible and self.cambio_nivel_activo:
             self.pintar_texto(['Nivel completado pulsar <ESPACIO> para continuar',], self.tipo2, CENTRO_X,
                               MARGEN_SUP, 'centro', COLORES['blanco'], False)
+
+    def consultar_max_records(self):
+        sql = 'SELECT puntos FROM records ORDER BY puntos DESC, id ASC'
+        self.records = self.db.consultaSQL(sql)
+        self.max_records = self.records[0][0]
+        if self.puntos > self.max_records:
+            self.max_records = self.puntos
