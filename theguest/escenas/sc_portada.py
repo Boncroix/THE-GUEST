@@ -16,7 +16,6 @@ class Portada(Escena):
         self.sonido_activo = sonido_activo
         self.image = pg.image.load(IMAGENES['portada']).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
-        self.tiempo_inicial = pg.time.get_ticks()
         self.temp_cambio_escena = pg.USEREVENT
         pg.time.set_timer(self.temp_cambio_escena, self.tiempo_cambio_escena)
 
@@ -52,7 +51,7 @@ class Portada(Escena):
         ruta_info = os.path.join('resources', 'textos', 'info.txt')
         with open(ruta_info, 'r', encoding='utf-8') as contenido:
             info = contenido.readlines()
-        self.temporizador(self.tiempo_inicial, self.tiempo_parpadeo)
+        self.ton_toff(self.tiem_ini_par_info, self.tiempo_parpadeo)
         if self.parpadeo_visible:
             self.pintar_texto(info, self.tipo2, CENTRO_X,
                               0, 'centro', COLORES['blanco'], False)

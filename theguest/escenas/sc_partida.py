@@ -30,7 +30,6 @@ class Partida(Escena):
         self.indicador_vidas = pg.sprite.Group()
         self.crear_vidas(self.vidas)
         self.pos_x_fondo = 0
-        self.tiempo_inicial = pg.time.get_ticks()
         self.cambio_nivel_activo = False
         self.tiempo_nivel = pg.USEREVENT
         pg.time.set_timer(self.tiempo_nivel, TIEMPO_NIVEL)
@@ -152,7 +151,7 @@ class Partida(Escena):
         self.pintar_texto(['High Score   ' + str(self.max_records),], self.tipo3, CENTRO_X,
                           MARGEN_INF, '', COLORES['blanco'], False)
         # Pintar instrucciones para continuar
-        self.temporizador(self.tiempo_inicial, self.tiempo_parpadeo)
+        self.ton_toff(self.tiem_ini_par_info, self.tiempo_parpadeo)
         if self.parpadeo_visible and self.cambio_nivel_activo:
             self.pintar_texto(['Nivel completado pulsar <ESPACIO> para continuar',], self.tipo2, CENTRO_X,
                               MARGEN_SUP, 'centro', COLORES['blanco'], False)

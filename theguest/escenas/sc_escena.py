@@ -23,6 +23,7 @@ class Escena:
                 'resources', 'images', f'sonido{i}.png')
             image = pg.image.load(ruta_image)
             self.imagenes.append(image)
+        self.tiem_ini_par_info = pg.time.get_ticks()
         self.parpadeo_visible = True
 
     def bucle_principal(self):
@@ -59,16 +60,8 @@ class Escena:
             self.musica = pg.mixer_music.set_volume(0.0)
             pg.mixer.Sound.set_volume(self.efecto_sonido, 0.0)
 
-    def temporizador(self, tiempo_inicial, tiempo_parpadeo):
+    def ton_toff(self, tiempo_inicial, tiempo_parpadeo):
         tiempo_actual = pg.time.get_ticks()
         if tiempo_actual - tiempo_inicial >= tiempo_parpadeo:
             self.parpadeo_visible = not self.parpadeo_visible
-            self.tiempo_inicial = tiempo_actual
-
-    def es_lista_de_tuplas(self, mensaje):
-        if isinstance(mensaje, list):
-            for i in mensaje:
-                if not isinstance(i, tuple):
-                    return False
-            return True
-        return False
+            self.tiem_ini_par_info = tiempo_actual
