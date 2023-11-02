@@ -1,11 +1,11 @@
 import pygame as pg
 
-from .sc_escena import Escena
-
 from theguest import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, FPS, FUENTES, IMAGENES,
                       MARGEN_INF, MARGEN_IZQ, MARGEN_SUP, TAM_FUENTE, TIEMPO_NIVEL)
 
 from theguest.entidades import IndicadorVida, Nave, Obstaculo, Planeta
+
+from .sc_escena import Escena
 
 
 class Partida(Escena):
@@ -92,9 +92,12 @@ class Partida(Escena):
                 self.puntos += obstaculo.update(self.obstaculos)
             else:
                 obstaculo.update(self.obstaculos)
+        self.aumentar_dificultad()
+
+    def aumentar_dificultad(self):
         if len(self.obstaculos) < self.dificultad - 3 and not self.cambio_nivel_activo:
             self.contador += 1
-            if self.contador % 2 == 0:
+            if self.contador % 3 == 0:
                 self.dificultad += 1
             self.crear_obstaculos()
 
