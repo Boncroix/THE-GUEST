@@ -23,8 +23,8 @@ class Escena:
                 'resources', 'images', f'sonido{i}.png')
             image = pg.image.load(ruta_image)
             self.imagenes.append(image)
-        self.tiem_ini_par_info = pg.time.get_ticks()
-        self.parpadeo_visible = True
+        self.tiem_ini_ton_toff = pg.time.get_ticks()
+        self.ton_toff_visible = True
 
     def bucle_principal(self):
         print('Metodo vacio bucle principal de escena')
@@ -60,11 +60,11 @@ class Escena:
             self.musica = pg.mixer_music.set_volume(0.0)
             pg.mixer.Sound.set_volume(self.efecto_sonido, 0.0)
 
-    def ton_toff(self, tiempo_parpadeo):
+    def ton_toff(self, tiempo_espera):
         tiempo_actual = pg.time.get_ticks()
-        if tiempo_actual - self.tiem_ini_par_info >= tiempo_parpadeo:
-            self.parpadeo_visible = not self.parpadeo_visible
-            self.tiem_ini_par_info = tiempo_actual
+        if tiempo_actual - self.tiem_ini_ton_toff >= tiempo_espera:
+            self.ton_toff_visible = not self.ton_toff_visible
+            self.tiem_ini_ton_toff = tiempo_actual
 
     def ton(self, tiempo_inicial, tiempo_espera):
         tiempo_actual = pg.time.get_ticks()

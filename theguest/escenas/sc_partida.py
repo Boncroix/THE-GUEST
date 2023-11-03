@@ -22,15 +22,12 @@ class Partida(Escena):
         self.nave = Nave()
         self.planeta = Planeta()
         self.obstaculos = pg.sprite.Group()
-        
         self.tiempo_nivel = pg.USEREVENT +2
         pg.time.set_timer(self.tiempo_nivel, TIEMPO_NIVEL)
         self.crear_obstaculos()
-
         self.cambio_nivel_activo = False
         self.colision = False
         
-       
     def bucle_principal(self):
         super().bucle_principal()
         print('Estamos en la escena partida')
@@ -52,7 +49,7 @@ class Partida(Escena):
                     return 'records', self.sonido_activo
 
             self.pintar_fondo()
-            self.comprobar_sonido()
+            self.comprobar_sonido()                                         # Metodo heredado de escena
             self.pantalla.blit(self.nave.image, self.nave.rect)
             self.obstaculos.draw(self.pantalla)
             self.pintar_info()
@@ -68,11 +65,11 @@ class Partida(Escena):
             self.nave.aterrizar_nave(self.planeta)
         elif self.colision:
             self.nave.explosion_nave()
-            if self.toff(self.tiempo_ini_colision,FPS * 2):
+            if self.toff(self.tiempo_ini_colision,FPS * 2):                 # Metodo heredado de escena
                 self.efecto_sonido.play()
             duracion_sonido = int(
                 self.efecto_sonido.get_length() * 1000)
-            if self.ton(self.tiempo_ini_colision, duracion_sonido):
+            if self.ton(self.tiempo_ini_colision, duracion_sonido):         # Metodo heredado de escena
                 if self.marcador.vidas > 1:
                     self.marcador.restar_vida()
                     cambio_de_escena = pg.USEREVENT +3
@@ -125,7 +122,7 @@ class Partida(Escena):
                           0, 'centro', COLORES['blanco'], False)
         # Pintar instrucciones para continuar
         self.ton_toff(self.tiempo_parpadeo)
-        if self.parpadeo_visible and self.cambio_nivel_activo:
+        if self.ton_toff_visible and self.cambio_nivel_activo:
             self.pintar_texto(['Nivel completado pulsar <ESPACIO> para continuar',], self.tipo2, CENTRO_X,
                               MARGEN_SUP, 'centro', COLORES['blanco'], False)
         self.marcador.pintar()

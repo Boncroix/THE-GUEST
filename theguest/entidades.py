@@ -2,12 +2,13 @@ import os
 
 import pygame as pg
 
-from theguest.dbmanager import DBManager
-
 from random import choice, randint
 
-from .import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, DIFICULTAD_INI, FUENTES, TAM_FUENTE,
-              HABILITAR_MOV_DER_IZQ, MARGEN_IZQ, MARGEN_INF, MARGEN_SUP, VIDAS
+from theguest.dbmanager import DBManager
+
+from .import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, DIFICULTAD_INI, FUENTES, 
+              HABILITAR_MOV_DER_IZQ, MARGEN_IZQ, MARGEN_INF, MARGEN_SUP, 
+              PUNTOS_POR_OBSTACULO, TAM_FUENTE, VIDAS
               )
 
 
@@ -97,7 +98,6 @@ class Disparo(pg.sprite.Sprite):
 
 
 class Obstaculo(pg.sprite.Sprite):
-    puntos_por_obstaculo = 20
 
     def __init__(self, aumento_vel):
         super().__init__()
@@ -184,12 +184,11 @@ class Marcador:
         self.crear_vidas(self.vidas)
 
     def incrementar_puntos(self):
-        self.puntos += 20
+        self.puntos += PUNTOS_POR_OBSTACULO
     
     def restar_vida(self):
-        if len(self.indicador_vidas) > 1:
-            self.vidas -= 1
-            self.indicador_vidas.sprites()[-1].kill()
+        self.vidas -= 1
+        self.indicador_vidas.sprites()[-1].kill()
     
     def subir_nivel(self):
         self.nivel += 1
