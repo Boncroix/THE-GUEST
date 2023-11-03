@@ -16,16 +16,15 @@ class Records(Escena):
     vel_visu_indicador = 300
     tiempo_cambio_escena = 7000
 
-    def __init__(self, pantalla, sonido_activo, puntos):
+    def __init__(self, pantalla, sonido_activo, marcador):
         super().__init__(pantalla)
-
-        self.db = DBManager()
         self.sonido_activo = sonido_activo
+        self.marcador = marcador
+        self.db = DBManager()
         self.image = pg.image.load(IMAGENES['records']).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
-        self.puntos = puntos
         self.indicador = '-'
-        self.indicador_activo = pg.USEREVENT
+        self.indicador_activo = pg.USEREVENT +5
         pg.time.set_timer(self.indicador_activo, self.vel_visu_indicador)
         self.consultar_records()
         self.separadores = []
@@ -48,23 +47,23 @@ class Records(Escena):
             self.obstaculos.draw(self.pantalla)
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
-                    return 'salir', self.sonido_activo, self.puntos
+                    return 'salir', self.sonido_activo
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_TAB:
                     self.sonido_activo = not self.sonido_activo
-                if evento.type == pg.USEREVENT:
+                if evento.type == pg.USEREVENT +5:
                     if self.indicador == '-':
                         self.indicador = '  '
                     else:
                         self.indicador = '-'
-                if evento.type == pg.USEREVENT + 1 and not insertar_record:
-                    return 'portada', self.sonido_activo, self.puntos
+                if evento.type == pg.USEREVENT +6 and not insertar_record:
+                    return 'portada', self.sonido_activo
                 if evento.type == pg.KEYDOWN and insertar_record:
                     if evento.key == pg.K_BACKSPACE:
                         self.entrada_texto = self.entrada_texto[:-1]
                     elif evento.key == pg.K_RETURN:
                         self.crear_obstaculos()
                         self.insertar_borrar_record(
-                            self.entrada_texto, self.puntos)
+                            self.entrada_texto, self.marcador.puntos)
                         insertar_record = False
                     elif len(self.entrada_texto) < 9:
                         self.entrada_texto += evento.unicode
@@ -78,11 +77,11 @@ class Records(Escena):
         self.pantalla.blit(self.image, (0, 0))
 
     def comprobar_puntuacion(self):
-        return self.puntos > self.puntuaciones[-1]
+        return self.marcador.puntos > self.puntuaciones[-1]
 
     def pintar_mi_puntuacion(self):
         mensajes = ['INSERTA TU NOMBRE', str(self.entrada_texto) + self.indicador, str(
-            self.puntos), 'Intro para insertar record']
+            self.marcador.puntos), 'Intro para insertar record']
         self.pintar_texto(mensajes, self.tipo3, CENTRO_X,
                           MARGEN_SUP, 'centro', COLORES['blanco'], False)
 
@@ -104,7 +103,7 @@ class Records(Escena):
         self.pintar_texto(['THE GUEST'], self.tipo5, CENTRO_X,
                           MARGEN_SUP, 'centro', COLORES['blanco'], False)
         if not self.temp_cambio_escena:
-            activo = pg.USEREVENT + 1
+            activo = pg.USEREVENT +6
             pg.time.set_timer(activo, self.tiempo_cambio_escena)
             self.temp_cambio_escena = True
 

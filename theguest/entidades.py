@@ -1,13 +1,15 @@
 import os
 
 import pygame as pg
-import math
+
+from theguest.dbmanager import DBManager
 
 from random import choice, randint
 
-from .import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, HABILITAR_MOV_DER_IZQ,
-              MARGEN_IZQ, MARGEN_INF, MARGEN_SUP
+from .import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, DIFICULTAD_INI, FUENTES, TAM_FUENTE,
+              HABILITAR_MOV_DER_IZQ, MARGEN_IZQ, MARGEN_INF, MARGEN_SUP, VIDAS
               )
+
 
 
 class Nave(pg.sprite.Sprite):
@@ -121,8 +123,8 @@ class Obstaculo(pg.sprite.Sprite):
         self.rect.x -= self.velocidad
         if self.rect.right < 0:
             obstaculos.remove(self)
-            return self.puntos_por_obstaculo
-        return 0
+            return True
+        return False
 
 
 class IndicadorVida(pg.sprite.Sprite):
@@ -166,3 +168,77 @@ class Planeta(pg.sprite.Sprite):
         if self.rect.left <= ANCHO * 3/4:
             self.rect.left = ANCHO * 3/4
             self.planeta_posicionado = True
+
+class Marcador:
+    def __init__(self, pantalla):
+        self.tipo3 = pg.font.Font(FUENTES['nasa'], TAM_FUENTE['3'])
+        self.db = DBManager()
+        self.indicador_vidas = pg.sprite.Group()
+        self.pantalla = pantalla
+
+    def reset(self):
+        self.dificultad = DIFICULTAD_INI
+        self.vidas = VIDAS
+        self.puntos = 0
+        self.nivel = 1
+        self.crear_vidas(self.vidas)
+
+    def incrementar_puntos(self):
+        self.puntos += 20
+    
+    def restar_vida(self):
+        if len(self.indicador_vidas) > 1:
+            self.vidas -= 1
+            self.indicador_vidas.sprites()[-1].kill()
+    
+    def subir_nivel(self):
+        self.nivel += 1
+        self.dificultad +=1
+
+    def pintar(self):
+        # Pintar Puntos
+        self.pintar_texto([str(self.puntos),], self.tipo3, MARGEN_IZQ,
+                          0, '', COLORES['blanco'])
+        # Pintar Nivel
+        self.pintar_texto(['Nivel ' + str(self.nivel),], self.tipo3, ANCHO * 4/5,
+                          0, '', COLORES['blanco'])
+        # Pintar mejor jugador
+        self.consultar_max_records()
+        
+        self.pintar_texto(['High Score   ' + str(self.max_records),], self.tipo3, CENTRO_X,
+                          MARGEN_INF, '', COLORES['blanco'])
+        
+        self.indicador_vidas.update()
+        self.indicador_vidas.draw(self.pantalla)
+        
+    def pintar_texto(self, mensaje, tipo, pos_x, pos_y, alineacion, color):
+        for linea in mensaje:
+            linea = str(linea)
+            if '\n' in linea:
+                linea = linea[:-1]
+            texto = tipo.render(linea, True, color)
+            if alineacion == 'centro':
+                pos_x_centro = pos_x - (texto.get_width() / 2)
+                self.pantalla.blit(texto, (pos_x_centro, pos_y))
+            elif alineacion == 'derecha':
+                pos_x_centro = pos_x - texto.get_width()
+                self.pantalla.blit(texto, (pos_x_centro, pos_y))
+            else:
+                self.pantalla.blit(texto, (pos_x, pos_y))
+            pos_y += texto.get_height()
+
+    def consultar_max_records(self):
+        sql = 'SELECT puntos FROM records ORDER BY puntos DESC, id ASC'
+        self.records = self.db.consultaSQL(sql)
+        self.max_records = self.records[0][0]
+        if self.puntos > self.max_records:
+            self.max_records = self.puntos
+
+    def crear_vidas(self, vidas):
+        for vida in range(vidas):
+            indicador = IndicadorVida()
+            separador = indicador.rect.width / 2
+            indicador.rect.center = (indicador.rect.width * vida + MARGEN_IZQ + separador * vida + indicador.rect.width / 2,
+                                     ALTO - (ALTO - MARGEN_INF) / 2)
+            self.indicador_vidas.add(indicador)
+
