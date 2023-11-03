@@ -60,8 +60,22 @@ class Escena:
             self.musica = pg.mixer_music.set_volume(0.0)
             pg.mixer.Sound.set_volume(self.efecto_sonido, 0.0)
 
-    def ton_toff(self, tiempo_inicial, tiempo_parpadeo):
+    def ton_toff(self, tiempo_parpadeo):
         tiempo_actual = pg.time.get_ticks()
-        if tiempo_actual - tiempo_inicial >= tiempo_parpadeo:
+        if tiempo_actual - self.tiem_ini_par_info >= tiempo_parpadeo:
             self.parpadeo_visible = not self.parpadeo_visible
             self.tiem_ini_par_info = tiempo_actual
+
+    def ton(self, tiempo_inicial, tiempo_espera):
+        tiempo_actual = pg.time.get_ticks()
+        if tiempo_actual - tiempo_inicial  > tiempo_espera:
+            return True
+        else:
+            return False
+        
+    def toff(self, tiempo_inicial, tiempo_espera):
+        tiempo_actual = pg.time.get_ticks()
+        if tiempo_actual - tiempo_inicial  < tiempo_espera:
+            return True
+        else:
+            return False

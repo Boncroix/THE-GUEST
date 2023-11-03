@@ -51,7 +51,7 @@ class Portada(Escena):
         ruta_info = os.path.join('resources', 'textos', 'info.txt')
         with open(ruta_info, 'r', encoding='utf-8') as contenido:
             info = contenido.readlines()
-        self.ton_toff(self.tiem_ini_par_info, self.tiempo_parpadeo)
+        self.ton_toff(self.tiempo_parpadeo)
         if self.parpadeo_visible:
             self.pintar_texto(info, self.tipo2, CENTRO_X,
                               0, 'centro', COLORES['blanco'], False)

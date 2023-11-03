@@ -12,10 +12,12 @@ from .sc_escena import Escena
 class Partida(Escena):
     vel_fondo_partida = 1
     tiempo_parpadeo = 600
+    pos_x_fondo = 0
 
     def __init__(self, pantalla, dificultad, vidas, puntos, nivel, sonido_activo):
         super().__init__(pantalla)
-        self.dificultad = self.dificultad_inicial = dificultad
+        self.dificultad_inicial = dificultad
+        self.dificultad = dificultad + 1
         self.vidas = vidas
         self.puntos = puntos
         self.nivel = nivel
@@ -24,19 +26,17 @@ class Partida(Escena):
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
         self.nave = Nave()
         self.planeta = Planeta()
+        self.db = DBManager()
         self.obstaculos = pg.sprite.Group()
-        self.contador = 0
-        self.crear_obstaculos()
         self.indicador_vidas = pg.sprite.Group()
-        self.crear_vidas(self.vidas)
-        self.pos_x_fondo = 0
-        self.cambio_nivel_activo = False
         self.tiempo_nivel = pg.USEREVENT
         pg.time.set_timer(self.tiempo_nivel, TIEMPO_NIVEL)
-        self.db = DBManager()
-        self.consultar_max_records()
-        self.dificultad += 1
-
+        self.crear_obstaculos()
+        self.crear_vidas(self.vidas)
+        self.cambio_nivel_activo = False
+        self.colision = False
+        
+       
     def bucle_principal(self):
         super().bucle_principal()
         print('Estamos en la escena partida')
@@ -52,6 +52,11 @@ class Partida(Escena):
                     return 'partida', self.dificultad, self.vidas, self.puntos, self.nivel, self.sonido_activo
                 if evento.type == pg.USEREVENT and not self.colision:
                     self.cambio_nivel_activo = True
+                if evento.type == pg.USEREVENT +1:
+                    return 'partida', self.dificultad_inicial, self.vidas, self.puntos, self.nivel, self.sonido_activo
+                if evento.type == pg.USEREVENT +2:
+                    return 'records', self.dificultad, self.vidas, self.puntos, self.nivel, self.sonido_activo
+
             self.pintar_fondo()
             self.comprobar_sonido()
             self.pantalla.blit(self.nave.image, self.nave.rect)
@@ -61,18 +66,36 @@ class Partida(Escena):
             self.consultar_max_records()
             self.pintar_info()
             self.pantalla.blit(self.planeta.image, self.planeta.rect)
-            if self.cambio_nivel_activo:
-                self.update_obstaculos()
-                self.planeta.update()
-                self.nave.aterrizar_nave(self.planeta)
-            else:
-                accion = self.detectar_colision_nave()
-                if accion == 'partida':
-                    return 'partida', self.dificultad_inicial, self.vidas, self.puntos, self.nivel, self.sonido_activo
-                elif accion == 'records':
-                    return 'records', self.dificultad, self.vidas, self.puntos, self.nivel, self.sonido_activo
+            self.gestion_ciclo()         
 
             pg.display.flip()
+
+    def gestion_ciclo(self):
+        if self.cambio_nivel_activo:
+            self.update_obstaculos()
+            self.planeta.update()
+            self.nave.aterrizar_nave(self.planeta)
+        elif self.colision:
+            tiempo_actual = pg.time.get_ticks()
+            self.nave.explosion_nave()
+            if self.toff(self.tiempo_ini_colision,FPS * 2):
+                self.efecto_sonido.play()
+            duracion_sonido = int(
+                self.efecto_sonido.get_length() * 1000)
+            if self.ton(self.tiempo_ini_colision, duracion_sonido):
+                if len(self.indicador_vidas) > 1:
+                    self.vidas -= 1
+                    self.indicador_vidas.sprites()[-1].kill()
+                    cambio_de_escena = pg.USEREVENT +1
+                    pg.event.post(pg.event.Event(cambio_de_escena))
+                else:
+                    cambio_de_escena = pg.USEREVENT +2
+                    pg.event.post(pg.event.Event(cambio_de_escena))
+        else:
+            self.tiempo_ini_colision = pg.time.get_ticks()
+            self.detectar_colision_nave()
+            self.nave.update()
+            self.update_obstaculos()
 
     def pintar_fondo(self):
         x_relativa = self.pos_x_fondo % ANCHO
@@ -104,25 +127,6 @@ class Partida(Escena):
             self.colision = pg.sprite.collide_mask(self.nave, obstaculo)
             if self.colision:
                 break
-        if self.colision:
-            tiempo_actual = pg.time.get_ticks()
-            self.nave.explosion_nave()
-            if tiempo_actual - self.tiempo_ini_colision < FPS * 2:
-                self.efecto_sonido.play()
-            duracion_sonido = int(
-                self.efecto_sonido.get_length() * 1000)
-            if tiempo_actual - self.tiempo_ini_colision >= duracion_sonido:
-                if len(self.indicador_vidas) > 1:
-                    self.vidas -= 1
-                    self.indicador_vidas.sprites()[-1].kill()
-                    return 'partida'
-                else:
-                    return 'records'
-        else:
-            self.tiempo_ini_colision = pg.time.get_ticks()
-            self.nave.update()
-            self.update_obstaculos()
-            return 'continuar'
 
     def crear_vidas(self, vidas):
         for vida in range(vidas):
@@ -146,7 +150,7 @@ class Partida(Escena):
         self.pintar_texto(['High Score   ' + str(self.max_records),], self.tipo3, CENTRO_X,
                           MARGEN_INF, '', COLORES['blanco'], False)
         # Pintar instrucciones para continuar
-        self.ton_toff(self.tiem_ini_par_info, self.tiempo_parpadeo)
+        self.ton_toff(self.tiempo_parpadeo)
         if self.parpadeo_visible and self.cambio_nivel_activo:
             self.pintar_texto(['Nivel completado pulsar <ESPACIO> para continuar',], self.tipo2, CENTRO_X,
                               MARGEN_SUP, 'centro', COLORES['blanco'], False)
