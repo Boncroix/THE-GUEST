@@ -67,7 +67,7 @@ class DBManager:
         try:
             cursor.execute(consulta, (id,))
             conexion.commit()
-        except:
+        except Exception as ex:
             conexion.rollback()
 
         self.desconectar(conexion)

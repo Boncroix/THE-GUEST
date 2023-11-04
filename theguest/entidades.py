@@ -224,7 +224,6 @@ class Marcador:
     def subir_nivel(self):
         self.nivel += 1
         self.dificultad +=1
-        print(self.dificultad)
         self.crear_disparos(DISPAROS_POR_NIVEL)
 
     def pintar(self):
