@@ -55,6 +55,20 @@ MUSICA = {
     'records': ruta3
 }
 
+# RUTAS SONIDOS
+ruta1 = str(os.path.join(
+            'resources', 'sounds', 'disparo.mp3'))
+ruta2 = str(os.path.join(
+            'resources', 'sounds', 'explosion.mp3'))
+ruta3 = str(os.path.join(
+            'resources', 'sounds', 'impacto.mp3'))
+SONIDOS = {
+    'disparo': ruta1,
+    'explosion': ruta2,
+    'impacto': ruta3
+}
+
+
 # COLORES
 COLORES = {
     'azul': (0, 0, 99),

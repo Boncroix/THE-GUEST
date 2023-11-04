@@ -1,7 +1,7 @@
 import pygame as pg
 
 from theguest import (ALTO, ANCHO, CENTRO_X, COLORES, FPS, IMAGENES,
-                      MARGEN_INF, MARGEN_SUP, TIEMPO_NIVEL)
+                      MARGEN_INF, MARGEN_SUP, SONIDOS, TIEMPO_NIVEL)
 
 from theguest.entidades import Nave, Nave1, Obstaculo, Planeta, Proyectil
 
@@ -49,6 +49,8 @@ class Partida(Escena):
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE and self.marcador.nivel > 5:
                     self.crear_proyectil()
                     self.disparar = True
+                    self.efecto_sonido = pg.mixer.Sound(SONIDOS['disparo'])
+                    self.efecto_sonido.play()
                 if evento.type == pg.USEREVENT +2 and not self.colision:
                     self.cambio_nivel_activo = True
                 if evento.type == pg.USEREVENT +3:
@@ -76,6 +78,7 @@ class Partida(Escena):
         elif self.colision:
             self.nave.explosion_nave()
             if self.toff(self.tiempo_ini_colision,FPS * 2):                 # Metodo heredado de escena
+                self.efecto_sonido = pg.mixer.Sound(SONIDOS['explosion'])
                 self.efecto_sonido.play()
             duracion_sonido = int(
                 self.efecto_sonido.get_length() * 1000)
@@ -147,7 +150,10 @@ class Partida(Escena):
         self.proyectiles.update(self.proyectiles)
 
     def detectar_colision_proyectil(self):
-        pg.sprite.groupcollide(self.proyectiles, self.obstaculos, True, True)
+        colision = pg.sprite.groupcollide(self.proyectiles, self.obstaculos, True, True)
+        if colision:
+            self.efecto_sonido = pg.mixer.Sound(SONIDOS['impacto'])
+            self.efecto_sonido.play()
         
             
                 

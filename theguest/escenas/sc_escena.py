@@ -2,7 +2,7 @@ import os
 
 import pygame as pg
 
-from theguest import (FUENTES, TAM_FUENTE)
+from theguest import (FUENTES, SONIDOS, TAM_FUENTE)
 
 
 class Escena:
@@ -14,9 +14,7 @@ class Escena:
         self.tipo3 = pg.font.Font(FUENTES['nasa'], TAM_FUENTE['3'])
         self.tipo4 = pg.font.Font(FUENTES['contraste'], TAM_FUENTE['3'])
         self.tipo5 = pg.font.Font(FUENTES['contraste'], TAM_FUENTE['4'])
-        ruta_sonido_explosion = os.path.join(
-            'resources', 'music', 'explosion.mp3')
-        self.efecto_sonido = pg.mixer.Sound(ruta_sonido_explosion)
+        self.efecto_sonido = pg.mixer.Sound(SONIDOS['disparo'])
         self.imagenes = []
         for i in range(2):
             ruta_image = os.path.join(
