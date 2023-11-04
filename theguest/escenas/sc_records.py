@@ -32,7 +32,6 @@ class Records(Escena):
         
     def bucle_principal(self):
         super().bucle_principal()
-        print('Estamos en la escena records')
         self.insertar_record = self.comprobar_puntuacion()
         while True:
             self.reloj.tick(FPS)

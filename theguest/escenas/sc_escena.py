@@ -25,7 +25,6 @@ class Escena:
         self.ton_toff_visible = True
 
     def bucle_principal(self):
-        print('Metodo vacio bucle principal de escena')
         pass
 
     def pintar_texto(self, mensaje, tipo, pos_x, pos_y, alineacion, color, fondo):

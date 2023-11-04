@@ -21,7 +21,6 @@ class Portada(Escena):
 
     def bucle_principal(self):
         super().bucle_principal()
-        print('Estamos en la escena portada')
         while True:
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:

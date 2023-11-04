@@ -12,6 +12,8 @@ class Partida(Escena):
     vel_fondo_partida = 1
     tiempo_parpadeo = 600
     pos_x_fondo = 0
+    nivel_maximo = 10
+    nivel_con_habilidades = 5
 
     def __init__(self, pantalla, sonido_activo, marcador):
         super().__init__(pantalla)
@@ -23,7 +25,7 @@ class Partida(Escena):
         pg.time.set_timer(self.tiempo_nivel, TIEMPO_NIVEL)
         self.obstaculos = pg.sprite.Group()
         self.proyectiles = pg.sprite.Group()
-        if self.marcador.nivel > 5:
+        if self.marcador.nivel > self.nivel_con_habilidades:
             self.nave = Nave1()
         else:
             self.nave = Nave()
@@ -35,7 +37,6 @@ class Partida(Escena):
         
     def bucle_principal(self):
         super().bucle_principal()
-        print('Estamos en la escena partida')
         while True:
             self.reloj.tick(FPS)
             for evento in pg.event.get():
@@ -44,9 +45,12 @@ class Partida(Escena):
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_TAB:
                     self.sonido_activo = not self.sonido_activo
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE and self.cambio_nivel_activo:
-                    self.marcador.subir_nivel()
-                    return 'partida', self.sonido_activo
-                if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE and self.marcador.nivel > 5 and self.marcador.disparos > 0:
+                    if self.marcador.nivel == self.nivel_maximo:
+                        return 'records', self.sonido_activo
+                    else:
+                        self.marcador.subir_nivel()
+                        return 'partida', self.sonido_activo
+                if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE and self.marcador.nivel > self.nivel_con_habilidades and self.marcador.disparos > 0:
                     self.crear_proyectil()
                 if evento.type == pg.USEREVENT +2 and not self.colision:
                     self.cambio_nivel_activo = True
@@ -115,6 +119,13 @@ class Partida(Escena):
         if self.ton_toff_visible and self.cambio_nivel_activo:
             self.pintar_texto(['Nivel completado pulsar <ESPACIO> para continuar',], self.tipo2, CENTRO_X,
                               MARGEN_SUP, 'centro', COLORES['blanco'], False)
+            
+        if self.colision and self.marcador.vidas < 2:
+                self.pintar_texto(['GAME OVER',], self.tipo5, CENTRO_X,
+                          ALTO * 1/3, 'centro', COLORES['rojo'], False)
+                
+        if self.cambio_nivel_activo and self.marcador.nivel == self.nivel_maximo:
+            self.pintar_texto(['YOU WIN',], self.tipo5, CENTRO_X, ALTO * 1/3, 'centro', COLORES['verde'], False)
             
         self.marcador.pintar()
 
