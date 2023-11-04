@@ -16,7 +16,6 @@ class TheGuest:
         self.pantalla = pg.display.set_mode((ANCHO, ALTO))
         pg.display.set_caption('The  Guest')
         self.sonido_activo = True
-        self.puntos = 6000
         self.musica = pg.mixer.music.load(MUSICA['records'])
         self.musica = pg.mixer.music.play(-1)
         self.marcador = Marcador(self.pantalla)
