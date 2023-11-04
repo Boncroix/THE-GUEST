@@ -3,7 +3,7 @@ import pygame as pg
 from theguest import (ALTO, ANCHO, CENTRO_X, COLORES, FPS, IMAGENES,
                       MARGEN_INF, MARGEN_SUP, TIEMPO_NIVEL)
 
-from theguest.entidades import Nave, Obstaculo, Planeta
+from theguest.entidades import Nave, Nave1, Obstaculo, Planeta, Proyectil
 
 from .sc_escena import Escena
 
@@ -21,12 +21,17 @@ class Partida(Escena):
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
         self.tiempo_nivel = pg.USEREVENT +2
         pg.time.set_timer(self.tiempo_nivel, TIEMPO_NIVEL)
-        self.nave = Nave()
-        self.planeta = Planeta()
         self.obstaculos = pg.sprite.Group()
+        self.proyectiles = pg.sprite.Group()
+        if self.marcador.nivel > 5:
+            self.nave = Nave1()
+        else:
+            self.nave = Nave()
+        self.planeta = Planeta()
         self.crear_obstaculos()
         self.cambio_nivel_activo = False
         self.colision = False
+        self.disparar = False
         
     def bucle_principal(self):
         super().bucle_principal()
@@ -41,6 +46,9 @@ class Partida(Escena):
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE and self.cambio_nivel_activo:
                     self.marcador.subir_nivel()
                     return 'partida', self.sonido_activo
+                if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE and self.marcador.nivel > 5:
+                    self.crear_proyectil()
+                    self.disparar = True
                 if evento.type == pg.USEREVENT +2 and not self.colision:
                     self.cambio_nivel_activo = True
                 if evento.type == pg.USEREVENT +3:
@@ -54,6 +62,7 @@ class Partida(Escena):
             self.pantalla.blit(self.nave.image, self.nave.rect)
             self.obstaculos.draw(self.pantalla)
             self.pantalla.blit(self.planeta.image, self.planeta.rect)
+            self.proyectiles.draw(self.pantalla)
             self.gestion_bucle()         
 
             pg.display.flip()
@@ -63,6 +72,7 @@ class Partida(Escena):
             self.update_obstaculos()
             self.planeta.update()
             self.nave.aterrizar_nave(self.planeta)
+            self.upddate_proyectil()
         elif self.colision:
             self.nave.explosion_nave()
             if self.toff(self.tiempo_ini_colision,FPS * 2):                 # Metodo heredado de escena
@@ -82,6 +92,9 @@ class Partida(Escena):
             self.nave.update()
             self.update_obstaculos()
             self.detectar_colision_nave()
+            self.detectar_colision_proyectil()
+            if self.disparar and len(self.proyectiles) > 0:
+                self.upddate_proyectil()
 
     def pintar_fondo(self):
         x_relativa = self.pos_x_fondo % ANCHO
@@ -125,5 +138,22 @@ class Partida(Escena):
             self.colision = pg.sprite.collide_mask(self.nave, obstaculo)
             if self.colision:
                 break
+        
+    def crear_proyectil(self):
+        proyectil = Proyectil(self.nave)
+        self.proyectiles.add(proyectil)
+
+    def upddate_proyectil(self):
+        self.proyectiles.update(self.proyectiles)
+
+    def detectar_colision_proyectil(self):
+        pg.sprite.groupcollide(self.proyectiles, self.obstaculos, True, True)
+        
+            
+                
+
+
+
+
 
 

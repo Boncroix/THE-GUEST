@@ -18,6 +18,7 @@ class Nave(pg.sprite.Sprite):
     vel_nave = 5
     angulo_destino = 180
     vel_aterrizaje = 2
+    habilitar_mov_der_izq = False
 
     def __init__(self):
         super().__init__()
@@ -52,13 +53,13 @@ class Nave(pg.sprite.Sprite):
             self.velocidad_dow += self.aumento_vel_nave
             if self.rect.bottom > MARGEN_INF:
                 self.rect.bottom = MARGEN_INF
-        elif estado_teclas[pg.K_LEFT] and not estado_teclas[pg.K_RIGHT] and HABILITAR_MOV_DER_IZQ:
+        elif estado_teclas[pg.K_LEFT] and not estado_teclas[pg.K_RIGHT] and self.habilitar_mov_der_izq:
             self.velocidad_right = self.vel_nave
             self.rect.x -= self.velocidad_left
             self.velocidad_left += self.aumento_vel_nave
             if self.rect.left < 0:
                 self.rect.left = 0
-        elif estado_teclas[pg.K_RIGHT] and not estado_teclas[pg.K_LEFT] and HABILITAR_MOV_DER_IZQ:
+        elif estado_teclas[pg.K_RIGHT] and not estado_teclas[pg.K_LEFT] and self.habilitar_mov_der_izq:
             self.velocidad_left = self.vel_nave
             self.rect.x += self.velocidad_right
             self.velocidad_right += self.aumento_vel_nave
@@ -77,7 +78,6 @@ class Nave(pg.sprite.Sprite):
         self.image = pg.transform.rotate(self.image, self.angulo_rotacion)
         self.contador += 1
 
-        # FIXME Preguntar por la velocidadd de la nave aterrizando si tiene que ser constante
         if self.rect.right < planeta.rect.left + self.rect.width * 2/20:
             self.rect.x += self.vel_aterrizaje
         if self.rect.centery > CENTRO_Y:
@@ -91,10 +91,27 @@ class Nave(pg.sprite.Sprite):
             self.rect = self.image.get_rect(center=self.rect.center)
             self.angulo_rotacion += 1
 
+class Nave1(Nave):
+    habilitar_mov_der_izq = True
+    def __init__(self):
+        super().__init__()
 
-class Disparo(pg.sprite.Sprite):
-    # TODO Generar disparo de la nave
-    pass
+
+class Proyectil(pg.sprite.Sprite):
+    vel_proyectil = 10
+
+    def __init__(self, nave):
+        super().__init__()
+        self.nave = nave
+        ruta_image = os.path.join('resources', 'images', 'disparo.png')
+        self.image = pg.image.load(ruta_image)
+        self.rect = self.image.get_rect(midleft=(self.nave.rect.midright))
+
+    def update(self, proyectil):
+        self.rect.left += self.vel_proyectil
+        if self.rect.right > ANCHO:
+            proyectil.remove(self)
+            
 
 
 class Obstaculo(pg.sprite.Sprite):
@@ -119,10 +136,10 @@ class Obstaculo(pg.sprite.Sprite):
         if self.rect.bottom > MARGEN_INF:
             self.rect.bottom = MARGEN_INF
 
-    def update(self, obstaculos):
+    def update(self, obstaculo):
         self.rect.x -= self.velocidad
         if self.rect.right < 0:
-            obstaculos.remove(self)
+            obstaculo.remove(self)
             return True
         return False
 
@@ -168,6 +185,7 @@ class Planeta(pg.sprite.Sprite):
         if self.rect.left <= ANCHO * 3/4:
             self.rect.left = ANCHO * 3/4
             self.planeta_posicionado = True
+
 
 class Marcador:
     def __init__(self, pantalla):
