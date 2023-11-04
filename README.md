@@ -29,7 +29,7 @@ En el archivo `init.py` se encuentran los ajustes principales del juego
 
 # Clases del juego
 ## TheGues
-- Se encuentra en el archivo `game.py` y es la encargada de instanciar y gestionar las escenas y la música de cada escena, en ella también instaciamos la Clase Marcador, ya que con él compartimos datos entre escenas.
+- Se encuentra en el archivo `game.py` es la Clase principal del juego y es la encargada de instanciar y gestionar las escenas junto con la música de cada escena, en ella también instaciamos la Clase Marcador, ya que con él compartimos datos entre escenas.
 
 ## Escenas
 ### Escena:
@@ -37,7 +37,7 @@ En el archivo `init.py` se encuentran los ajustes principales del juego
 #### Métodos
 1. `pintar_texto` con este método podemos pintar texto en cualquiera de las escenas simplemente indicando el mensaje a mostrar, la tipografía que vamos a utilizar, posx y posy donde queremos pintar el texto, la alineación del texto ('centro', 'derecha', ''), el color del texto y por último True o False si queremos pintar el fondo para que se vea solo el fondo con el texto proporcionado.
 
-2. `comprobar_sonido` en el siguiente método comprobamos el sonido a lo largo de todo el juego y recogemos si el usuario lo quiere desactivar, para desactivarlo se utiliza la tecla <TAB>.
+2. `comprobar_sonido` en el siguiente método comprobamos el sonido a lo largo de todo el juego y recogemos si el usuario lo quiere desactivar.  (para desactivar utilizar la tecla TAB)
 
 3. `ton_toff` temporizador configurado para activar y desactivar una salida durante un periodo de tiempo.
 
@@ -46,10 +46,23 @@ En el archivo `init.py` se encuentran los ajustes principales del juego
 5. `toff` temporizador con retardo para la desconexión.
 
 ### Portada:
-- Escena inicial del juego, en ella se muestra el título del juego, las indicaciones para comenzar el juego, las instrucciones, 
-        
+- Se encuentra en el archivo `sc_portada.py`.
+- Al instanciar desde game pasamos si el sonido está activo.
+- Escena inicial del juego, en ella se muestra el título del juego, las indicaciones para interactuar y la historia, entre las indicaciones pulsando la tecla i se muestran las instrucciones, sería recomendable leerlas antes de jugar.
+- Intercambia la visualización con récords cada cierto tiempo para el cambio de escena se utilizan eventos de usuario
+        
 ### Partida
-### Records
+- Se encuentra en el archivo `sc_partida.py`.
+- Al instanciar desde game pasamos si el sonido está activo y el marcador.
+- Escena principal del juego, es la encargada de gestionar la lógica del juego, en el bucle principal recojo los eventos y realizo las acciones que no tienen condiciones, el método `gestion_bucle` es el responsable de cuando y por qué deben de ocurrir las cosas, diría que es el método más importante de la Clase.
+- Para realizar el cambio de escenas se han utilizado eventos de usuario
+
+### Récords
+- Se encuentra en el archivo `sc_records.py`.
+- Al instanciar desde game pasamos si el sonido está activo y el marcador.
+- Escena que se ejecuta al finalizar el juego, aunque también la llamamos al inicio para mostrar récord mientras la escena portada está esperando que el usuario interactúe, al igual que en partida en el bucle principal recogemos los eventos y realizamos las acciones que no tienen ninguna condición, el método `gestion_bucle` es el encargado de saber si hemos entrado en la lista de récords o no.
+- Intercambia la visualización con portada cada cierto tiempo para el cambio de escena se utilizan eventos de usuario
+
 ## dbmanager
 ## Entidades
 ### Nave
