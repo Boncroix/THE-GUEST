@@ -76,28 +76,36 @@ En el archivo `init.py` se encuentran los ajustes principales del juego
 
 ## Entidades
 - Todas las entidades las encontramos en el archivo `entidades.py`.
+
 ### Nave
 - Crea la nave del juego
 1. `update` al ejecutar update la nave hace caso de los controles configurados para que esta se mueva.
 2. `explosion_nave` se utiliza al chocar con algún objeto, lo que hace es cambiar la imagen de la nave que visualizamos.
 3. `aterrizar_nave` cuando cambiamos de nivel se produce un aterrizaje de la nave, este método es el encargado de girar y desplazar la nave.
+
 ### Nave1
 - Hereda todas las características de la nave inicial, pero se añade el movimiento de izquierda a derecha, esta clase se instancia después del nivel 5.
+
 ### Proyectil
 - Crea los proyectiles de la nave
 - Al instanciar pasamos como parámetro la misma nave para que este sepa en cada momento donde está.
 1. `update` lanza el proyectil desde la punta de la nave
+
 ### Obstáculo
 - Crea los obstáculos que aparecen en el juego, estos se crean con posiciones aleatorias, imágenes aleatorias y velocidades aleatorias, los creamos fuera de la pantalla para que en un principio no se vean.
 1. `update` actualizamos la posición de los objetos con la velocidad que tiene asignada cada uno.
+
 ### IndicadorVida
 - Crea los indicadores de las vidas
 1. `update` actualiza entre las imágenes para que se cree el efecto del fuego de la nave.
+
 ### IndicadorDisparo
 - Crea los indicadores de los disparos disponibles
+
 ### Planeta
 - Crea el planeta de cambio de nivel, se crea fuera de la pantalla
 1. `update` cuando llamamos a update movemos el planeta hasta ocupar la posición deseada.
+
 ### Marcador
 - Es el encargado de gestionar la partida, con él controlamos los puntos, las vidas, el nivel y la dificultad.
 1. `reset` lo llamamos desde game reinicia los valores del marcador se realiza antes de comenzar la partida.
@@ -110,6 +118,6 @@ En el archivo `init.py` se encuentran los ajustes principales del juego
 8. `consultar_max_records` realiza una consulta a la base de datos para saber cuál es el récord máximo del juego y así poder pintarlo.
 9. `crear_vidas` crea los indicadores de vida y los añade al grupo de sprites
 10. `crear_disparos` crea los indicadores de disparos y los añade al grupo de sprites
-##game
+
 
 
