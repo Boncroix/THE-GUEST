@@ -1,4 +1,4 @@
-# the-guest
+# the-Guest
 Proyecto final bootcamp: Aprender a programar desde cero (Pygame The-Guest)
 
 ## Dependencias necesarias
@@ -11,13 +11,18 @@ Proyecto final bootcamp: Aprender a programar desde cero (Pygame The-Guest)
 3. Instala las dependencias con `pip install -r requirements.txt` o `pip install -r requirements.dev.txt`
 
 ## Uso 
-Ejecuta el juego ejecutando `main.py`: `python main.py`
+Inicia el juego ejecutando `main.py`: `python main.py` o `python3 main.py`
 
 ## Recomendaciones
 - La resolución recomendada es de 1200 x 800 aunque el juego se adapta a otro tipo de resoluciones
 
-## Instrucciones
-- Para comenzar el juego pulsar la tecla espacio
+## Ajustes pricipales del juego
+En el archivo `init.py` se encuentran los ajustes principales del juego
+- FPS = Frames por segundo del juego.
+- DIFICULTAD_INI = Dificultad en la que comienza la partida.
+- NIVEL_INI = Nivel en el que comienza la partida.
+- VIDAS_INI = Vidas con las que comienza la partida.
+- TIEMPO_NIVEL = Tiempo de perpanencia para subir de nivel
+- PUNTOS_POR_OBSTACULO = Cantidad de puntos que suman cada vez que se se sortea un obstaculo
+- DISPAROS_POR_NIVEL = Disparos habilitados por nivel (Solo disponible desde el nivel 6)
 
-
-## 

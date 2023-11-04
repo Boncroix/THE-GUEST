@@ -7,8 +7,8 @@ from random import choice, randint
 from theguest.dbmanager import DBManager
 
 from .import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, DIFICULTAD_INI, DISPAROS_POR_NIVEL,
-                FUENTES, MARGEN_IZQ, MARGEN_INF, MARGEN_SUP, NIVEL_INICIAL, 
-                PUNTOS_POR_OBSTACULO, TAM_FUENTE, VIDAS
+                FUENTES, MARGEN_IZQ, MARGEN_INF, MARGEN_SUP, NIVEL_INI, 
+                PUNTOS_POR_OBSTACULO, TAM_FUENTE, VIDAS_INI
               )
 
 
@@ -203,9 +203,9 @@ class Marcador:
         self.crear_disparos(DISPAROS_POR_NIVEL)
 
     def reset(self):
-        self.vidas = VIDAS
+        self.vidas = VIDAS_INI
         self.puntos = 0
-        self.nivel = NIVEL_INICIAL
+        self.nivel = NIVEL_INI
         self.dificultad = DIFICULTAD_INI + self.nivel
         self.crear_vidas(self.vidas)
 
