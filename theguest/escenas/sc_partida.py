@@ -46,11 +46,8 @@ class Partida(Escena):
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE and self.cambio_nivel_activo:
                     self.marcador.subir_nivel()
                     return 'partida', self.sonido_activo
-                if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE and self.marcador.nivel > 5:
+                if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE and self.marcador.nivel > 5 and self.marcador.disparos > 0:
                     self.crear_proyectil()
-                    self.disparar = True
-                    self.efecto_sonido = pg.mixer.Sound(SONIDOS['disparo'])
-                    self.efecto_sonido.play()
                 if evento.type == pg.USEREVENT +2 and not self.colision:
                     self.cambio_nivel_activo = True
                 if evento.type == pg.USEREVENT +3:
@@ -104,7 +101,7 @@ class Partida(Escena):
         self.pantalla.blit(self.image, (x_relativa - ANCHO, 0))
         if x_relativa < ANCHO:
             self.pantalla.blit(self.image, (x_relativa, 0))
-        self.pos_x_fondo -= self.marcador.nivel
+        self.pos_x_fondo -= 1
         pg.draw.line(self.pantalla, COLORES['blanco'],
                      (0, MARGEN_INF), (ANCHO, MARGEN_INF))
         pg.draw.line(self.pantalla, COLORES['blanco'],
@@ -145,6 +142,10 @@ class Partida(Escena):
     def crear_proyectil(self):
         proyectil = Proyectil(self.nave)
         self.proyectiles.add(proyectil)
+        self.disparar = True
+        self.efecto_sonido = pg.mixer.Sound(SONIDOS['disparo'])
+        self.efecto_sonido.play()
+        self.marcador.restar_disparo()
 
     def upddate_proyectil(self):
         self.proyectiles.update(self.proyectiles)

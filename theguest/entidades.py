@@ -6,11 +6,10 @@ from random import choice, randint
 
 from theguest.dbmanager import DBManager
 
-from .import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, DIFICULTAD_INI, FUENTES, 
-              HABILITAR_MOV_DER_IZQ, MARGEN_IZQ, MARGEN_INF, MARGEN_SUP, 
-              PUNTOS_POR_OBSTACULO, TAM_FUENTE, VIDAS
+from .import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, DIFICULTAD_INI, DISPAROS_POR_NIVEL,
+                FUENTES, MARGEN_IZQ, MARGEN_INF, MARGEN_SUP, NIVEL_INICIAL, 
+                PUNTOS_POR_OBSTACULO, TAM_FUENTE, VIDAS
               )
-
 
 
 class Nave(pg.sprite.Sprite):
@@ -91,6 +90,7 @@ class Nave(pg.sprite.Sprite):
             self.rect = self.image.get_rect(center=self.rect.center)
             self.angulo_rotacion += 1
 
+
 class Nave1(Nave):
     habilitar_mov_der_izq = True
     def __init__(self):
@@ -112,7 +112,6 @@ class Proyectil(pg.sprite.Sprite):
         if self.rect.right > ANCHO:
             proyectil.remove(self)
             
-
 
 class Obstaculo(pg.sprite.Sprite):
 
@@ -170,6 +169,14 @@ class IndicadorVida(pg.sprite.Sprite):
         self.image = self.imagenes[self.contador]
 
 
+class IndicadorDisparo(pg.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        ruta_image = os.path.join('resources', 'images', 'disparo.png')
+        self.image = pg.image.load(ruta_image)
+        self.rect = self.image.get_rect()
+
+
 class Planeta(pg.sprite.Sprite):
     vel_planeta = 2
 
@@ -189,16 +196,17 @@ class Planeta(pg.sprite.Sprite):
 
 class Marcador:
     def __init__(self, pantalla):
-        self.tipo3 = pg.font.Font(FUENTES['nasa'], TAM_FUENTE['3'])
-        self.db = DBManager()
-        self.indicador_vidas = pg.sprite.Group()
         self.pantalla = pantalla
+        self.tipo3 = pg.font.Font(FUENTES['nasa'], TAM_FUENTE['3'])
+        self.indicador_vidas = pg.sprite.Group()
+        self.db = DBManager()
+        self.crear_disparos(DISPAROS_POR_NIVEL)
 
     def reset(self):
-        self.dificultad = DIFICULTAD_INI
         self.vidas = VIDAS
         self.puntos = 0
-        self.nivel = 1
+        self.nivel = NIVEL_INICIAL
+        self.dificultad = DIFICULTAD_INI + self.nivel
         self.crear_vidas(self.vidas)
 
     def incrementar_puntos(self):
@@ -206,11 +214,18 @@ class Marcador:
     
     def restar_vida(self):
         self.vidas -= 1
+        self.crear_disparos(DISPAROS_POR_NIVEL)
         self.indicador_vidas.sprites()[-1].kill()
+
+    def restar_disparo(self):
+        self.disparos -= 1
+        self.indicador_disparo.sprites()[-1].kill()
     
     def subir_nivel(self):
         self.nivel += 1
         self.dificultad +=1
+        print(self.dificultad)
+        self.crear_disparos(DISPAROS_POR_NIVEL)
 
     def pintar(self):
         # Pintar Puntos
@@ -227,6 +242,8 @@ class Marcador:
         
         self.indicador_vidas.update()
         self.indicador_vidas.draw(self.pantalla)
+        if self.nivel > 5:
+            self.indicador_disparo.draw(self.pantalla)
         
     def pintar_texto(self, mensaje, tipo, pos_x, pos_y, alineacion, color):
         for linea in mensaje:
@@ -258,4 +275,14 @@ class Marcador:
             indicador.rect.center = (indicador.rect.width * vida + MARGEN_IZQ + separador * vida + indicador.rect.width / 2,
                                      ALTO - (ALTO - MARGEN_INF) / 2)
             self.indicador_vidas.add(indicador)
+
+    def crear_disparos(self, disparos):
+        self.disparos = disparos
+        self.indicador_disparo = pg.sprite.Group()
+        for disparo in range(disparos):
+            indicador = IndicadorDisparo()
+            separador = indicador.rect.width / 2
+            indicador.rect.center = (indicador.rect.width * disparo + ANCHO * 1/3 + separador * disparo,
+                                     ALTO - (ALTO - MARGEN_INF) / 2)
+            self.indicador_disparo.add(indicador)
 

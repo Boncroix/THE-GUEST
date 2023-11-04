@@ -1,4 +1,4 @@
-*Título del Juego: THE QUEST*
+*Título del Juego: THE GUEST*
 
 *Objetivo:* Tu misión es guiar la nave a través del espacio,
 sorteando objetos en busca del planeta ideal para la habitabilidad.
@@ -6,13 +6,17 @@ sorteando objetos en busca del planeta ideal para la habitabilidad.
 *Controles:*
 - Utiliza la tecla de dirección "UP" para mover la nave hacia la arriba.
 - Utiliza la tecla de dirección "DOW" para mover la nave hacia la abajo.
+- Utiliza la tecla de dirección "RIGHT" para mover la nave hacia la derecha. (Activo a partir del nivel 6)
+- Utiliza la tecla de dirección "LEFT" para mover la nave hacia la izquierda. (Activo a partir del nivel 6)
+- Utiliza la tecla de dirección "SPACE" para disparar. (Activo a partir del nivel 6)
 
 *Puntuación:*
 - Obtendrás puntos al evitar objetos. Cada objeto evitado suma 20 puntos.
 
 *Niveles:*
-- Comienzas en el nivel 1 y aumenta de nivel cada 30 segundos sin colisión
-- Al colisionar se reinicia el nivel 
+- Comienzas en el nivel 1 y aumenta de nivel cada 15 segundos sin colisión.
+- Al colisionar se reinicia el nivel.
+- En el nivel 6 se habilita el movimiento de derecha a izquierda y el disparo de la nave.
 - Después del nivel 10, explorarás el espacio hasta encontrar el planeta idóneo para la
 habitabilidad.
 
