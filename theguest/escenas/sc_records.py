@@ -1,9 +1,7 @@
-import os
-
 import pygame as pg
 
-from theguest import (ALTO, ANCHO, CENTRO_X, CENTRO_Y,
-                      COLORES, DIFICULTAD_INI, FPS, IMAGENES, MARGEN_SUP)
+from theguest import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES,
+                       DIFICULTAD_INI, FPS, IMAGENES, MARGEN_SUP)
 
 from theguest.dbmanager import DBManager
 from theguest.entidades import Obstaculo
@@ -15,63 +13,60 @@ class Records(Escena):
     pos_y_records = ALTO
     vel_visu_indicador = 300
     tiempo_cambio_escena = 7000
+    max_text_name_record = 10
 
     def __init__(self, pantalla, sonido_activo, marcador):
         super().__init__(pantalla)
         self.sonido_activo = sonido_activo
         self.marcador = marcador
-        self.db = DBManager()
         self.image = pg.image.load(IMAGENES['records']).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
-        self.indicador = '-'
-        self.indicador_activo = pg.USEREVENT +5
-        pg.time.set_timer(self.indicador_activo, self.vel_visu_indicador)
-        self.consultar_records()
-        self.separadores = []
-        self.crear_lista_separadores()
-        self.temp_cambio_escena = False
+        self.db = DBManager()
         self.obstaculos = pg.sprite.Group()
+        self.consultar_records()
+        self.crear_lista_separadores()
         self.crear_obstaculos()
-
+        self.indicador = '-'
+        self.entrada_texto = ''
+        self.temp_cambio_escena = False
+        
     def bucle_principal(self):
         super().bucle_principal()
         print('Estamos en la escena records')
-        self.entrada_texto = ''
-        insertar_record = self.comprobar_puntuacion()
+        self.insertar_record = self.comprobar_puntuacion()
         while True:
             self.reloj.tick(FPS)
-            self.pintar_fondo()
-            self.comprobar_sonido()
-            self.pintar_records()
-            self.update_obstaculos()
-            self.obstaculos.draw(self.pantalla)
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
                     return 'salir', self.sonido_activo
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_TAB:
                     self.sonido_activo = not self.sonido_activo
-                if evento.type == pg.USEREVENT +5:
-                    if self.indicador == '-':
-                        self.indicador = '  '
-                    else:
-                        self.indicador = '-'
-                if evento.type == pg.USEREVENT +6 and not insertar_record:
+                if evento.type == pg.USEREVENT +6 and not self.insertar_record:
                     return 'portada', self.sonido_activo
-                if evento.type == pg.KEYDOWN and insertar_record:
+                if evento.type == pg.KEYDOWN and self.insertar_record:
                     if evento.key == pg.K_BACKSPACE:
                         self.entrada_texto = self.entrada_texto[:-1]
                     elif evento.key == pg.K_RETURN:
                         self.crear_obstaculos()
                         self.insertar_borrar_record(
                             self.entrada_texto, self.marcador.puntos)
-                        insertar_record = False
-                    elif len(self.entrada_texto) < 9:
+                        self.insertar_record = False
+                    elif len(self.entrada_texto) < self.max_text_name_record:
                         self.entrada_texto += evento.unicode
-            if insertar_record:
-                self.pintar_mi_puntuacion()
-            else:
-                self.finalizar_partida()
+
+            self.pintar_fondo()
+            self.comprobar_sonido()
+            self.pintar_records()
+            self.update_obstaculos()
+            self.obstaculos.draw(self.pantalla)
+            self.gestion_bucle()
             pg.display.flip()
+
+    def gestion_bucle(self):
+        if self.insertar_record:
+            self.pintar_mi_puntuacion()
+        else:
+            self.cambio_de_escena()
 
     def pintar_fondo(self):
         self.pantalla.blit(self.image, (0, 0))
@@ -80,6 +75,11 @@ class Records(Escena):
         return self.marcador.puntos > self.puntuaciones[-1]
 
     def pintar_mi_puntuacion(self):
+        self.ton_toff(self.vel_visu_indicador)
+        if self.ton_toff_visible:
+            self.indicador = '-'
+        else:
+            self.indicador = ' '
         mensajes = ['INSERTA TU NOMBRE', str(self.entrada_texto) + self.indicador, str(
             self.marcador.puntos), 'Intro para insertar record']
         self.pintar_texto(mensajes, self.tipo3, CENTRO_X,
@@ -99,13 +99,14 @@ class Records(Escena):
         else:
             self.pos_y_records == CENTRO_Y
 
-    def finalizar_partida(self):
+    def cambio_de_escena(self):
         self.pintar_texto(['THE GUEST'], self.tipo5, CENTRO_X,
                           MARGEN_SUP, 'centro', COLORES['blanco'], False)
         if not self.temp_cambio_escena:
             activo = pg.USEREVENT +6
             pg.time.set_timer(activo, self.tiempo_cambio_escena)
             self.temp_cambio_escena = True
+
 
     def consultar_records(self):
         sql = 'SELECT id, nombre, puntos FROM records ORDER BY puntos DESC, id ASC'
@@ -120,6 +121,7 @@ class Records(Escena):
             self.puntuaciones.append(puntos)
 
     def crear_lista_separadores(self):
+        self.separadores = []
         for i in self.nombres:
             self.separadores.append('---')
 

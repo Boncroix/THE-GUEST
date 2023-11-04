@@ -1,9 +1,9 @@
 import pygame as pg
 
-from theguest import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, FPS, FUENTES, IMAGENES,
-                      MARGEN_INF, MARGEN_IZQ, MARGEN_SUP, TAM_FUENTE, TIEMPO_NIVEL)
+from theguest import (ALTO, ANCHO, CENTRO_X, COLORES, FPS, IMAGENES,
+                      MARGEN_INF, MARGEN_SUP, TIEMPO_NIVEL)
 
-from theguest.entidades import IndicadorVida, Nave, Obstaculo, Planeta
+from theguest.entidades import Nave, Obstaculo, Planeta
 
 from .sc_escena import Escena
 
@@ -16,14 +16,14 @@ class Partida(Escena):
     def __init__(self, pantalla, sonido_activo, marcador):
         super().__init__(pantalla)
         self.sonido_activo = sonido_activo
-        self.marcador = marcador   
+        self.marcador = marcador
         self.image = pg.image.load(IMAGENES['partida']).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
+        self.tiempo_nivel = pg.USEREVENT +2
+        pg.time.set_timer(self.tiempo_nivel, TIEMPO_NIVEL)
         self.nave = Nave()
         self.planeta = Planeta()
         self.obstaculos = pg.sprite.Group()
-        self.tiempo_nivel = pg.USEREVENT +2
-        pg.time.set_timer(self.tiempo_nivel, TIEMPO_NIVEL)
         self.crear_obstaculos()
         self.cambio_nivel_activo = False
         self.colision = False
@@ -49,16 +49,16 @@ class Partida(Escena):
                     return 'records', self.sonido_activo
 
             self.pintar_fondo()
-            self.comprobar_sonido()                                         # Metodo heredado de escena
+            self.comprobar_sonido()                                          # Metodo heredado de escena
+            self.pintar_info()                                     
             self.pantalla.blit(self.nave.image, self.nave.rect)
             self.obstaculos.draw(self.pantalla)
-            self.pintar_info()
             self.pantalla.blit(self.planeta.image, self.planeta.rect)
-            self.gestion_ciclo()         
+            self.gestion_bucle()         
 
             pg.display.flip()
 
-    def gestion_ciclo(self):
+    def gestion_bucle(self):
         if self.cambio_nivel_activo:
             self.update_obstaculos()
             self.planeta.update()
@@ -93,6 +93,17 @@ class Partida(Escena):
                      (0, MARGEN_INF), (ANCHO, MARGEN_INF))
         pg.draw.line(self.pantalla, COLORES['blanco'],
                      (0, MARGEN_SUP), (ANCHO, MARGEN_SUP))
+        
+    def pintar_info(self):
+        self.pintar_texto(['The Guest',], self.tipo4, CENTRO_X,
+                          0, 'centro', COLORES['blanco'], False)
+        
+        self.ton_toff(self.tiempo_parpadeo)
+        if self.ton_toff_visible and self.cambio_nivel_activo:
+            self.pintar_texto(['Nivel completado pulsar <ESPACIO> para continuar',], self.tipo2, CENTRO_X,
+                              MARGEN_SUP, 'centro', COLORES['blanco'], False)
+            
+        self.marcador.pintar()
 
     def crear_obstaculos(self):
         for i in range(self.marcador.dificultad):
@@ -115,15 +126,4 @@ class Partida(Escena):
             if self.colision:
                 break
 
-
-    def pintar_info(self):
-        # Pintar Titulo
-        self.pintar_texto(['The Guest',], self.tipo4, CENTRO_X,
-                          0, 'centro', COLORES['blanco'], False)
-        # Pintar instrucciones para continuar
-        self.ton_toff(self.tiempo_parpadeo)
-        if self.ton_toff_visible and self.cambio_nivel_activo:
-            self.pintar_texto(['Nivel completado pulsar <ESPACIO> para continuar',], self.tipo2, CENTRO_X,
-                              MARGEN_SUP, 'centro', COLORES['blanco'], False)
-        self.marcador.pintar()
 
