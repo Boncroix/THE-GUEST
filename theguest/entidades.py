@@ -198,7 +198,6 @@ class Marcador:
     def __init__(self, pantalla):
         self.pantalla = pantalla
         self.tipo3 = pg.font.Font(FUENTES['nasa'], TAM_FUENTE['3'])
-        self.indicador_vidas = pg.sprite.Group()
         self.db = DBManager()
         self.crear_disparos(DISPAROS_POR_NIVEL)
 
@@ -214,8 +213,8 @@ class Marcador:
     
     def restar_vida(self):
         self.vidas -= 1
+        self.crear_vidas(self.vidas)
         self.crear_disparos(DISPAROS_POR_NIVEL)
-        self.indicador_vidas.sprites()[-1].kill()
 
     def restar_disparo(self):
         self.disparos -= 1
@@ -268,6 +267,7 @@ class Marcador:
             self.max_records = self.puntos
 
     def crear_vidas(self, vidas):
+        self.indicador_vidas = pg.sprite.Group()
         for vida in range(vidas):
             indicador = IndicadorVida()
             separador = indicador.rect.width / 2
