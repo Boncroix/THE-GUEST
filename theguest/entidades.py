@@ -7,8 +7,8 @@ from random import choice, randint
 from theguest.dbmanager import DBManager
 
 from .import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, DIFICULTAD_INI, DISPAROS_POR_NIVEL,
-                FUENTES, MARGEN_IZQ, MARGEN_INF, MARGEN_SUP, NIVEL_CON_HABILIDADES, NIVEL_INI, 
-                TAM_FUENTE, VIDAS_INI
+              FUENTES, MARGEN_IZQ, MARGEN_INF, MARGEN_SUP, NIVEL_CON_HABILIDADES, NIVEL_INI,
+              TAM_FUENTE, VIDAS_INI
               )
 
 
@@ -93,6 +93,7 @@ class Nave(pg.sprite.Sprite):
 
 class Nave1(Nave):
     habilitar_mov_der_izq = True
+
     def __init__(self):
         super().__init__()
 
@@ -111,7 +112,7 @@ class Proyectil(pg.sprite.Sprite):
         self.rect.left += self.vel_proyectil
         if self.rect.right > ANCHO:
             proyectil.remove(self)
-            
+
 
 class Obstaculo(pg.sprite.Sprite):
 
@@ -207,10 +208,11 @@ class Marcador:
         self.nivel = NIVEL_INI
         self.dificultad = DIFICULTAD_INI + self.nivel
         self.crear_vidas(self.vidas)
+        self.crear_disparos(DISPAROS_POR_NIVEL)
 
     def incrementar_puntos(self, puntos):
         self.puntos += puntos
-    
+
     def restar_vida(self):
         self.vidas -= 1
         self.crear_vidas(self.vidas)
@@ -219,10 +221,10 @@ class Marcador:
     def restar_disparo(self):
         self.disparos -= 1
         self.indicador_disparo.sprites()[-1].kill()
-    
+
     def subir_nivel(self):
         self.nivel += 1
-        self.dificultad +=1
+        self.dificultad += 1
         self.crear_disparos(DISPAROS_POR_NIVEL)
 
     def pintar(self):
@@ -234,15 +236,15 @@ class Marcador:
                           0, '', COLORES['blanco'])
         # Pintar mejor jugador
         self.consultar_max_records()
-        
+
         self.pintar_texto(['High Score   ' + str(self.max_records),], self.tipo3, CENTRO_X,
                           MARGEN_INF, '', COLORES['blanco'])
-        
+
         self.indicador_vidas.update()
         self.indicador_vidas.draw(self.pantalla)
         if self.nivel > NIVEL_CON_HABILIDADES:
             self.indicador_disparo.draw(self.pantalla)
-        
+
     def pintar_texto(self, mensaje, tipo, pos_x, pos_y, alineacion, color):
         for linea in mensaje:
             linea = str(linea)
@@ -284,4 +286,3 @@ class Marcador:
             indicador.rect.center = (indicador.rect.width * disparo + ANCHO * 1/3 + separador * disparo,
                                      ALTO - (ALTO - MARGEN_INF) / 2)
             self.indicador_disparo.add(indicador)
-

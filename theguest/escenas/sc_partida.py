@@ -1,7 +1,7 @@
 import pygame as pg
 
 from theguest import (ALTO, ANCHO, CENTRO_X, COLORES, FPS, IMAGENES,
-                      MARGEN_INF, MARGEN_SUP, NIVEL_CON_HABILIDADES, 
+                      MARGEN_INF, MARGEN_SUP, NIVEL_CON_HABILIDADES,
                       PUNTOS, SONIDOS, TIEMPO_NIVEL)
 
 from theguest.entidades import Nave, Nave1, Obstaculo, Planeta, Proyectil
@@ -21,7 +21,7 @@ class Partida(Escena):
         self.marcador = marcador
         self.image = pg.image.load(IMAGENES['partida']).convert()
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
-        self.tiempo_nivel = pg.USEREVENT +2
+        self.tiempo_nivel = pg.USEREVENT + 2
         pg.time.set_timer(self.tiempo_nivel, TIEMPO_NIVEL)
         self.obstaculos = pg.sprite.Group()
         self.proyectiles = pg.sprite.Group()
@@ -35,7 +35,7 @@ class Partida(Escena):
         self.colision = False
         self.disparar = False
         self.puntos_nivel = 0
-        
+
     def bucle_principal(self):
         super().bucle_principal()
         while True:
@@ -47,7 +47,8 @@ class Partida(Escena):
                     self.sonido_activo = not self.sonido_activo
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE and self.cambio_nivel_activo:
                     if self.puntos_nivel + PUNTOS['nivel'] > self.marcador.puntos:
-                        self.marcador.puntos = self.puntos_nivel + PUNTOS['nivel']
+                        self.marcador.puntos = self.puntos_nivel + \
+                            PUNTOS['nivel']
                     if self.marcador.nivel == self.nivel_maximo:
                         return 'records', self.sonido_activo
                     else:
@@ -56,21 +57,21 @@ class Partida(Escena):
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_d and self.marcador.nivel > NIVEL_CON_HABILIDADES:
                     if self.marcador.disparos > 0 and not self.cambio_nivel_activo:
                         self.crear_proyectil()
-                if evento.type == pg.USEREVENT +2 and not self.colision:
+                if evento.type == pg.USEREVENT + 2 and not self.colision:
                     self.cambio_nivel_activo = True
-                if evento.type == pg.USEREVENT +3:
+                if evento.type == pg.USEREVENT + 3:
                     return 'partida', self.sonido_activo
-                if evento.type == pg.USEREVENT +4:
+                if evento.type == pg.USEREVENT + 4:
                     return 'records', self.sonido_activo
 
             self.pintar_fondo()
             self.comprobar_sonido()
-            self.pintar_info()                                     
             self.pantalla.blit(self.nave.image, self.nave.rect)
             self.obstaculos.draw(self.pantalla)
             self.pantalla.blit(self.planeta.image, self.planeta.rect)
             self.proyectiles.draw(self.pantalla)
-            self.gestion_bucle()         
+            self.pintar_info()
+            self.gestion_bucle()
 
             pg.display.flip()
 
@@ -84,7 +85,7 @@ class Partida(Escena):
                 self.marcador.incrementar_puntos(1)
         elif self.colision:
             self.nave.explosion_nave()
-            if self.toff(self.tiempo_ini_colision,FPS * 2):
+            if self.toff(self.tiempo_ini_colision, FPS * 2):
                 self.efecto_sonido = pg.mixer.Sound(SONIDOS['explosion'])
                 self.efecto_sonido.play()
             duracion_sonido = int(
@@ -92,10 +93,10 @@ class Partida(Escena):
             if self.ton(self.tiempo_ini_colision, duracion_sonido):
                 if self.marcador.vidas > 1:
                     self.marcador.restar_vida()
-                    cambio_de_escena = pg.USEREVENT +3
+                    cambio_de_escena = pg.USEREVENT + 3
                     pg.event.post(pg.event.Event(cambio_de_escena))
                 else:
-                    cambio_de_escena = pg.USEREVENT +4
+                    cambio_de_escena = pg.USEREVENT + 4
                     pg.event.post(pg.event.Event(cambio_de_escena))
         else:
             self.tiempo_ini_colision = pg.time.get_ticks()
@@ -117,23 +118,24 @@ class Partida(Escena):
                      (0, MARGEN_INF), (ANCHO, MARGEN_INF))
         pg.draw.line(self.pantalla, COLORES['blanco'],
                      (0, MARGEN_SUP), (ANCHO, MARGEN_SUP))
-        
+
     def pintar_info(self):
-        self.pintar_texto(['The Guest',], self.tipo4, CENTRO_X,
+        self.pintar_texto(['THE GUEST',], self.tipo4, CENTRO_X,
                           0, 'centro', COLORES['blanco'], False)
-        
+
         self.ton_toff(self.tiempo_parpadeo)
         if self.ton_toff_visible and self.cambio_nivel_activo:
             self.pintar_texto(['Nivel completado pulsar <ESPACIO> para continuar',], self.tipo2, CENTRO_X,
                               MARGEN_SUP, 'centro', COLORES['blanco'], False)
-            
+
         if self.colision and self.marcador.vidas < 2:
-                self.pintar_texto(['GAME OVER',], self.tipo5, CENTRO_X,
-                          ALTO * 1/3, 'centro', COLORES['rojo'], False)
-                
+            self.pintar_texto(['GAME OVER',], self.tipo5, CENTRO_X,
+                              ALTO * 1/3, 'centro', COLORES['rojo'], False)
+
         if self.cambio_nivel_activo and self.marcador.nivel == self.nivel_maximo:
-            self.pintar_texto(['THE GUEST', 'Congratulations', 'YOU WIN'], self.tipo5, ANCHO * 1/3, ALTO * 6/20, 'centro', COLORES['verde'], False)
-            
+            self.pintar_texto(['THE END', 'Congratulations', 'YOU WIN'], self.tipo5,
+                              ANCHO * 1/3, ALTO * 6/20, 'centro', COLORES['verde'], False)
+
         self.marcador.pintar()
 
     def crear_obstaculos(self):
@@ -156,7 +158,7 @@ class Partida(Escena):
             self.colision = pg.sprite.collide_mask(self.nave, obstaculo)
             if self.colision:
                 break
-        
+
     def crear_proyectil(self):
         proyectil = Proyectil(self.nave)
         self.proyectiles.add(proyectil)
@@ -169,17 +171,9 @@ class Partida(Escena):
         self.proyectiles.update(self.proyectiles)
 
     def detectar_colision_proyectil(self):
-        colision = pg.sprite.groupcollide(self.proyectiles, self.obstaculos, True, True)
+        colision = pg.sprite.groupcollide(
+            self.proyectiles, self.obstaculos, True, True)
         if colision:
             self.efecto_sonido = pg.mixer.Sound(SONIDOS['impacto'])
             self.efecto_sonido.play()
             self.marcador.incrementar_puntos(PUNTOS['disparo'])
-        
-            
-                
-
-
-
-
-
-

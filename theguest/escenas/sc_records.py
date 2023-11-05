@@ -1,7 +1,7 @@
 import pygame as pg
 
 from theguest import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES,
-                       DIFICULTAD_INI, FPS, IMAGENES, MARGEN_SUP)
+                      DIFICULTAD_INI, FPS, IMAGENES, MARGEN_SUP)
 
 from theguest.dbmanager import DBManager
 from theguest.entidades import Obstaculo
@@ -29,7 +29,7 @@ class Records(Escena):
         self.indicador = '-'
         self.entrada_texto = ''
         self.temp_cambio_escena = False
-        
+
     def bucle_principal(self):
         super().bucle_principal()
         self.insertar_record = self.comprobar_puntuacion()
@@ -40,7 +40,7 @@ class Records(Escena):
                     return 'salir', self.sonido_activo
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_TAB:
                     self.sonido_activo = not self.sonido_activo
-                if evento.type == pg.USEREVENT +6 and not self.insertar_record:
+                if evento.type == pg.USEREVENT + 6 and not self.insertar_record:
                     return 'portada', self.sonido_activo
                 if evento.type == pg.KEYDOWN and self.insertar_record:
                     if evento.key == pg.K_BACKSPACE:
@@ -54,10 +54,10 @@ class Records(Escena):
                         self.entrada_texto += evento.unicode
 
             self.pintar_fondo()
-            self.comprobar_sonido()
-            self.pintar_records()
             self.update_obstaculos()
             self.obstaculos.draw(self.pantalla)
+            self.comprobar_sonido()
+            self.pintar_records()
             self.gestion_bucle()
             pg.display.flip()
 
@@ -102,7 +102,7 @@ class Records(Escena):
         self.pintar_texto(['THE GUEST'], self.tipo5, CENTRO_X,
                           MARGEN_SUP, 'centro', COLORES['blanco'], False)
         if not self.temp_cambio_escena:
-            activo = pg.USEREVENT +6
+            activo = pg.USEREVENT + 6
             pg.time.set_timer(activo, self.tiempo_cambio_escena)
             self.temp_cambio_escena = True
 
