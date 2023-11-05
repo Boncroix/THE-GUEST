@@ -18,6 +18,7 @@ class Portada(Escena):
         self.image = pg.transform.scale(self.image, (ANCHO, ALTO))
         self.temp_cambio_escena = pg.USEREVENT
         pg.time.set_timer(self.temp_cambio_escena, self.tiempo_cambio_escena)
+        self.instrucciones_en_pantalla = False
 
     def bucle_principal(self):
         super().bucle_principal()
@@ -29,7 +30,7 @@ class Portada(Escena):
                     return 'partida', self.sonido_activo
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_TAB:
                     self.sonido_activo = not self.sonido_activo
-                if evento.type == pg.USEREVENT:
+                if evento.type == pg.USEREVENT and not self.instrucciones_en_pantalla:
                     return 'records', self.sonido_activo
             self.pintar_portada()
             self.comprobar_sonido()
@@ -68,5 +69,8 @@ class Portada(Escena):
         with open(ruta_instrucciones, 'r', encoding='utf-8') as contenido:
             instrucciones = contenido.readlines()
         if estado_teclas[pg.K_i]:
+            self.instrucciones_en_pantalla = True
             self.pintar_texto(instrucciones, self.tipo1, MARGEN_IZQ,
                               ALTO * 7/20, '', COLORES['blanco'], True)
+        else:
+            self.instrucciones_en_pantalla = False

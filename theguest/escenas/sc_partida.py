@@ -60,7 +60,7 @@ class Partida(Escena):
                     return 'records', self.sonido_activo
 
             self.pintar_fondo()
-            self.comprobar_sonido()                                          # Metodo heredado de escena
+            self.comprobar_sonido()
             self.pintar_info()                                     
             self.pantalla.blit(self.nave.image, self.nave.rect)
             self.obstaculos.draw(self.pantalla)
@@ -78,12 +78,12 @@ class Partida(Escena):
             self.upddate_proyectil()
         elif self.colision:
             self.nave.explosion_nave()
-            if self.toff(self.tiempo_ini_colision,FPS * 2):                 # Metodo heredado de escena
+            if self.toff(self.tiempo_ini_colision,FPS * 2):
                 self.efecto_sonido = pg.mixer.Sound(SONIDOS['explosion'])
                 self.efecto_sonido.play()
             duracion_sonido = int(
                 self.efecto_sonido.get_length() * 1000)
-            if self.ton(self.tiempo_ini_colision, duracion_sonido):         # Metodo heredado de escena
+            if self.ton(self.tiempo_ini_colision, duracion_sonido):
                 if self.marcador.vidas > 1:
                     self.marcador.restar_vida()
                     cambio_de_escena = pg.USEREVENT +3
@@ -166,6 +166,7 @@ class Partida(Escena):
         if colision:
             self.efecto_sonido = pg.mixer.Sound(SONIDOS['impacto'])
             self.efecto_sonido.play()
+            self.marcador.incrementar_puntos()
         
             
                 

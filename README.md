@@ -1,4 +1,4 @@
-# the-Guest
+# THE-GUEST
 Proyecto final bootcamp: Aprender a programar desde cero (Pygame The-Guest)
 
 ## Dependencias necesarias
@@ -13,7 +13,7 @@ Proyecto final bootcamp: Aprender a programar desde cero (Pygame The-Guest)
 ## Uso 
 Inicia el juego ejecutando `main.py`: `python main.py` o `python3 main.py`
 
-## Ajustes pricipales del juego
+## Ajustes principales del juego
 En el archivo `init.py` se encuentran los ajustes principales del juego
 - FPS = Frames por segundo del juego.
 - DIFICULTAD_INI = Dificultad en la que comienza la partida.
@@ -37,7 +37,7 @@ En el archivo `init.py` se encuentran los ajustes principales del juego
 #### Métodos
 1. `pintar_texto` con este método podemos pintar texto en cualquiera de las escenas simplemente indicando el mensaje a mostrar, la tipografía que vamos a utilizar, posx y posy donde queremos pintar el texto, la alineación del texto ('centro', 'derecha', ''), el color del texto y por último True o False si queremos pintar el fondo para que se vea solo el fondo con el texto proporcionado.
 
-2. `comprobar_sonido` en el siguiente método comprobamos el sonido a lo largo de todo el juego y recogemos si el usuario lo quiere desactivar.  (para desactivar utilizar la tecla TAB)
+2. `comprobar_sonido` en el siguiente método comprobamos el sonido a lo largo de todo el juego y recogemos si el usuario lo quiere desactivar.  (para desactivar utilizar la tecla TAB)
 
 3. `ton_toff` temporizador configurado para activar y desactivar una salida durante un periodo de tiempo.
 
@@ -60,19 +60,19 @@ En el archivo `init.py` se encuentran los ajustes principales del juego
 ### Récords
 - Se encuentra en el archivo `sc_records.py`.
 - Al instanciar desde game pasamos si el sonido está activo y el marcador.
-- Escena que se ejecuta al finalizar el juego, aunque también la llamamos al inicio para mostrar récord mientras la escena portada está esperando que el usuario interactúe, al igual que en partida en el bucle principal recogemos los eventos y realizamos las acciones que no tienen ninguna condición, el método `gestion_bucle` es el encargado de saber si hemos entrado en la lista de récords o no. En records también nos encargamos de realizar consultas ha la base de datos, para leer los records, escribir nuevo record y borrar el de menos relevancia. 
+- Escena que se ejecuta al finalizar el juego, aunque también la llamamos al inicio para mostrar récord mientras la escena portada está esperando que el usuario interactúe, al igual que en partida en el bucle principal recogemos los eventos y realizamos las acciones que no tienen ninguna condición, el método `gestion_bucle` es el encargado de saber si hemos entrado en la lista de récords o no. En récords también nos encargamos de realizar consultas a la base de datos, para leer los récords, escribir nuevo récord y borrar el de menos relevancia. 
 - Intercambia la visualización con portada cada cierto tiempo, para el cambio de escena se utilizan eventos de usuario
 
 ## dbmanager
 - Se encuentra en el archivo `dbmanager.py`.
-- Es la clase encargada de conectarse ha la base de datos.
+- Es la clase encargada de conectarse a la base de datos.
 1. `check_records_file` comprueba si el directorio y el archivo de la base de datos existen.
 2. `crear_db` si al comprobar los archivos no existieran los creamos
-3. `conectar` se utiliza en todos los mettodos para crear una conexión y retornar la conexión y el cursor.
+3. `conectar` se utiliza en todos los métodos para crear una conexión y retornar la conexión y el cursor.
 4. `desconectar` una vez realizamos la consulta nos desconectamos de la base de datos.
 5. `consultaSQL` retorna todos los datos que consultes en tu petición.
 6. `consultaConParametros` escribe en la base de datos un nuevo registro.
-7. `borrar` borra de la base de datos el registro con el id que proporcionemos en la consulta
+7. `borrar` borra de la base de datos el registro con el ID que proporcionemos en la consulta
 
 ## Entidades
 - Todas las entidades las encontramos en el archivo `entidades.py`.
