@@ -9,7 +9,7 @@ from .sc_escena import Escena
 
 class Portada(Escena):
     tiempo_parpadeo = 600
-    tiempo_cambio_escena = 8000
+    tiempo_cambio_escena = 15000
 
     def __init__(self, pantalla, sonido_activo):
         super().__init__(pantalla)

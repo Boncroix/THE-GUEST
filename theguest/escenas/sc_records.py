@@ -12,7 +12,7 @@ from .sc_escena import Escena
 class Records(Escena):
     pos_y_records = ALTO
     vel_visu_indicador = 300
-    tiempo_cambio_escena = 7000
+    tiempo_cambio_escena = 8000
     max_text_name_record = 10
 
     def __init__(self, pantalla, sonido_activo, marcador):
