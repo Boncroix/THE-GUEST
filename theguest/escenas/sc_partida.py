@@ -1,7 +1,8 @@
 import pygame as pg
 
 from theguest import (ALTO, ANCHO, CENTRO_X, COLORES, FPS, IMAGENES,
-                      MARGEN_INF, MARGEN_SUP, SONIDOS, TIEMPO_NIVEL)
+                      MARGEN_INF, MARGEN_SUP, NIVEL_CON_HABILIDADES, 
+                      PUNTOS, SONIDOS, TIEMPO_NIVEL)
 
 from theguest.entidades import Nave, Nave1, Obstaculo, Planeta, Proyectil
 
@@ -13,7 +14,6 @@ class Partida(Escena):
     tiempo_parpadeo = 600
     pos_x_fondo = 0
     nivel_maximo = 10
-    nivel_con_habilidades = 5
 
     def __init__(self, pantalla, sonido_activo, marcador):
         super().__init__(pantalla)
@@ -25,7 +25,7 @@ class Partida(Escena):
         pg.time.set_timer(self.tiempo_nivel, TIEMPO_NIVEL)
         self.obstaculos = pg.sprite.Group()
         self.proyectiles = pg.sprite.Group()
-        if self.marcador.nivel > self.nivel_con_habilidades:
+        if self.marcador.nivel > NIVEL_CON_HABILIDADES:
             self.nave = Nave1()
         else:
             self.nave = Nave()
@@ -34,6 +34,7 @@ class Partida(Escena):
         self.cambio_nivel_activo = False
         self.colision = False
         self.disparar = False
+        self.puntos_nivel = 0
         
     def bucle_principal(self):
         super().bucle_principal()
@@ -45,13 +46,16 @@ class Partida(Escena):
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_TAB:
                     self.sonido_activo = not self.sonido_activo
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE and self.cambio_nivel_activo:
+                    if self.puntos_nivel + PUNTOS['nivel'] > self.marcador.puntos:
+                        self.marcador.puntos = self.puntos_nivel + PUNTOS['nivel']
                     if self.marcador.nivel == self.nivel_maximo:
                         return 'records', self.sonido_activo
                     else:
                         self.marcador.subir_nivel()
                         return 'partida', self.sonido_activo
-                if evento.type == pg.KEYDOWN and evento.key == pg.K_SPACE and self.marcador.nivel > self.nivel_con_habilidades and self.marcador.disparos > 0:
-                    self.crear_proyectil()
+                if evento.type == pg.KEYDOWN and evento.key == pg.K_d and self.marcador.nivel > NIVEL_CON_HABILIDADES:
+                    if self.marcador.disparos > 0 and not self.cambio_nivel_activo:
+                        self.crear_proyectil()
                 if evento.type == pg.USEREVENT +2 and not self.colision:
                     self.cambio_nivel_activo = True
                 if evento.type == pg.USEREVENT +3:
@@ -76,6 +80,8 @@ class Partida(Escena):
             self.planeta.update()
             self.nave.aterrizar_nave(self.planeta)
             self.upddate_proyectil()
+            if self.puntos_nivel + PUNTOS['nivel'] > self.marcador.puntos:
+                self.marcador.incrementar_puntos(1)
         elif self.colision:
             self.nave.explosion_nave()
             if self.toff(self.tiempo_ini_colision,FPS * 2):
@@ -99,6 +105,7 @@ class Partida(Escena):
             self.detectar_colision_proyectil()
             if self.disparar and len(self.proyectiles) > 0:
                 self.upddate_proyectil()
+            self.puntos_nivel = self.marcador.puntos
 
     def pintar_fondo(self):
         x_relativa = self.pos_x_fondo % ANCHO
@@ -125,7 +132,7 @@ class Partida(Escena):
                           ALTO * 1/3, 'centro', COLORES['rojo'], False)
                 
         if self.cambio_nivel_activo and self.marcador.nivel == self.nivel_maximo:
-            self.pintar_texto(['YOU WIN',], self.tipo5, CENTRO_X, ALTO * 1/3, 'centro', COLORES['verde'], False)
+            self.pintar_texto(['THE GUEST', 'Congratulations', 'YOU WIN'], self.tipo5, ANCHO * 1/3, ALTO * 6/20, 'centro', COLORES['verde'], False)
             
         self.marcador.pintar()
 
@@ -138,7 +145,7 @@ class Partida(Escena):
         for obstaculo in self.obstaculos:
             if not self.cambio_nivel_activo:
                 if obstaculo.update(self.obstaculos):
-                    self.marcador.incrementar_puntos()
+                    self.marcador.incrementar_puntos(PUNTOS['obstaculo'])
             else:
                 obstaculo.update(self.obstaculos)
         if len(self.obstaculos) < self.marcador.dificultad and not self.cambio_nivel_activo:
@@ -166,7 +173,7 @@ class Partida(Escena):
         if colision:
             self.efecto_sonido = pg.mixer.Sound(SONIDOS['impacto'])
             self.efecto_sonido.play()
-            self.marcador.incrementar_puntos()
+            self.marcador.incrementar_puntos(PUNTOS['disparo'])
         
             
                 

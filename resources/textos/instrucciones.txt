@@ -8,10 +8,11 @@ sorteando objetos en busca del planeta ideal para la habitabilidad.
 - Utiliza la tecla de dirección "DOW" para mover la nave hacia la abajo.
 - Utiliza la tecla de dirección "RIGHT" para mover la nave hacia la derecha. (Activo a partir del nivel 5)
 - Utiliza la tecla de dirección "LEFT" para mover la nave hacia la izquierda. (Activo a partir del nivel 5)
-- Utiliza la tecla "SPACE" para disparar, administra bien tus disparos solo dispondras de 3 por nivel. (Activo a partir del nivel 5)
+- Utiliza la tecla "D" para disparar, administra bien tus disparos solo dispondras de 3 por nivel. (Activo a partir del nivel 5)
 
 *Puntuación:*
-- Obtendrás puntos al evitar objetos. Cada objeto evitado suma 20 puntos.
+- Obtendrás puntos al evitar objetos. Cada objeto evitado suma 20 puntos, también obtendrás puntos extra
+al disparar objetos y al completar nivel.
 
 *Niveles:*
 - Comienzas en el nivel 1 y aumenta de nivel cada 15 segundos sin colisión.

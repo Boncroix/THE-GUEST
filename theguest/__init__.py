@@ -8,6 +8,7 @@ VIDAS_INI = 3
 TIEMPO_NIVEL = 15000
 PUNTOS_POR_OBSTACULO = 20
 DISPAROS_POR_NIVEL = 3
+NIVEL_CON_HABILIDADES = 5
 
 # AJUSTES PANTALLA
 ANCHO = 1200
@@ -76,4 +77,11 @@ COLORES = {
     'blanco': (255, 255, 255),
     'rojo': (99, 0, 0),
     'verde': (0, 99, 0)
+}
+
+# PUNTOS 
+PUNTOS = {
+    'obstaculo': 20,
+    'disparo': 100,
+    'nivel': 200
 }

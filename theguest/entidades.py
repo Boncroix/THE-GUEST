@@ -7,8 +7,8 @@ from random import choice, randint
 from theguest.dbmanager import DBManager
 
 from .import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, DIFICULTAD_INI, DISPAROS_POR_NIVEL,
-                FUENTES, MARGEN_IZQ, MARGEN_INF, MARGEN_SUP, NIVEL_INI, 
-                PUNTOS_POR_OBSTACULO, TAM_FUENTE, VIDAS_INI
+                FUENTES, MARGEN_IZQ, MARGEN_INF, MARGEN_SUP, NIVEL_CON_HABILIDADES, NIVEL_INI, 
+                TAM_FUENTE, VIDAS_INI
               )
 
 
@@ -209,8 +209,8 @@ class Marcador:
         self.dificultad = DIFICULTAD_INI + self.nivel
         self.crear_vidas(self.vidas)
 
-    def incrementar_puntos(self):
-        self.puntos += PUNTOS_POR_OBSTACULO
+    def incrementar_puntos(self, puntos):
+        self.puntos += puntos
     
     def restar_vida(self):
         self.vidas -= 1
@@ -241,7 +241,7 @@ class Marcador:
         
         self.indicador_vidas.update()
         self.indicador_vidas.draw(self.pantalla)
-        if self.nivel > 5:
+        if self.nivel > NIVEL_CON_HABILIDADES:
             self.indicador_disparo.draw(self.pantalla)
         
     def pintar_texto(self, mensaje, tipo, pos_x, pos_y, alineacion, color):
