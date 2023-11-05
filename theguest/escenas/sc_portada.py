@@ -71,6 +71,6 @@ class Portada(Escena):
         if estado_teclas[pg.K_i]:
             self.instrucciones_en_pantalla = True
             self.pintar_texto(instrucciones, self.tipo1, MARGEN_IZQ,
-                              ALTO * 7/20, '', COLORES['blanco'], True)
+                              ALTO * 5/20, '', COLORES['blanco'], True)
         else:
             self.instrucciones_en_pantalla = False

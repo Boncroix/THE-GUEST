@@ -106,7 +106,6 @@ class Records(Escena):
             pg.time.set_timer(activo, self.tiempo_cambio_escena)
             self.temp_cambio_escena = True
 
-
     def consultar_records(self):
         sql = 'SELECT id, nombre, puntos FROM records ORDER BY puntos DESC, id ASC'
         self.records = self.db.consultaSQL(sql)
