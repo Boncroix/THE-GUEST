@@ -1,20 +1,20 @@
 import pygame as pg
 
-from theguest.entidades import Marcador
+from thequest.entidades import Marcador
 
-from theguest.escenas.sc_portada import Portada
-from theguest.escenas.sc_records import Records
-from theguest.escenas.sc_partida import Partida
+from thequest.escenas.sc_portada import Portada
+from thequest.escenas.sc_records import Records
+from thequest.escenas.sc_partida import Partida
 
 from . import ALTO, ANCHO, MUSICA
 
 
-class TheGuest:
+class TheQuest:
     def __init__(self):
         pg.init()
         pg.mixer.init()
         self.pantalla = pg.display.set_mode((ANCHO, ALTO))
-        pg.display.set_caption('The  Guest')
+        pg.display.set_caption('The  Quest')
         self.sonido_activo = True
         self.musica = pg.mixer.music.load(MUSICA['records'])
         self.musica = pg.mixer.music.play(-1)

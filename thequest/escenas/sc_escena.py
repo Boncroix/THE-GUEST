@@ -2,7 +2,7 @@ import os
 
 import pygame as pg
 
-from theguest import (FUENTES, SONIDOS, TAM_FUENTE)
+from thequest import (FUENTES, SONIDOS, TAM_FUENTE)
 
 
 class Escena:

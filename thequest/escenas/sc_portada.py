@@ -2,7 +2,7 @@ import os
 
 import pygame as pg
 
-from theguest import (ALTO, ANCHO, CENTRO_X, COLORES, IMAGENES, MARGEN_IZQ)
+from thequest import (ALTO, ANCHO, CENTRO_X, COLORES, IMAGENES, MARGEN_IZQ)
 
 from .sc_escena import Escena
 
@@ -44,7 +44,7 @@ class Portada(Escena):
         self.mostrar_instrucciones(estado_teclas)
 
     def pintar_titulo(self):
-        self.pintar_texto(['THE GUEST',], self.tipo5, CENTRO_X,
+        self.pintar_texto(['THE QUEST',], self.tipo5, CENTRO_X,
                           ALTO * 16/20, 'centro', COLORES['blanco'], True)
 
     def pintar_info(self):

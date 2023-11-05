@@ -1,10 +1,10 @@
 import pygame as pg
 
-from theguest import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES,
+from thequest import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES,
                       DIFICULTAD_INI, FPS, IMAGENES, MARGEN_SUP)
 
-from theguest.dbmanager import DBManager
-from theguest.entidades import Obstaculo
+from thequest.dbmanager import DBManager
+from thequest.entidades import Obstaculo
 
 from .sc_escena import Escena
 
@@ -99,7 +99,7 @@ class Records(Escena):
             self.pos_y_records == CENTRO_Y
 
     def cambio_de_escena(self):
-        self.pintar_texto(['THE GUEST'], self.tipo5, CENTRO_X,
+        self.pintar_texto(['THE QUEST'], self.tipo5, CENTRO_X,
                           MARGEN_SUP, 'centro', COLORES['blanco'], False)
         if not self.temp_cambio_escena:
             activo = pg.USEREVENT + 6

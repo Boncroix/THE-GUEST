@@ -1,5 +1,5 @@
-# THE-GUEST
-Proyecto final bootcamp: Aprender a programar desde cero (Pygame The-Guest)
+# THE-QUEST
+Proyecto final bootcamp: Aprender a programar desde cero (Pygame The-Quest)
 
 ## Dependencias necesarias
 - Para desarrolladores requirements.dev.txt 

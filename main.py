@@ -1,5 +1,5 @@
-from theguest.game import TheGuest
+from thequest.game import TheQuest
 
 if __name__ == '__main__':
-    juego = TheGuest()
+    juego = TheQuest()
     juego.jugar()

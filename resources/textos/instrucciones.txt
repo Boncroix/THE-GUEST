@@ -1,4 +1,4 @@
-*THE GUEST*
+*THE QUEST*
 
 *Objetivo:* Tu misión es guiar la nave a través del espacio,
 sorteando objetos en busca del planeta ideal para la habitabilidad.

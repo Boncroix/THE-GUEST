@@ -1,10 +1,10 @@
 import pygame as pg
 
-from theguest import (ALTO, ANCHO, CENTRO_X, COLORES, FPS, IMAGENES,
+from thequest import (ALTO, ANCHO, CENTRO_X, COLORES, FPS, IMAGENES,
                       MARGEN_INF, MARGEN_SUP, NIVEL_CON_HABILIDADES,
                       PUNTOS, SONIDOS, TIEMPO_NIVEL)
 
-from theguest.entidades import Nave, Nave1, Obstaculo, Planeta, Proyectil
+from thequest.entidades import Nave, Nave1, Obstaculo, Planeta, Proyectil
 
 from .sc_escena import Escena
 
@@ -120,7 +120,7 @@ class Partida(Escena):
                      (0, MARGEN_SUP), (ANCHO, MARGEN_SUP))
 
     def pintar_info(self):
-        self.pintar_texto(['THE GUEST',], self.tipo4, CENTRO_X,
+        self.pintar_texto(['THE QUEST',], self.tipo4, CENTRO_X,
                           0, 'centro', COLORES['blanco'], False)
 
         self.ton_toff(self.tiempo_parpadeo)

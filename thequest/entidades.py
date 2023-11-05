@@ -4,7 +4,7 @@ import pygame as pg
 
 from random import choice, randint
 
-from theguest.dbmanager import DBManager
+from thequest.dbmanager import DBManager
 
 from .import (ALTO, ANCHO, CENTRO_X, CENTRO_Y, COLORES, DIFICULTAD_INI, DISPAROS_POR_NIVEL,
               FUENTES, MARGEN_IZQ, MARGEN_INF, MARGEN_SUP, NIVEL_CON_HABILIDADES, NIVEL_INI,
